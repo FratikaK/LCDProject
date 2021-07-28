@@ -24,6 +24,8 @@ class LeftCrafterDead : JavaPlugin() {
         registerEvent(JoinQuitListener())
 
         sendLog("${ChatColor.AQUA}LeftCrafterDead Start!")
+        sendLog("${ChatColor.AQUA}-------------------------------------")
+
     }
 
     override fun onDisable() {
