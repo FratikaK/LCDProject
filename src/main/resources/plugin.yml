@@ -1,4 +1,4 @@
 name: LeftCrafterDead
 version: 1.0
-main: com.github.kamunyan.testkotlinscript.LeftCrafterDead
+main: com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 api-version: 1.16

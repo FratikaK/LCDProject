@@ -3,7 +3,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
-group = "org.example"
+group = "com.github.kamunyan"
 version = "1.0-SNAPSHOT"
 
 repositories {
