@@ -7,9 +7,8 @@ import org.jetbrains.annotations.NotNull
 object MatchManager {
 
     val onlineL4DPlayer = HashMap<String, L4DPlayer>()
-    val matchPlayer = mutableListOf<L4DPlayer>()
+    val matchPlayer = HashMap<String,L4DPlayer>()
 
-    @NotNull
     @Synchronized
     fun getL4DPlayer(@NotNull target: Player): L4DPlayer {
         val uuid = target.uniqueId.toString()
