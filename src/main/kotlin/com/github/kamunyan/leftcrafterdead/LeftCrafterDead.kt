@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead
 
+import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.listener.JoinQuitListener
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -20,6 +21,9 @@ class LeftCrafterDead : JavaPlugin() {
 
         sendLog("${ChatColor.AQUA}-------------------------------------")
         sendLog("${ChatColor.AQUA}LeftCrafterDead preparing...")
+
+        //load configs
+        LobbySpawnConfig.loadConfig()
 
         registerEvent(JoinQuitListener())
 
