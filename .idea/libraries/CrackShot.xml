@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="CrackShot">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/CrackShot.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
