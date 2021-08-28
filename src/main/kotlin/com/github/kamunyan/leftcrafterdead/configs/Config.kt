@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.configs
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import org.bukkit.ChatColor
 import org.bukkit.configuration.file.YamlConfiguration
 import org.jetbrains.annotations.NotNull
 import java.io.File
@@ -19,31 +20,18 @@ abstract class Config(@NotNull val fileDir: String, @NotNull val targetFile: Str
      */
     abstract fun loadConfig()
 
-    protected val config: YamlConfiguration = YamlConfiguration()
-
-    private fun createFile() {
-        if (existsResource()) {
-            return
-        }
-
-        val file = File(fileDir)
-        val resourceFile = File("$fileDir/$targetFile")
-        file.parentFile.mkdir()
-        file.mkdir()
-
-        val files = file.listFiles()
-        if (!files.contains(resourceFile)) {
-            resourceFile.createNewFile()
-            plugin.saveResource("$fileDir/$targetFile", false)
-            plugin.logger.info("[$targetFile]File not found. A new file has been created.")
-        }
-    }
+    protected lateinit var yml: YamlConfiguration
 
     /**
-     * ファイルが存在するか
+     * 対象のファイルが存在していなければ作成
      */
-    private fun existsResource(): Boolean {
-        return File("$fileDir/$targetFile").exists()
+    private fun createFile() {
+        val dir = File("plugins/LeftCrafterDead", "$fileDir/$targetFile")
+        dir.parentFile.mkdirs()
+        if (!dir.exists()) {
+            plugin.saveResource("$fileDir/$targetFile", false)
+            plugin.logger.info("${ChatColor.YELLOW}[$targetFile] The file was not found. A new file was created.")
+        }
+        yml = YamlConfiguration.loadConfiguration(dir)
     }
-
 }

@@ -18,6 +18,7 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+    compileOnly(fileTree("lib/CrackShot.jar"))
 }
 
 tasks {
@@ -34,7 +35,7 @@ tasks {
     register("initConfig", Copy::class) {
         val tokens = mapOf("version" to "2.3.1")
         inputs.properties(tokens)
-        into("C://Minecraft/paperServer/L4DServer/plugins")
+        into("C://Minecraft/paperServer/L4DServer1.16.5/plugins")
         includeEmptyDirs = false
         with(dataContent)
     }

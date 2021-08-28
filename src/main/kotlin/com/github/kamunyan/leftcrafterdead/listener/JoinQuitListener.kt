@@ -20,7 +20,10 @@ class JoinQuitListener : Listener {
         val uuid = e.player.uniqueId.toString()
         if (!manager.onlineL4DPlayer.containsKey(uuid)) {
             manager.onlineL4DPlayer[uuid] = L4DPlayer(uuid)
+            plugin.logger.info("${ChatColor.AQUA}${e.player.displayName}'s LCDPlayer created.")
         }
+
+        e.player.teleport(manager.lobbySpawnLocation)
     }
 
     @EventHandler
