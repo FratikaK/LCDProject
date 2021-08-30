@@ -1,8 +1,9 @@
 package com.github.kamunyan.leftcrafterdead
 
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
-import com.github.kamunyan.leftcrafterdead.listener.DamageListener
+import com.github.kamunyan.leftcrafterdead.listener.DamageControlListener
 import com.github.kamunyan.leftcrafterdead.listener.JoinQuitListener
+import com.github.kamunyan.leftcrafterdead.listener.WeaponControlListener
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
@@ -27,8 +28,9 @@ class LeftCrafterDead : JavaPlugin() {
         LobbySpawnConfig.loadConfig()
 
         val manager = this.server.pluginManager
-        manager.registerEvents(DamageListener(), this)
+        manager.registerEvents(DamageControlListener(), this)
         manager.registerEvents(JoinQuitListener(), this)
+        manager.registerEvents(WeaponControlListener(), this)
 
         log.info("${ChatColor.AQUA}LeftCrafterDead Start!")
         log.info("${ChatColor.AQUA}-------------------------------------")
