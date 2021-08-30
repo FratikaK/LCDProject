@@ -35,7 +35,7 @@ tasks {
     register("initConfig", Copy::class) {
         val tokens = mapOf("version" to "2.3.1")
         inputs.properties(tokens)
-        into("C://Minecraft/paperServer/L4DServer1.16.5/plugins")
+        into("C://Minecraft/paperServer/L4DServer/plugins")
         includeEmptyDirs = false
         with(dataContent)
     }
