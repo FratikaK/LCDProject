@@ -8,7 +8,6 @@ abstract class Weapon {
     abstract val weaponType: WeaponType
     val crackShot = CSUtility()
 
-
     fun getWeaponItemStack(): ItemStack? {
         return crackShot.generateWeapon(weaponTitle)
     }
