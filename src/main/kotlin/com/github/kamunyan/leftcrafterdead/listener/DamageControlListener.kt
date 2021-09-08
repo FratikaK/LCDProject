@@ -1,18 +1,39 @@
 package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
+import com.shampaggon.crackshot.CSUtility
 import com.shampaggon.crackshot.events.WeaponExplodeEvent
+import org.bukkit.entity.HumanEntity
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDeathEvent
 
 class DamageControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
+    private val cs = CSUtility()
 
     @EventHandler
     fun onCrackShotExplosion(e: WeaponExplodeEvent) {
-        val entities = e.location.getNearbyLivingEntities(5.0)
-        for (entity in entities){
-            //TODO ダメージ処理
+        val location = e.location.clone()
+        val weaponDamage = cs.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
+        val entities = location.getNearbyLivingEntities(5.0)
+        plugin.logger.info("$entities")
+        //ダメージを与える処理
+        entities.forEach { livingEntity ->
+            if (livingEntity is HumanEntity || livingEntity.isDead) {
+                return@forEach
+            }
+            livingEntity.damage(20.0, e.player)
+        }
+    }
+
+    @EventHandler
+    fun onDeath(e: EntityDeathEvent){
+        if (e.entity.killer is HumanEntity){
+            val player = e.entity.killer as Player
+            player.sendMessage("Killer : ${player.displayName} \n" +
+                    "DeathEntity : ${e.entity.name}")
         }
     }
 }

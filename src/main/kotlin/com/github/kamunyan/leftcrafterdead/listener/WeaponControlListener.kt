@@ -35,7 +35,7 @@ class WeaponControlListener : Listener {
         }
 
         weapon = e.player.inventory.getItem(weaponSlot)?.clone()
-        val weaponMeta = e.player.inventory.getItem(weaponSlot)!!.itemMeta
+        val weaponMeta = e.player.inventory.getItem(weaponSlot)!!.itemMeta.clone()
         val weaponName = weaponMeta.displayName
         val type = weapon?.type
 
