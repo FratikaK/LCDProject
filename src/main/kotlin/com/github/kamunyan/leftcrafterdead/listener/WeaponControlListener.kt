@@ -5,6 +5,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.LCDWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
 import com.shampaggon.crackshot.events.WeaponPreShootEvent
+import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
@@ -50,7 +51,6 @@ class WeaponControlListener : Listener {
                     }
 
                     if (reloadDuration <= 0) {
-                        LCDWeapon(e.weaponTitle, weaponType).sendWeapon(e.player)
                         cancel()
                         return
                     }
@@ -63,9 +63,16 @@ class WeaponControlListener : Listener {
                     reloadDuration -= 1
                 } catch (exception: NullPointerException) {
                     e.player.inventory.setItem(weaponSlot, weapon)
+                    cancel()
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 0, 1)
+    }
+
+    @EventHandler
+    fun onReloadComplete(e: WeaponReloadCompleteEvent){
+        val weaponType = WeaponUtil.getWeaponType(e.weaponTitle,e.player)
+        LCDWeapon(e.weaponTitle,weaponType).sendWeapon(e.player)
     }
 
     /**
