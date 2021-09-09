@@ -16,15 +16,23 @@ class DamageControlListener : Listener {
     @EventHandler
     fun onCrackShotExplosion(e: WeaponExplodeEvent) {
         val location = e.location.clone()
-        val weaponDamage = cs.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
-        val entities = location.getNearbyLivingEntities(5.0)
-        plugin.logger.info("$entities")
+        val radius = cs.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
+        val weaponDamage = cs.handle.getInt("${e.weaponTitle}.Shooting.Projectile_Damage")
+        val distanceDecay = weaponDamage / radius
+        val entities = location.getNearbyLivingEntities(radius.toDouble())
+
+        if (radius == 0 || weaponDamage == 0){
+            return
+        }
+
         //ダメージを与える処理
         entities.forEach { livingEntity ->
             if (livingEntity is HumanEntity || livingEntity.isDead) {
                 return@forEach
             }
-            livingEntity.damage(20.0, e.player)
+            val distance = (livingEntity.location.distance(location)).toInt()
+            val lastDamage = weaponDamage - (distance * distanceDecay)
+            livingEntity.damage(lastDamage.toDouble(), e.player)
         }
     }
 
