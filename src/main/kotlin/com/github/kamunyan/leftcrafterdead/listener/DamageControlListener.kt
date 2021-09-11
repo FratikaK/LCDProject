@@ -11,13 +11,12 @@ import org.bukkit.event.entity.EntityDeathEvent
 
 class DamageControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
-    private val cs = CSUtility()
 
     @EventHandler
     fun onCrackShotExplosion(e: WeaponExplodeEvent) {
         val location = e.location.clone()
-        val radius = cs.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
-        val weaponDamage = cs.handle.getInt("${e.weaponTitle}.Shooting.Projectile_Damage")
+        val radius = plugin.crackShot.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
+        val weaponDamage = plugin.crackShot.handle.getInt("${e.weaponTitle}.Shooting.Projectile_Damage")
         val distanceDecay = weaponDamage / radius
         val entities = location.getNearbyLivingEntities(radius.toDouble())
 
