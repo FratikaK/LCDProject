@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.listener.DamageControlListener
 import com.github.kamunyan.leftcrafterdead.listener.JoinQuitListener
 import com.github.kamunyan.leftcrafterdead.listener.WeaponControlListener
+import com.shampaggon.crackshot.CSUtility
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
@@ -13,6 +14,8 @@ class LeftCrafterDead : JavaPlugin() {
     companion object {
         lateinit var instance: LeftCrafterDead
     }
+
+    val crackShot = CSUtility()
 
     init {
         instance = this
