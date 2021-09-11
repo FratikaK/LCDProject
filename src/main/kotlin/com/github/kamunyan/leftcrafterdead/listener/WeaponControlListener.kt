@@ -23,21 +23,16 @@ class WeaponControlListener : Listener {
     fun onReload(e: WeaponReloadEvent) {
         //reloadSpeedはリロードのはやさ。数値が大きいほど遅くなる
         //reloadDurationはリロード完了までの時間
-        plugin.logger.info(e.weaponTitle)
-        plugin.logger.info("${e.reloadDuration}")
-        plugin.logger.info("${e.reloadSpeed}")
 
         val weapon: ItemStack?
         val weaponType = WeaponUtil.getWeaponType(e.weaponTitle, e.player)
-        val weaponSlot = WeaponUtil.getWeaponSlot(weaponType)
+        val weaponSlot = weaponType.getWeaponSlot()
         if (weaponType == WeaponType.UNKNOWN || weaponSlot == -1) {
             plugin.logger.info("[onReload]${ChatColor.RED}WeaponTypeを取得出来ませんでした")
             return
         }
 
         weapon = e.player.inventory.getItem(weaponSlot)?.clone()
-        val weaponMeta = e.player.inventory.getItem(weaponSlot)!!.itemMeta.clone()
-        val weaponName = weaponMeta.displayName
         val type = weapon?.type
 
         object : BukkitRunnable() {
@@ -45,24 +40,29 @@ class WeaponControlListener : Listener {
             override fun run() {
                 try {
                     if (e.player.itemInHand.type != type) {
-                        e.player.inventory.setItem(weaponSlot, weapon)
+                        e.player.sendActionBar(" ")
+                        cancel()
+                        return
+                    }
+
+                    if (!WeaponUtil.hasReloadTag(e.player, weaponSlot)) {
+                        e.player.sendActionBar(" ")
                         cancel()
                         return
                     }
 
                     if (reloadDuration <= 0) {
+                        e.player.sendActionBar(" ")
                         cancel()
                         return
                     }
 
-                    //武器名の表示を変える
-                    val meta = e.player.inventory.getItem(weaponSlot)?.itemMeta
-                    meta?.setDisplayName("$weaponName ${ChatColor.RED}[RELOADING... $reloadDuration]")
-                    e.player.inventory.getItem(weaponSlot)?.itemMeta = meta
-
+                    e.player.sendActionBar("${ChatColor.RED}${e.weaponTitle} [RELOADING... ${reloadDuration}]")
                     reloadDuration -= 1
+
                 } catch (exception: NullPointerException) {
                     e.player.inventory.setItem(weaponSlot, weapon)
+                    e.player.sendActionBar(" ")
                     cancel()
                 }
             }
@@ -70,22 +70,7 @@ class WeaponControlListener : Listener {
     }
 
     @EventHandler
-    fun onReloadComplete(e: WeaponReloadCompleteEvent){
-        val weaponType = WeaponUtil.getWeaponType(e.weaponTitle,e.player)
-        LCDWeapon(e.weaponTitle,weaponType).sendWeapon(e.player)
-    }
-
-    /**
-     * 武器を撃つときに呼ばれる処理
-     * リロード中の射撃を制限する
-     */
-    @EventHandler
-    fun onShoot(e: WeaponPreShootEvent) {
-        if (e.player.inventory.getItem(0)?.itemMeta?.displayName?.contains("RELOADING") == true
-            || e.player.inventory.getItem(1)?.itemMeta?.displayName?.contains("RELOADING") == true
-        ) {
-            e.isCancelled = true
-        }
+    fun onReloadComplete(e: WeaponReloadCompleteEvent) {
     }
 
     /**
