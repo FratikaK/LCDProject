@@ -4,7 +4,11 @@ import org.bukkit.entity.Player
 
 object WeaponUtil {
 
-    //武器名からWeaponTypeを特定する
+    /**
+     * 武器名から武器スロットタイプを特定する
+     * @param weaponTitle 武器の名前
+     * @param player
+     */
     fun getWeaponType(weaponTitle: String, player: Player): WeaponType {
         if (player.inventory.getItem(0)?.itemMeta?.displayName?.contains(weaponTitle) == true) {
             return WeaponType.Primary
@@ -14,18 +18,15 @@ object WeaponUtil {
         return WeaponType.UNKNOWN
     }
 
-    //WeaponTypeから武器スロットのindexを特定する
-    fun getWeaponSlot(weaponType: WeaponType):Int{
-        return when(weaponType){
-            WeaponType.Primary -> {
-                0
-            }
-            WeaponType.Secondary ->{
-                1
-            }
-            else -> {
-                -1
-            }
+    /**
+     *
+     */
+    fun hasReloadTag(player: Player, number: Int): Boolean {
+        val item = player.inventory.getItem(number) ?: return false
+        if (item.hasItemMeta()) {
+            val displayName = item.itemMeta.displayName
+            return displayName.contains('ᴿ')
         }
+        return false
     }
 }
