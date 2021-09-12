@@ -2,7 +2,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
-import com.github.kamunyan.leftcrafterdead.player.L4DPlayer
+import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -19,7 +19,7 @@ class JoinQuitListener : Listener {
 
         val uuid = e.player.uniqueId.toString()
         if (!manager.onlineL4DPlayer.containsKey(uuid)) {
-            manager.onlineL4DPlayer[uuid] = L4DPlayer(uuid)
+            manager.onlineL4DPlayer[uuid] = LCDPlayer(uuid)
             plugin.logger.info("${ChatColor.AQUA}${e.player.displayName}'s LCDPlayer created.")
         }
 
