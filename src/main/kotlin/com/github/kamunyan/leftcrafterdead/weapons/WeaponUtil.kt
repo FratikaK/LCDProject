@@ -19,7 +19,9 @@ object WeaponUtil {
     }
 
     /**
-     *
+     * プレイヤーの武器にリロードタグがあるか判定する
+     * @param player
+     * @param number 武器スロットの番号
      */
     fun hasReloadTag(player: Player, number: Int): Boolean {
         val item = player.inventory.getItem(number) ?: return false
