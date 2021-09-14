@@ -28,6 +28,7 @@ class JoinQuitListener : Listener {
 
     @EventHandler
     fun onPlayerQuit(e: PlayerQuitEvent) {
+        manager.onlineL4DPlayer.remove(e.player.uniqueId.toString())
         e.quitMessage = "${ChatColor.AQUA}${e.player.displayName}がログアウトしました"
     }
 }
