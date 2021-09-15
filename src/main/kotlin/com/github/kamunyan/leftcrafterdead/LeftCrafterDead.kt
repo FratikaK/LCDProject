@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead
 
+import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.listener.DamageControlListener
 import com.github.kamunyan.leftcrafterdead.listener.JoinQuitListener
@@ -26,6 +27,9 @@ class LeftCrafterDead : JavaPlugin() {
         val log = this.logger
         log.info("${ChatColor.AQUA}-------------------------------------")
         log.info("${ChatColor.AQUA}LeftCrafterDead preparing...")
+
+        //register commands
+        getCommand("admin")?.setExecutor(AdminCommand())
 
         //load configs
         LobbySpawnConfig.loadConfig()
