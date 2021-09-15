@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.weapons
 
+import org.bukkit.Material
 import org.bukkit.entity.Player
 
 object WeaponUtil {
@@ -13,6 +14,16 @@ object WeaponUtil {
         if (player.inventory.getItem(0)?.itemMeta?.displayName?.contains(weaponTitle) == true) {
             return WeaponType.Primary
         } else if (player.inventory.getItem(1)?.itemMeta?.displayName?.contains(weaponTitle) == true) {
+            return WeaponType.Secondary
+        }
+        return WeaponType.UNKNOWN
+    }
+
+    fun getWeaponType(material: Material, player: Player): WeaponType {
+        val inventory = player.inventory
+        if(inventory.getItem(0) != null && inventory.getItem(0)!!.type == material){
+            return WeaponType.Primary
+        }else if (inventory.getItem(1) != null && inventory.getItem(1)!!.type == material){
             return WeaponType.Secondary
         }
         return WeaponType.UNKNOWN

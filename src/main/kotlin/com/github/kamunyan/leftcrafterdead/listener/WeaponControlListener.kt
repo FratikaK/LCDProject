@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.weapons.LCDWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
+import com.shampaggon.crackshot.CSUtility
 import com.shampaggon.crackshot.events.WeaponPreShootEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
@@ -23,9 +24,8 @@ class WeaponControlListener : Listener {
     fun onReload(e: WeaponReloadEvent) {
         //reloadSpeedはリロードのはやさ。数値が大きいほど遅くなる
         //reloadDurationはリロード完了までの時間
-
         val weapon: ItemStack?
-        val weaponType = WeaponUtil.getWeaponType(e.weaponTitle, e.player)
+        val weaponType = WeaponUtil.getWeaponType(CSUtility().generateWeapon(e.weaponTitle).type, e.player)
         val weaponSlot = weaponType.getWeaponSlot()
         if (weaponType == WeaponType.UNKNOWN || weaponSlot == -1) {
             plugin.logger.info("[onReload]${ChatColor.RED}WeaponTypeを取得出来ませんでした")
