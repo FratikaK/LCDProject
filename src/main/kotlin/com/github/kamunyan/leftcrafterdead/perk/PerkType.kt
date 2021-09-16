@@ -1,5 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.perk
 
+import org.bukkit.Material
+
 enum class PerkType {
     GUNSLINGER {
         override val perkName: String
@@ -27,4 +29,13 @@ enum class PerkType {
     };
 
     abstract val perkName: String
+
+    companion object {
+        fun getPerkType(material: Material): PerkType {
+            return when (material) {
+                Material.CROSSBOW -> GUNSLINGER
+                else -> GUNSLINGER
+            }
+        }
+    }
 }
