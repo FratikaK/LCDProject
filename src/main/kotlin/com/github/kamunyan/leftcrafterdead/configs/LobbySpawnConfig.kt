@@ -9,6 +9,8 @@ object LobbySpawnConfig : Config("spawns", "lobby.yml") {
     override fun loadConfig() {
         if (!yml.contains("lobby")) {
             MatchManager.lobbySpawnLocation = plugin.server.getWorld("world")!!.spawnLocation
+            plugin.logger.info("${ChatColor.RED}[$targetFile] There was no Section for Lobby.")
+            return
         }
 
         val section = yml.getConfigurationSection("lobby")!!
