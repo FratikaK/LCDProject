@@ -8,12 +8,18 @@ interface Campaign {
 
     //Campaignタイトル
     val campaignTitle: String
+
     //Campaignを表すMaterial
-    val campaignSymbol:Material
+    val campaignSymbol: Material
+
     //スタートLocation
     val startLocation: Location
+
     //チェックポイント等に使われるポイント
-    val restLocation:Location
+    val restLocation: Location
+
+    //使用するConfig
+    val config: Config
 
     fun createMapWorld()
 
