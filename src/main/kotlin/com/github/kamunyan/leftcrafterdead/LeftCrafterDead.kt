@@ -2,8 +2,10 @@ package com.github.kamunyan.leftcrafterdead
 
 import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
+import com.github.kamunyan.leftcrafterdead.configs.campaign.VeniceConfig
 import com.github.kamunyan.leftcrafterdead.listener.DamageControlListener
 import com.github.kamunyan.leftcrafterdead.listener.JoinQuitListener
+import com.github.kamunyan.leftcrafterdead.listener.MatchControlListener
 import com.github.kamunyan.leftcrafterdead.listener.WeaponControlListener
 import com.shampaggon.crackshot.CSUtility
 import org.bukkit.Bukkit
@@ -33,15 +35,16 @@ class LeftCrafterDead : JavaPlugin() {
 
         //load configs
         LobbySpawnConfig.loadConfig()
+        VeniceConfig.loadConfig()
 
         val manager = this.server.pluginManager
         manager.registerEvents(DamageControlListener(), this)
         manager.registerEvents(JoinQuitListener(), this)
+        manager.registerEvents(MatchControlListener(), this)
         manager.registerEvents(WeaponControlListener(), this)
 
         log.info("${ChatColor.AQUA}LeftCrafterDead Start!")
         log.info("${ChatColor.AQUA}-------------------------------------")
-
     }
 
     override fun onDisable() {
