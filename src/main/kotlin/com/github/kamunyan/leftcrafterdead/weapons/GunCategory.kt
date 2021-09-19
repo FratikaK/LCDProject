@@ -8,7 +8,7 @@ enum class GunCategory {
     },
     SUB_MACHINE_GUN {
         override fun getWeaponList(): List<String> {
-            return listOf()
+            return listOf("MAC10")
         }
     },
     SHOTGUN {
@@ -18,7 +18,7 @@ enum class GunCategory {
     },
     HANDGUN {
         override fun getWeaponList(): List<String> {
-            return listOf()
+            return listOf("P226")
         }
     },
     GRENADE {
