@@ -4,8 +4,11 @@ import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.Venice
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
+import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
+import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
@@ -31,6 +34,8 @@ object MatchManager {
     var isPreparation = false
 
     var isMatch = false
+
+    var isCheckPoint = false
 
     @Synchronized
     fun getL4DPlayer(@NotNull target: Player): LCDPlayer {
@@ -67,9 +72,56 @@ object MatchManager {
     }
 
     fun startCampaign() {
+        if (!isMatch) {
+            plugin.logger.info("${ChatColor.RED}[LCD](startCampaign)isMatch isn't true.")
+            return
+        }
+        campaign.createMapWorld()
+        if (!campaign.startLocation.isChunkLoaded) {
+            campaign.startLocation.chunk.load()
+        }
+
+        matchPlayer.forEach { lcdPlayer ->
+            lcdPlayer.player.teleport(campaign.startLocation)
+            lcdPlayer.player.health = 20.0
+            lcdPlayer.player.foodLevel = 6
+            lcdPlayer.perk.setFirstWeapon(lcdPlayer)
+            lcdPlayer.perk.firstPrimaryWeapon()
+        }
     }
 
     fun finishCampaign() {}
+
+    fun joinPlayer(player: Player) {
+        if (isMatchPlayer(player.uniqueId)) {
+            player.sendMessage("${ChatColor.RED}すでにゲームに参加しています")
+            return
+        }
+        val lcdPlayer = getL4DPlayer(player)
+        lcdPlayer.isMatchPlayer = true
+
+        if (!isMatch && isPreparation) {
+            lcdPlayer.isSurvivor = true
+        } else if (isCheckPoint) {
+            lcdPlayer.isSurvivor = true
+            lcdPlayer.perk.setFirstWeapon(lcdPlayer)
+            lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
+            lcdPlayer.player.health = 20.0
+            lcdPlayer.player.foodLevel = 6
+            lcdPlayer.player.teleport(campaign.restLocation)
+        } else {
+            //途中参加
+            if (matchPlayer.isNotEmpty()) {
+                lcdPlayer.player.gameMode = GameMode.SPECTATOR
+                matchPlayer.forEach { p ->
+                    if (lcdPlayer != p) {
+                        lcdPlayer.player.teleport(p.player)
+                        return
+                    }
+                }
+            }
+        }
+    }
 
     fun isMatchPlayer(uuid: UUID): Boolean {
         val lcdPlayer = Bukkit.getPlayer(uuid)?.let { getL4DPlayer(it) }

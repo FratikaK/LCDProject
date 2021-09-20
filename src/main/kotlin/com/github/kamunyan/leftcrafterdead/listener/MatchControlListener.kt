@@ -19,5 +19,6 @@ class MatchControlListener:Listener {
         }else {
             manager.isMatch = true
         }
+        manager.startCampaign()
     }
 }
