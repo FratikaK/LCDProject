@@ -29,7 +29,7 @@ object MatchManager {
     //使用するCampaign
     var campaign: Campaign = Venice()
 
-    val matchPlayer = ArrayList<LCDPlayer>()
+    val matchPlayer = mutableListOf<LCDPlayer>()
 
     var isPreparation = false
 
@@ -49,6 +49,8 @@ object MatchManager {
     fun startPreparation() {
         if (isMatch) {
             plugin.logger.info("${ChatColor.RED}[LCD]すでにマッチを開始しています")
+            return
+        } else if (isPreparation) {
             return
         }
         isPreparation = true
@@ -99,6 +101,11 @@ object MatchManager {
         }
         val lcdPlayer = getL4DPlayer(player)
         lcdPlayer.isMatchPlayer = true
+        matchPlayer.add(lcdPlayer)
+
+        if (!isMatch && !isPreparation && matchPlayer.size == 1) {
+            startPreparation()
+        }
 
         if (!isMatch && isPreparation) {
             lcdPlayer.isSurvivor = true
