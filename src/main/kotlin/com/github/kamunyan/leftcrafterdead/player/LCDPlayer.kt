@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.perk.Gunslinger
 import com.github.kamunyan.leftcrafterdead.perk.Perk
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
+import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
 import org.bukkit.Bukkit
@@ -47,11 +48,22 @@ class LCDPlayer(uuid: String) {
         perk = if (perkItem == null) {
             Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
         } else {
-            when(perkItem.type){
+            when (perkItem.type) {
                 Material.CROSSBOW -> Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
                 else -> Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
             }
         }
+        perk.setSymbolItem(this)
+    }
+
+    @Synchronized
+    fun setLobbyItem() {
+        val util = ItemMetaUtil
+        player.inventory.clear()
+        val diamond = util.generateMetaItem(Material.DIAMOND, "${ChatColor.AQUA}Join Game")
+        val endCrystal = util.generateMetaItem(Material.END_CRYSTAL, "${ChatColor.DARK_PURPLE}Select Perk")
+        player.inventory.setItem(0, diamond)
+        player.inventory.setItem(1, endCrystal)
         perk.setSymbolItem(this)
     }
 
