@@ -19,9 +19,6 @@ abstract class Perk(var level: Int, val perkType: PerkType) {
 
     fun setSymbolItem(lcdPlayer: LCDPlayer) {
         val inventory = lcdPlayer.player.inventory
-        if (inventory.getItem(8) == null) {
-
-        }
         val material = perkSymbolMaterial()
         inventory.setItem(8,ItemMetaUtil.generateMetaItem(material,"${ChatColor.AQUA}${perkType.perkName}"))
     }
