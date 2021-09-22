@@ -24,6 +24,7 @@ class JoinQuitListener : Listener {
         }
 
         e.player.teleport(manager.lobbySpawnLocation)
+        manager.getL4DPlayer(e.player).setLobbyItem()
     }
 
     @EventHandler
