@@ -6,10 +6,7 @@ import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.GameMode
-import org.bukkit.Location
+import org.bukkit.*
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.jetbrains.annotations.NotNull
@@ -46,7 +43,7 @@ object MatchManager {
         return onlineL4DPlayer[uuid]!!
     }
 
-    fun startPreparation() {
+    private fun startPreparation() {
         if (isMatch) {
             plugin.logger.info("${ChatColor.RED}[LCD]すでにマッチを開始しています")
             return
@@ -62,15 +59,32 @@ object MatchManager {
                     isPreparation = false
                     return
                 }
+
+                if (timeLeft <= 30) {
+                    if (timeLeft == 30) {
+                        Bukkit.getOnlinePlayers().forEach { player ->
+                            player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 2f, 0f)
+                            player.sendMessage("[LCD]${ChatColor.AQUA}30秒後にゲームを開始します")
+                        }
+                    }
+                    Bukkit.getOnlinePlayers().forEach { player ->
+                        player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f)
+                        if (timeLeft <= 5) {
+                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 24f)
+                            player.sendTitle("$timeLeft", "", 5, 10, 5)
+                        }
+                    }
+                }
+
                 if (timeLeft <= 0) {
                     cancel()
                     isPreparation = false
-                    MatchStartEvent().callEvent()
+                    Bukkit.getPluginManager().callEvent(MatchStartEvent())
                     return
                 }
                 timeLeft--
             }
-        }.runTaskTimerAsynchronously(plugin, 0, 20)
+        }.runTaskTimer(plugin, 0, 20)
     }
 
     fun startCampaign() {
