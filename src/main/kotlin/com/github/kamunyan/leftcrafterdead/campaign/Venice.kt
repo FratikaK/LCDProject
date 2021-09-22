@@ -11,12 +11,14 @@ class Venice : Campaign {
 
     override val campaignTitle: String = "Venice"
     override val campaignSymbol: Material = Material.BRICKS
-    override val startLocation: Location = VeniceConfig.startLocation
-    override val restLocation: Location = VeniceConfig.restLocation
+    override lateinit var startLocation: Location
+    override lateinit var restLocation: Location
     override val config: Config = VeniceConfig
 
     override fun createMapWorld() {
         WorldCreator(campaignTitle).type(WorldType.NORMAL).createWorld()
+        startLocation = VeniceConfig.startLocation
+        restLocation = VeniceConfig.restLocation
     }
 
     override fun determiningDifficulty(): Campaign.Difficulty {
