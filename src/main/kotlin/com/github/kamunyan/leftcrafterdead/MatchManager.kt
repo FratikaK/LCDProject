@@ -7,6 +7,7 @@ import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import org.bukkit.*
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.jetbrains.annotations.NotNull
@@ -27,6 +28,10 @@ object MatchManager {
     var campaign: Campaign = Venice()
 
     val matchPlayer = mutableListOf<LCDPlayer>()
+
+    var gameProgress = 1
+
+    val mobSpawnLocationList = ArrayList<Location>()
 
     var isPreparation = false
 
@@ -93,9 +98,10 @@ object MatchManager {
             return
         }
         campaign.createMapWorld()
-        if (!campaign.startLocation.isChunkLoaded) {
-            campaign.startLocation.chunk.load()
-        }
+
+
+
+        campaign.config.loadCampaignConfig()
 
         matchPlayer.forEach { lcdPlayer ->
             lcdPlayer.player.teleport(campaign.startLocation)
@@ -104,6 +110,7 @@ object MatchManager {
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
         }
+        spawnNormalEnemyMob()
     }
 
     fun finishCampaign() {}
@@ -154,5 +161,46 @@ object MatchManager {
 
     fun isMatchPlayer(lcdPlayer: LCDPlayer): Boolean {
         return lcdPlayer.isMatchPlayer
+    }
+
+    fun spawnNormalEnemyMob() {
+        if (mobSpawnLocationList.isEmpty()) {
+            return
+        }
+        val world = campaign.world ?: return
+        val mobType = campaign.normalMobType
+        mobSpawnLocationList.forEach { location ->
+            val location1 = location.clone().add(1.0, 0.0, 0.0)
+            val location2 = location.clone().add(0.0, 0.0, 1.0)
+            val location3 = location.clone().add(-1.0, 0.0, 0.0)
+            val location4 = location.clone().add(0.0, 0.0, -1.0)
+
+            var mobAmount = campaign.determiningDifficulty().normalMobSpawnAmount
+            while (mobAmount > 0) {
+                world.spawnEntity(location, mobType)
+                world.spawnEntity(location1, mobType)
+                world.spawnEntity(location2, mobType)
+                world.spawnEntity(location3, mobType)
+                world.spawnEntity(location4, mobType)
+                mobAmount--
+            }
+        }
+    }
+
+    fun deleteEnemyMob() {
+        val world = Bukkit.getWorld(campaign.campaignTitle)
+        if (world == null) {
+            plugin.logger.info("${ChatColor.RED}Worldが読み込めませんでした")
+            return
+        }
+        var count = 0
+        world.livingEntities.forEach { livingEntity ->
+            if (livingEntity.type == EntityType.PLAYER || livingEntity.type == EntityType.VILLAGER) {
+                return@forEach
+            }
+            livingEntity.remove()
+            count += 1
+        }
+        plugin.logger.info("[deleteEnemyMob]${ChatColor.AQUA}${count}体のmobを削除しました")
     }
 }
