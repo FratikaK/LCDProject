@@ -1,9 +1,9 @@
 package com.github.kamunyan.leftcrafterdead.configs.campaign
 
 import com.github.kamunyan.leftcrafterdead.configs.Config
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Location
-import org.bukkit.configuration.file.YamlConfiguration
 
 object VeniceConfig : Config("spawns", "Venice.yml") {
     lateinit var startLocation: Location
@@ -18,5 +18,18 @@ object VeniceConfig : Config("spawns", "Venice.yml") {
         startLocation = section.getConfigurationSection("start")?.let { getLocation(it) }!!
         restLocation = section.getConfigurationSection("rest")?.let { getLocation(it) }!!
         plugin.logger.info("${ChatColor.AQUA}[$targetFile] Successfully loaded config!")
+    }
+
+    override fun loadCampaignConfig() {
+        val section = yml.getConfigurationSection("Venice.mobs") ?: return
+        for (map in section.getMapList(manager.gameProgress.toString())) {
+            val location = Location(
+                Bukkit.getWorld("Venice"),
+                map["x"] as Double,
+                map["y"] as Double,
+                map["z"] as Double
+            )
+            manager.mobSpawnLocationList.add(location)
+        }
     }
 }
