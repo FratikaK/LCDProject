@@ -3,10 +3,7 @@ package com.github.kamunyan.leftcrafterdead
 import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.configs.campaign.VeniceConfig
-import com.github.kamunyan.leftcrafterdead.listener.DamageControlListener
-import com.github.kamunyan.leftcrafterdead.listener.JoinQuitListener
-import com.github.kamunyan.leftcrafterdead.listener.MatchControlListener
-import com.github.kamunyan.leftcrafterdead.listener.WeaponControlListener
+import com.github.kamunyan.leftcrafterdead.listener.*
 import com.shampaggon.crackshot.CSUtility
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -39,6 +36,7 @@ class LeftCrafterDead : JavaPlugin() {
 
         val manager = this.server.pluginManager
         manager.registerEvents(DamageControlListener(), this)
+        manager.registerEvents(EntityControlListener(), this)
         manager.registerEvents(JoinQuitListener(), this)
         manager.registerEvents(MatchControlListener(), this)
         manager.registerEvents(WeaponControlListener(), this)
