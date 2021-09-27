@@ -33,5 +33,6 @@ class Venice : Campaign {
     }
 
     override fun startRush() {
+        super.startRush()
     }
 }

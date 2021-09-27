@@ -1,13 +1,19 @@
 package com.github.kamunyan.leftcrafterdead.campaign
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
+import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.configs.Config
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.World
+import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
+import org.bukkit.*
 import org.bukkit.entity.EntityType
+import org.bukkit.scheduler.BukkitRunnable
 
 interface Campaign {
+    val plugin: LeftCrafterDead
+        get() = LeftCrafterDead.instance
+
+    val manager: MatchManager
+        get() = MatchManager
 
     //Campaignタイトル
     val campaignTitle: String
@@ -40,7 +46,32 @@ interface Campaign {
      */
     fun determiningDifficulty(): Difficulty
 
-    fun startRush()
+    fun startRush() {
+        object : BukkitRunnable() {
+            var timeLeft = 60
+            override fun run() {
+                if (manager.isCheckPoint || manager.isMatch) {
+                    plugin.logger.info("[startRush]${ChatColor.AQUA}ラッシュのタイマーを停止しました")
+                    this.cancel()
+                    return
+                }
+
+                if (timeLeft == 30) {
+                    plugin.logger.info("[startRush]${ChatColor.AQUA}次のラッシュまで30秒")
+                }
+
+                if (timeLeft == 10){
+                    plugin.logger.info("[startRush]${ChatColor.AQUA}次のラッシュまで10秒")
+                }
+
+                if (timeLeft <= 0){
+                    Bukkit.getPluginManager().callEvent(RushStartEvent())
+                    timeLeft = 60
+                }
+                timeLeft -= 1
+            }
+        }.runTaskTimer(plugin, 0, 20)
+    }
 
     enum class Difficulty {
         NORMAL {
