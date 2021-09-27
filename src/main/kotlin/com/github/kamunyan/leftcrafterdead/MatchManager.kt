@@ -97,10 +97,8 @@ object MatchManager {
             plugin.logger.info("${ChatColor.RED}[LCD](startCampaign)isMatch isn't true.")
             return
         }
+
         campaign.createMapWorld()
-
-
-
         campaign.config.loadCampaignConfig()
 
         matchPlayer.forEach { lcdPlayer ->
