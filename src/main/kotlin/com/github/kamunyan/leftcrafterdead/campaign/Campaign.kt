@@ -50,7 +50,7 @@ interface Campaign {
         object : BukkitRunnable() {
             var timeLeft = 60
             override fun run() {
-                if (manager.isCheckPoint || manager.isMatch) {
+                if (manager.isCheckPoint || !manager.isMatch) {
                     plugin.logger.info("[startRush]${ChatColor.AQUA}ラッシュのタイマーを停止しました")
                     this.cancel()
                     return
