@@ -9,6 +9,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import java.util.*
@@ -30,6 +31,10 @@ class LCDPlayer(uuid: String) {
     lateinit var secondaryWeapon: SecondaryWeapon
 
     var kill: Int = 0
+
+    var walkSpeed: Float = 0.2f
+
+    var healthScale = 20.0
 
     val perkLevels = ConcurrentHashMap<PerkType, Int>()
 
@@ -56,7 +61,6 @@ class LCDPlayer(uuid: String) {
         perk.setSymbolItem(this)
     }
 
-    @Synchronized
     fun setLobbyItem() {
         val util = ItemMetaUtil
         player.inventory.clear()
@@ -65,6 +69,57 @@ class LCDPlayer(uuid: String) {
         player.inventory.setItem(0, diamond)
         player.inventory.setItem(1, endCrystal)
         perk.setSymbolItem(this)
+    }
+
+    fun setSpectator() {
+        clearInventory()
+        player.gameMode = GameMode.SPECTATOR
+    }
+
+    /**
+     * Perkシンボル以外のアイテムを空にする
+     */
+    fun clearInventory() {
+        val symbolItem = player.inventory.getItem(8)
+        if (symbolItem == null) {
+            player.inventory.clear()
+            return
+        }
+        player.inventory.clear()
+        player.inventory.setItem(8, symbolItem)
+    }
+
+    /**
+     * 処理しているPerkのアイテムから
+     * Perkのインスタンスをセットする
+     */
+    fun setPerk() {
+        val perkItem = player.inventory.getItem(8)
+        if (perkItem == null) {
+            perk = Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
+            return
+        }
+        val perkType = PerkType.getPerkType(perkItem.type)
+        var perkLevel = perkLevels[perkType]
+        if (perkLevel == null) perkLevel = 0
+        perk = PerkType.getPerk(perkLevel, perkType)
+    }
+
+    fun changePerk(perkType: PerkType) {
+    }
+
+    fun setSpeed(speed: Float) {
+        this.walkSpeed = speed
+        player.walkSpeed = walkSpeed
+    }
+
+    fun initialize() {
+        isMatchPlayer = false
+        isSurvivor = false
+        player.gameMode = GameMode.ADVENTURE
+        setPerk()
+        setSpeed(0.2f)
+        setLobbyItem()
     }
 
     override fun toString(): String {
