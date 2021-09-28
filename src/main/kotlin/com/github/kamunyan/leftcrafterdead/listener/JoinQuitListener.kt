@@ -18,18 +18,18 @@ class JoinQuitListener : Listener {
         e.joinMessage = "${ChatColor.AQUA}${e.player.displayName}がサーバーに参加しました"
 
         val uuid = e.player.uniqueId.toString()
-        if (!manager.onlineL4DPlayer.containsKey(uuid)) {
-            manager.onlineL4DPlayer[uuid] = LCDPlayer(uuid)
+        if (!manager.onlineLCDPlayer.containsKey(uuid)) {
+            manager.onlineLCDPlayer[uuid] = LCDPlayer(uuid)
             plugin.logger.info("${ChatColor.AQUA}${e.player.displayName}'s LCDPlayer created.")
         }
 
         e.player.teleport(manager.lobbySpawnLocation)
-        manager.getL4DPlayer(e.player).setLobbyItem()
+        manager.getLCDPlayer(e.player).setLobbyItem()
     }
 
     @EventHandler
     fun onPlayerQuit(e: PlayerQuitEvent) {
-        manager.onlineL4DPlayer.remove(e.player.uniqueId.toString())
+        manager.onlineLCDPlayer.remove(e.player.uniqueId.toString())
         e.quitMessage = "${ChatColor.AQUA}${e.player.displayName}がログアウトしました"
     }
 }
