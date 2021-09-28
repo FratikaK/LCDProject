@@ -22,7 +22,7 @@ object MatchManager {
     lateinit var lobbySpawnLocation: Location
 
     //オンライン上のプレイヤーHashMap
-    val onlineL4DPlayer = ConcurrentHashMap<String, LCDPlayer>()
+    val onlineLCDPlayer = ConcurrentHashMap<String, LCDPlayer>()
 
     //使用するCampaign
     var campaign: Campaign = Venice()
@@ -40,12 +40,17 @@ object MatchManager {
     var isCheckPoint = false
 
     @Synchronized
-    fun getL4DPlayer(@NotNull target: Player): LCDPlayer {
+    fun getLCDPlayer(@NotNull target: Player): LCDPlayer {
         val uuid = target.uniqueId.toString()
-        if (!onlineL4DPlayer.containsKey(uuid)) {
-            onlineL4DPlayer[uuid] = LCDPlayer(uuid)
+        if (!onlineLCDPlayer.containsKey(uuid)) {
+            onlineLCDPlayer[uuid] = LCDPlayer(uuid)
         }
-        return onlineL4DPlayer[uuid]!!
+        return onlineLCDPlayer[uuid]!!
+    }
+
+    @Synchronized
+    fun getLCDPlayer(@NotNull uuid: UUID): LCDPlayer {
+        return getLCDPlayer(Bukkit.getPlayer(uuid)!!)
     }
 
     private fun startPreparation() {
@@ -59,7 +64,7 @@ object MatchManager {
         object : BukkitRunnable() {
             var timeLeft = 30
             override fun run() {
-                if (onlineL4DPlayer.isEmpty()) {
+                if (onlineLCDPlayer.isEmpty()) {
                     cancel()
                     isPreparation = false
                     return
@@ -92,6 +97,7 @@ object MatchManager {
         }.runTaskTimer(plugin, 0, 20)
     }
 
+    @Synchronized
     fun startCampaign() {
         if (!isMatch) {
             plugin.logger.info("${ChatColor.RED}[LCD](startCampaign)isMatch isn't true.")
@@ -107,18 +113,73 @@ object MatchManager {
             lcdPlayer.player.foodLevel = 6
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
+            lcdPlayer.isMatchPlayer = true
+            lcdPlayer.isSurvivor = true
         }
         spawnNormalEnemyMob()
+        campaign.startRush()
     }
 
-    fun finishCampaign() {}
+    @Synchronized
+    fun finishCampaign() {
+        if (!isMatch) {
+            plugin.logger.info("[finishCampaign]isMatch isn't false!")
+            return
+        }
 
+        object : BukkitRunnable() {
+            var timeLeft = 15
+            override fun run() {
+                if (timeLeft <= 15) {
+                    Bukkit.getOnlinePlayers().forEach { player ->
+                        player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f)
+                        if (timeLeft <= 5) {
+                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 24f)
+                            player.sendTitle("$timeLeft", "", 5, 10, 5)
+                        }
+                    }
+                }
+                if (timeLeft <= 5) {
+                    Bukkit.broadcastMessage("[LCD]ゲーム終了まで${timeLeft}秒")
+                }
+
+                if (timeLeft <= 0) {
+                    initializeGame()
+                    this.cancel()
+                    return
+                }
+                timeLeft--
+            }
+        }.runTaskTimer(plugin, 0, 20)
+    }
+
+    fun initializeGame() {
+        isMatch = false
+        campaign = Venice()
+        gameProgress = 1
+        mobSpawnLocationList.clear()
+        isCheckPoint = false
+        deleteEnemyMob()
+
+        matchPlayer.forEach { lcdPlayer ->
+            lcdPlayer.initialize()
+        }
+
+        Bukkit.getOnlinePlayers().forEach { player ->
+            player.teleport(lobbySpawnLocation)
+        }
+        if (matchPlayer.isNotEmpty()) {
+            startPreparation()
+        }
+    }
+
+    @Synchronized
     fun joinPlayer(player: Player) {
         if (isMatchPlayer(player.uniqueId)) {
             player.sendMessage("${ChatColor.RED}すでにゲームに参加しています")
             return
         }
-        val lcdPlayer = getL4DPlayer(player)
+        val lcdPlayer = getLCDPlayer(player)
         lcdPlayer.isMatchPlayer = true
         matchPlayer.add(lcdPlayer)
 
@@ -149,8 +210,11 @@ object MatchManager {
         }
     }
 
+    /**
+     * マッチプレイヤーであるかを返す
+     */
     fun isMatchPlayer(uuid: UUID): Boolean {
-        val lcdPlayer = Bukkit.getPlayer(uuid)?.let { getL4DPlayer(it) }
+        val lcdPlayer = Bukkit.getPlayer(uuid)?.let { getLCDPlayer(it) }
         if (lcdPlayer != null) {
             return lcdPlayer.isMatchPlayer
         }
@@ -161,6 +225,22 @@ object MatchManager {
         return lcdPlayer.isMatchPlayer
     }
 
+    /**
+     * ゲームの生存者数を返す
+     */
+    fun numberOfSurvivors(): Int {
+        var count = 0
+        matchPlayer.forEach { lcdPlayer ->
+            if (lcdPlayer.isSurvivor) {
+                count += 1
+            }
+        }
+        return count
+    }
+
+    /**
+     * 通常の敵性Mobを湧かせる
+     */
     fun spawnNormalEnemyMob() {
         if (mobSpawnLocationList.isEmpty()) {
             return
@@ -185,6 +265,9 @@ object MatchManager {
         }
     }
 
+    /**
+     * ゲームで発生した敵性Mobを削除する
+     */
     fun deleteEnemyMob() {
         val world = Bukkit.getWorld(campaign.campaignTitle)
         if (world == null) {
