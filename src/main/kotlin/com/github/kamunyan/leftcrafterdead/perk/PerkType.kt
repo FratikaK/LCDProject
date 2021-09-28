@@ -37,5 +37,12 @@ enum class PerkType {
                 else -> GUNSLINGER
             }
         }
+
+        fun getPerk(level: Int, perkType:PerkType): Perk {
+            return when(perkType){
+                GUNSLINGER -> Gunslinger(level)
+                else -> Gunslinger(level)
+            }
+        }
     }
 }
