@@ -26,8 +26,8 @@ class AdminCommand : CommandExecutor {
             "info" -> {
                 if (args.size == 2) {
                     val player = Bukkit.getPlayer(args[1])
-                    if (player != null && MatchManager.onlineL4DPlayer.containsKey(player.uniqueId.toString())) {
-                        val lcdPlayer = MatchManager.onlineL4DPlayer[player.uniqueId.toString()]
+                    if (player != null && MatchManager.onlineLCDPlayer.containsKey(player.uniqueId.toString())) {
+                        val lcdPlayer = MatchManager.onlineLCDPlayer[player.uniqueId.toString()]
                         sender.sendMessage(lcdPlayer.toString())
                         flag = true
                     }
