@@ -17,6 +17,11 @@ class AdminCommand : CommandExecutor {
             sender.sendMessage("${ChatColor.RED}コンソールから実行してください")
         }
 
+        if (args.isEmpty()) {
+            sendAdminCommandInfo(sender)
+            return flag
+        }
+
         when (args[0]) {
             "info" -> {
                 if (args.size == 2) {
