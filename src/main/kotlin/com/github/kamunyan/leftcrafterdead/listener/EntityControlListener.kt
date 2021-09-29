@@ -4,9 +4,13 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.entity.*
+import org.bukkit.event.inventory.InventoryCreativeEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import java.util.*
 
@@ -45,7 +49,7 @@ class EntityControlListener : Listener {
 
         if (manager.isMatchPlayer(lcdPlayer) && manager.isMatch) {
             if (lcdPlayer.isSurvivor) {
-                Bukkit.getPluginManager().callEvent(LCDPlayerDeathEvent(lcdPlayer))
+                Bukkit.getPluginManager().callEvent(LCDPlayerDeathEvent(lcdPlayer, e.entityType))
             }
         }
         e.deathMessage = ""
@@ -71,6 +75,30 @@ class EntityControlListener : Listener {
         } else if (!manager.isMatch) {
             e.respawnLocation = manager.lobbySpawnLocation
             lcdPlayer.setLobbyItem()
+        }
+    }
+
+    @EventHandler
+    fun onPlayerCreative(e: InventoryCreativeEvent) {
+        if (e.whoClicked is Player) {
+            val player = e.whoClicked as Player
+            if (!player.isOp) {
+                e.isCancelled = true
+            }
+        }
+    }
+
+    @EventHandler
+    fun onBlockBreak(e: BlockBreakEvent) {
+        if (!e.player.isOp) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onBlockDamage(e: BlockDamageEvent) {
+        if (!e.player.isOp) {
+            e.isCancelled = true
         }
     }
 
