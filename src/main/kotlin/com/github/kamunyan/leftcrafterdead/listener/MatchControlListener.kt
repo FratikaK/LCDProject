@@ -5,9 +5,7 @@ import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
-import org.bukkit.ChatColor
-import org.bukkit.Location
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -51,7 +49,15 @@ class MatchControlListener : Listener {
     fun onLCDPlayerDeath(e: LCDPlayerDeathEvent) {
         val lcdPlayer = e.lcdPlayer
         lcdPlayer.isSurvivor = false
-        if (manager.numberOfSurvivors() <= 0){
+
+        val deathMessage = "${ChatColor.AQUA}${e.entityType.name}${ChatColor.RED}  =====>>>>" +
+                "  ${ChatColor.YELLOW}${lcdPlayer.player.displayName}"
+        Bukkit.getOnlinePlayers().forEach { player ->
+            player.playSound(player.location, Sound.ENTITY_WOLF_HOWL, 100f, 1f)
+        }
+        Bukkit.broadcastMessage(deathMessage)
+        if (manager.numberOfSurvivors() <= 0) {
+            Bukkit.broadcastMessage("[LCD]${ChatColor.RED}プレイヤーが全滅しました")
             manager.finishCampaign()
         }
     }
