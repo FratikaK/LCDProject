@@ -36,6 +36,8 @@ class LCDPlayer(uuid: String) {
 
     var healthScale = 20.0
 
+    lateinit var playerData: PlayerData
+
     val perkLevels = ConcurrentHashMap<PerkType, Int>()
 
     init {
