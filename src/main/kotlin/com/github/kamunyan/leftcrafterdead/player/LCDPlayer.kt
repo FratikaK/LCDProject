@@ -115,6 +115,10 @@ class LCDPlayer(uuid: String) {
         player.walkSpeed = walkSpeed
     }
 
+    fun loadPlayerData(){}
+
+    fun updatePlayerData(){}
+
     fun initialize() {
         isMatchPlayer = false
         isSurvivor = false
