@@ -16,6 +16,6 @@ class Gunslinger(level: Int) :Perk(level, PerkType.GUNSLINGER) {
     }
 
     override fun firstPrimaryWeapon(): PrimaryWeapon {
-        return SubMachineGun("Mac10")
+        return SubMachineGun("AK12")
     }
 }
