@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockDamageEvent
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.*
 import org.bukkit.event.inventory.InventoryCreativeEvent
 import org.bukkit.event.player.PlayerRespawnEvent
@@ -97,6 +98,13 @@ class EntityControlListener : Listener {
 
     @EventHandler
     fun onBlockDamage(e: BlockDamageEvent) {
+        if (!e.player.isOp) {
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onBlockPlace(e: BlockPlaceEvent) {
         if (!e.player.isOp) {
             e.isCancelled = true
         }
