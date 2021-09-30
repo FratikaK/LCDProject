@@ -55,7 +55,10 @@ class MatchControlListener : Listener {
         Bukkit.getOnlinePlayers().forEach { player ->
             player.playSound(player.location, Sound.ENTITY_WOLF_HOWL, 100f, 1f)
         }
-        Bukkit.broadcastMessage(deathMessage)
+        Bukkit.broadcastMessage(
+            deathMessage + "\n" +
+                    "[LCD]${ChatColor.AQUA}残り生存者数 : ${ChatColor.YELLOW}${manager.numberOfSurvivors()}"
+        )
         if (manager.numberOfSurvivors() <= 0) {
             Bukkit.broadcastMessage("[LCD]${ChatColor.RED}プレイヤーが全滅しました")
             manager.finishCampaign()
