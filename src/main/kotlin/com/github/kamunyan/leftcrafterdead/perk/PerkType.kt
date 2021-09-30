@@ -31,16 +31,34 @@ enum class PerkType {
     abstract val perkName: String
 
     companion object {
+        val perkTypeHashMap = hashMapOf(
+            "Gunslinger" to GUNSLINGER,
+            "Hellraizer" to HELLRAIZER,
+            "Medic" to MEDIC,
+            "Fixer" to FIXER,
+            "Slasher" to SLASHER,
+            "Exterminator" to EXTERMINATOR
+        )
+
         fun getPerkType(material: Material): PerkType {
             return when (material) {
                 Material.CROSSBOW -> GUNSLINGER
+                Material.REDSTONE -> MEDIC
                 else -> GUNSLINGER
             }
         }
 
-        fun getPerk(level: Int, perkType:PerkType): Perk {
-            return when(perkType){
+        fun getPerkType(perkName: String): PerkType? {
+            if (perkTypeHashMap.containsKey(perkName)) {
+                return perkTypeHashMap[perkName]
+            }
+            return null
+        }
+
+        fun getPerk(level: Int, perkType: PerkType): Perk {
+            return when (perkType) {
                 GUNSLINGER -> Gunslinger(level)
+                MEDIC -> Medic(level)
                 else -> Gunslinger(level)
             }
         }
