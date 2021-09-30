@@ -1,16 +1,8 @@
 package com.github.kamunyan.leftcrafterdead.player
 
-class PlayerData(val uuid: String){
+import java.io.Serializable
 
-    var kill :Int = 0
-
-    val perkLevels = HashMap<String,Int>()
-
-    fun loadPlayerData(){}
-
-    fun updatePlayerData(){}
-
-    init {
-        loadPlayerData()
-    }
-}
+data class PlayerData(
+    var uuid: String,
+    var totalKill : Int
+):Serializable
