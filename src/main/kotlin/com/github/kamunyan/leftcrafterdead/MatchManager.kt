@@ -39,6 +39,8 @@ object MatchManager {
 
     var isCheckPoint = false
 
+    var isFinishing = false
+
     @Synchronized
     fun getLCDPlayer(@NotNull target: Player): LCDPlayer {
         val uuid = target.uniqueId.toString()
@@ -125,7 +127,11 @@ object MatchManager {
         if (!isMatch) {
             plugin.logger.info("[finishCampaign]isMatch isn't false!")
             return
+        } else if (isFinishing) {
+            plugin.logger.info("[finishCampaign]isFinishing isn't false!")
         }
+
+        isFinishing = true
 
         object : BukkitRunnable() {
             var timeLeft = 15
@@ -159,6 +165,7 @@ object MatchManager {
         gameProgress = 1
         mobSpawnLocationList.clear()
         isCheckPoint = false
+        isFinishing = false
         deleteEnemyMob()
 
         matchPlayer.forEach { lcdPlayer ->
@@ -199,16 +206,33 @@ object MatchManager {
         } else {
             //途中参加
             if (matchPlayer.isNotEmpty()) {
-                lcdPlayer.player.gameMode = GameMode.SPECTATOR
-                matchPlayer.forEach { p ->
-                    if (lcdPlayer != p) {
-                        lcdPlayer.player.teleport(p.player)
-                        return
+                lcdPlayer.setSpectator()
+                for (p in matchPlayer) {
+                    if (p.isSurvivor) {
+                        lcdPlayer.player.teleport(p.player.location)
+                        break
                     }
                 }
             }
         }
     }
+
+    fun leavePlayer(lcdPlayer: LCDPlayer) {
+        lcdPlayer.isMatchPlayer = false
+        lcdPlayer.isSurvivor = false
+        matchPlayer.remove(lcdPlayer)
+
+        lcdPlayer.player.health = 20.0
+        lcdPlayer.player.foodLevel = 20
+        if (matchPlayer.isEmpty() || numberOfSurvivors() <= 0) {
+            finishCampaign()
+        }
+    }
+
+    fun leavePlayer(player: Player) {
+        leavePlayer(getLCDPlayer(player))
+    }
+
 
     /**
      * マッチプレイヤーであるかを返す
