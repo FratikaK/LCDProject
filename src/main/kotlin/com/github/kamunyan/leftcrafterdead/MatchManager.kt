@@ -139,10 +139,6 @@ object MatchManager {
                 if (timeLeft <= 15) {
                     Bukkit.getOnlinePlayers().forEach { player ->
                         player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f)
-                        if (timeLeft <= 5) {
-                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 24f)
-                            player.sendTitle("$timeLeft", "", 5, 10, 5)
-                        }
                     }
                 }
                 if (timeLeft <= 5) {
@@ -176,7 +172,7 @@ object MatchManager {
             player.teleport(lobbySpawnLocation)
         }
         if (matchPlayer.isNotEmpty()) {
-            startPreparation()
+            matchPlayer.clear()
         }
     }
 
