@@ -6,7 +6,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.Material
 
-class Medic(level: Int) : Perk(level, PerkType.MEDIC) {
+class Medic() : Perk(PerkType.MEDIC) {
     override fun perkSymbolMaterial(): Material {
         return Material.REDSTONE
     }
