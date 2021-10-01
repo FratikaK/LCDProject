@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
 import org.bukkit.Bukkit
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -47,13 +48,13 @@ class EntityControlListener : Listener {
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.entity.uniqueId)
+        e.deathMessage = ""
 
         if (manager.isMatchPlayer(lcdPlayer) && manager.isMatch) {
             if (lcdPlayer.isSurvivor) {
-                Bukkit.getPluginManager().callEvent(LCDPlayerDeathEvent(lcdPlayer, e.entityType))
+                Bukkit.getPluginManager().callEvent(LCDPlayerDeathEvent(lcdPlayer))
             }
         }
-        e.deathMessage = ""
     }
 
     @EventHandler
