@@ -7,7 +7,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import org.bukkit.ChatColor
 import org.bukkit.Material
 
-abstract class Perk(var level: Int, val perkType: PerkType) {
+abstract class Perk(val perkType: PerkType) {
     abstract fun perkSymbolMaterial(): Material
     abstract fun getGrenade(): Grenade
     abstract fun firstPrimaryWeapon(): PrimaryWeapon
@@ -20,6 +20,6 @@ abstract class Perk(var level: Int, val perkType: PerkType) {
     fun setSymbolItem(lcdPlayer: LCDPlayer) {
         val inventory = lcdPlayer.player.inventory
         val material = perkSymbolMaterial()
-        inventory.setItem(8,ItemMetaUtil.generateMetaItem(material,"${ChatColor.AQUA}${perkType.perkName}"))
+        inventory.setItem(8, ItemMetaUtil.generateMetaItem(material, "${ChatColor.AQUA}${perkType.perkName}"))
     }
 }

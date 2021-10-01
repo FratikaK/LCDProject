@@ -6,7 +6,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.Material
 
-class Gunslinger(level: Int) :Perk(level, PerkType.GUNSLINGER) {
+class Gunslinger : Perk(PerkType.GUNSLINGER) {
     override fun perkSymbolMaterial(): Material {
         return Material.CROSSBOW
     }
