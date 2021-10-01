@@ -13,4 +13,20 @@ object ItemMetaUtil {
         item.itemMeta = metaData
         return item
     }
+
+    fun generateMetaItem(material: Material, itemName: String, data: Int): ItemStack {
+        val item = generateMetaItem(material, itemName)
+        val metadata = item.itemMeta
+        metadata.setCustomModelData(data)
+        item.itemMeta = metadata
+        return item
+    }
+
+    fun generateMetaItem(material: Material, itemName: String, data: Int, lore: List<String>): ItemStack {
+        val item = generateMetaItem(material, itemName, data)
+        val metadata = item.itemMeta
+        metadata.lore = lore
+        item.itemMeta = metadata
+        return item
+    }
 }
