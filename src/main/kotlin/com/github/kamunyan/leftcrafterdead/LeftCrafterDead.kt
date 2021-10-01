@@ -37,6 +37,7 @@ class LeftCrafterDead : JavaPlugin() {
         val manager = this.server.pluginManager
         manager.registerEvents(DamageControlListener(), this)
         manager.registerEvents(EntityControlListener(), this)
+        manager.registerEvents(InventoryDisplayListener(), this)
         manager.registerEvents(JoinQuitListener(), this)
         manager.registerEvents(MatchControlListener(), this)
         manager.registerEvents(WeaponControlListener(), this)

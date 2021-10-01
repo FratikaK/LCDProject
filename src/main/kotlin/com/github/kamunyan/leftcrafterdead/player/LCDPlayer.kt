@@ -7,13 +7,9 @@ import com.github.kamunyan.leftcrafterdead.perk.PerkType
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.GameMode
-import org.bukkit.Material
+import org.bukkit.*
 import org.bukkit.entity.Player
 import java.util.*
-import java.util.concurrent.ConcurrentHashMap
 
 class LCDPlayer(uuid: String) {
     private val manager = MatchManager
@@ -38,27 +34,12 @@ class LCDPlayer(uuid: String) {
 
     lateinit var playerData: PlayerData
 
-    val perkLevels = ConcurrentHashMap<PerkType, Int>()
-
     init {
-        val perkIterator = listOf(
-            PerkType.GUNSLINGER,
-            PerkType.HELLRAIZER,
-            PerkType.MEDIC,
-            PerkType.FIXER,
-            PerkType.SLASHER,
-            PerkType.EXTERMINATOR
-        )
-        perkIterator.forEach { perkType -> perkLevels[perkType] = 0 }
-
         val perkItem = player.inventory.getItem(8)
-        perk = if (perkItem == null) {
-            Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
+        if (perkItem == null) {
+            perk = Gunslinger()
         } else {
-            when (perkItem.type) {
-                Material.CROSSBOW -> Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
-                else -> Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
-            }
+            perk = PerkType.getPerk(PerkType.getPerkType(perkItem.type))
         }
         perk.setSymbolItem(this)
     }
@@ -95,19 +76,21 @@ class LCDPlayer(uuid: String) {
      * 処理しているPerkのアイテムから
      * Perkのインスタンスをセットする
      */
+    @Synchronized
     fun setPerk() {
-        val perkItem = player.inventory.getItem(8)
-        if (perkItem == null) {
-            perk = Gunslinger(perkLevels.getValue(PerkType.GUNSLINGER))
-            return
-        }
-        val perkType = PerkType.getPerkType(perkItem.type)
-        var perkLevel = perkLevels[perkType]
-        if (perkLevel == null) perkLevel = 0
-        perk = PerkType.getPerk(perkLevel, perkType)
+        perk = PerkType.getPerk(perk.perkType)
+        perk.setSymbolItem(this)
     }
 
-    fun changePerk(perkType: PerkType) {
+    @Synchronized
+    fun setPerk(perkType: PerkType) {
+        perk = PerkType.getPerk(perkType)
+        perk.setSymbolItem(this)
+        player.sendMessage(
+            "${ChatColor.AQUA}Perkを${ChatColor.LIGHT_PURPLE}" +
+                    "${perkType.perkName}${ChatColor.AQUA}に変更しました！"
+        )
+        player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
     }
 
     fun setSpeed(speed: Float) {
@@ -115,9 +98,9 @@ class LCDPlayer(uuid: String) {
         player.walkSpeed = walkSpeed
     }
 
-    fun loadPlayerData(){}
+    fun loadPlayerData() {}
 
-    fun updatePlayerData(){}
+    fun updatePlayerData() {}
 
     fun initialize() {
         isMatchPlayer = false
@@ -134,7 +117,6 @@ class LCDPlayer(uuid: String) {
                 "isMatchPlayer: $isMatchPlayer\n" +
                 "isSurvivor: $isSurvivor\n" +
                 "perk: $perk\n" +
-                "kill: $kill\n" +
-                "perkLevels: $perkLevels\n"
+                "kill: $kill\n"
     }
 }
