@@ -44,6 +44,12 @@ class LCDPlayer(uuid: String) {
         perk.setSymbolItem(this)
     }
 
+    fun setPlayerStatus(){
+        player.walkSpeed = walkSpeed
+        player.healthScale = healthScale
+        player.health = player.healthScale
+    }
+
     fun setLobbyItem() {
         val util = ItemMetaUtil
         player.inventory.clear()
@@ -108,6 +114,7 @@ class LCDPlayer(uuid: String) {
         player.gameMode = GameMode.ADVENTURE
         setPerk()
         setSpeed(0.2f)
+        setPlayerStatus()
         setLobbyItem()
     }
 
