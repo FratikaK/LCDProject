@@ -17,6 +17,17 @@ abstract class LCDWeapon(val weaponTitle: String, val weaponType: WeaponType) {
         }
     }
 
+    fun sendGrenade(player: Player, amount: Int) {
+        if (weaponType != WeaponType.Grenade) {
+            return
+        }
+        val grenade = crackShot.generateWeapon(weaponTitle)
+        val itemMeta = grenade.itemMeta
+        val itemStack = ItemStack(grenade.type, amount)
+        itemStack.itemMeta = itemMeta
+        player.inventory.setItem(2, itemStack)
+    }
+
     fun getWeaponItemStack(): ItemStack? {
         return crackShot.generateWeapon(weaponTitle)
     }
