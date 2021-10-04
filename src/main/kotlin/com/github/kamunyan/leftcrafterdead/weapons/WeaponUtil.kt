@@ -21,10 +21,12 @@ object WeaponUtil {
 
     fun getWeaponType(material: Material, player: Player): WeaponType {
         val inventory = player.inventory
-        if(inventory.getItem(0) != null && inventory.getItem(0)!!.type == material){
+        if (inventory.getItem(0) != null && inventory.getItem(0)!!.type == material) {
             return WeaponType.Primary
-        }else if (inventory.getItem(1) != null && inventory.getItem(1)!!.type == material){
+        } else if (inventory.getItem(1) != null && inventory.getItem(1)!!.type == material) {
             return WeaponType.Secondary
+        } else if (inventory.getItem(2) != null && inventory.getItem(2)!!.type == material) {
+            return WeaponType.Grenade
         }
         return WeaponType.UNKNOWN
     }
