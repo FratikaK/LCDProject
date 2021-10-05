@@ -3,7 +3,9 @@ package com.github.kamunyan.leftcrafterdead.listener
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
+import com.github.kamunyan.leftcrafterdead.event.StartCheckPointEvent
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -13,6 +15,8 @@ import org.bukkit.event.block.BlockDamageEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.*
 import org.bukkit.event.inventory.InventoryCreativeEvent
+import org.bukkit.event.inventory.InventoryMoveItemEvent
+import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import java.util.*
 
@@ -43,12 +47,18 @@ class EntityControlListener : Listener {
         if (e.reason == EntityTargetEvent.TargetReason.TARGET_ATTACKED_NEARBY_ENTITY) {
             e.isCancelled = true
         }
+        if (e.target != null) {
+            if (e.target!!.type == EntityType.VILLAGER) {
+                e.isCancelled = true
+            }
+        }
     }
 
     @EventHandler
     fun onPlayerDeath(e: PlayerDeathEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.entity.uniqueId)
         e.deathMessage = ""
+        e.keepInventory = false
 
         if (manager.isMatchPlayer(lcdPlayer) && manager.isMatch) {
             if (lcdPlayer.isSurvivor) {
@@ -81,6 +91,19 @@ class EntityControlListener : Listener {
     }
 
     @EventHandler
+    fun onPlayerMove(e:PlayerMoveEvent){
+        if (e.player.location.clone().add(0.0,-0.1,0.0).block.type == Material.DIAMOND_BLOCK){
+            if (!manager.isMatch || manager.isCheckPoint){
+                return
+            }
+            val lcdPlayer = manager.getLCDPlayer(e.player)
+            if (lcdPlayer.isMatchPlayer && lcdPlayer.isSurvivor){
+                Bukkit.getPluginManager().callEvent(StartCheckPointEvent())
+            }
+        }
+    }
+
+    @EventHandler
     fun onPlayerCreative(e: InventoryCreativeEvent) {
         if (e.whoClicked is Player) {
             val player = e.whoClicked as Player
@@ -88,6 +111,11 @@ class EntityControlListener : Listener {
                 e.isCancelled = true
             }
         }
+    }
+
+    @EventHandler
+    fun onInventoryMove(e:InventoryMoveItemEvent){
+        e.isCancelled = true
     }
 
     @EventHandler
@@ -113,6 +141,11 @@ class EntityControlListener : Listener {
 
     @EventHandler
     fun onFoodLevelChange(e: FoodLevelChangeEvent) {
+        e.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerDropItem(e: EntityDropItemEvent) {
         e.isCancelled = true
     }
 }
