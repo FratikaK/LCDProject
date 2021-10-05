@@ -123,6 +123,61 @@ object MatchManager {
     }
 
     @Synchronized
+    fun startCheckPoint() {
+        if (isCheckPoint) {
+            plugin.logger.info("[startCheckPoint]isCheckPoint isn't false!")
+            return
+        }
+        isCheckPoint = true
+        if (numberOfSurvivors() > 0) {
+            matchPlayer.forEach { lcdPlayer ->
+                lcdPlayer.player.teleport(campaign.restLocation)
+                if (!lcdPlayer.isSurvivor) {
+                    lcdPlayer.isSurvivor = true
+                    lcdPlayer.player.gameMode = GameMode.ADVENTURE
+                    lcdPlayer.player.health = lcdPlayer.healthScale / 2
+                    lcdPlayer.perk.setFirstWeapon(lcdPlayer)
+                } else {
+                    lcdPlayer.player.health = lcdPlayer.healthScale
+                }
+            }
+        }
+
+        gameProgress += 1
+        if (campaign.gameProgressLimit < gameProgress) {
+            plugin.logger.info("[startCheckPoint]${ChatColor.RED}ゲーム進行度が限界値を超えています")
+            return
+        }
+        mobSpawnLocationList.clear()
+        campaign.config.loadCampaignConfig()
+
+        Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}チェックポイントに到達しました！30秒後にゲームを再開します")
+
+        object : BukkitRunnable() {
+            var timeLeft = 30
+            override fun run() {
+                if (timeLeft <= 30) {
+                    Bukkit.getOnlinePlayers().forEach { player ->
+                        player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f)
+                        if (timeLeft == 30) {
+                            player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1f, 1f)
+                        }
+                        if (timeLeft <= 5) {
+                            player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 24f)
+                            player.sendTitle("$timeLeft", "", 5, 10, 5)
+                        }
+                    }
+                }
+
+                if (timeLeft <= 0) {
+
+                }
+                timeLeft--
+            }
+        }.runTaskTimer(plugin, 0, 20)
+    }
+
+    @Synchronized
     fun finishCampaign() {
         if (!isMatch) {
             plugin.logger.info("[finishCampaign]isMatch isn't false!")
