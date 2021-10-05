@@ -5,7 +5,9 @@ import com.github.kamunyan.leftcrafterdead.perk.Gunslinger
 import com.github.kamunyan.leftcrafterdead.perk.Perk
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
+import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
 import org.bukkit.*
 import org.bukkit.entity.Player
@@ -24,7 +26,7 @@ class LCDPlayer(uuid: String) {
 
     lateinit var primary: PrimaryWeapon
 
-    lateinit var secondaryWeapon: SecondaryWeapon
+    var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
 
     var kill: Int = 0
 
@@ -44,7 +46,7 @@ class LCDPlayer(uuid: String) {
         perk.setSymbolItem(this)
     }
 
-    fun setPlayerStatus(){
+    fun setPlayerStatus() {
         player.walkSpeed = walkSpeed
         player.healthScale = healthScale
         player.health = player.healthScale
