@@ -15,6 +15,8 @@ abstract class Perk(val perkType: PerkType) {
     fun setFirstWeapon(lcdPlayer: LCDPlayer) {
         lcdPlayer.primary = firstPrimaryWeapon()
         lcdPlayer.primary.sendWeapon(lcdPlayer.player)
+        lcdPlayer.secondaryWeapon.sendWeapon(lcdPlayer.player)
+        getGrenade().sendGrenade(lcdPlayer.player,3)
     }
 
     fun setSymbolItem(lcdPlayer: LCDPlayer) {
