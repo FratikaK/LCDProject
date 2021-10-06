@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead
 
+import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.configs.campaign.VeniceConfig
@@ -29,6 +30,8 @@ class LeftCrafterDead : JavaPlugin() {
 
         //register commands
         getCommand("admin")?.setExecutor(AdminCommand())
+
+        Campaign.createWorld("Venice")
 
         //load configs
         LobbySpawnConfig.loadConfig()

@@ -21,12 +21,6 @@ interface Campaign {
     //Campaignを表すMaterial
     val campaignSymbol: Material
 
-    //スタートLocation
-    val startLocation: Location
-
-    //チェックポイント等に使われるポイント
-    val restLocation: Location
-
     //ゲーム進行度の上限
     val gameProgressLimit: Int
 
@@ -35,11 +29,6 @@ interface Campaign {
 
     //使用するConfig
     val config: Config
-
-    val world: World?
-        get() = Bukkit.getWorld(campaignTitle)
-
-    fun createMapWorld()
 
     /**
      * 難易度の決定　　
@@ -60,17 +49,30 @@ interface Campaign {
                     plugin.logger.info("[startRush]${ChatColor.AQUA}次のラッシュまで30秒")
                 }
 
-                if (timeLeft == 10){
+                if (timeLeft == 10) {
                     plugin.logger.info("[startRush]${ChatColor.AQUA}次のラッシュまで10秒")
                 }
 
-                if (timeLeft <= 0){
+                if (timeLeft <= 0) {
                     Bukkit.getPluginManager().callEvent(RushStartEvent())
                     timeLeft = 60
                 }
                 timeLeft -= 1
             }
         }.runTaskTimer(plugin, 0, 20)
+    }
+
+    companion object {
+        fun createWorld(worldName: String) {
+            if (Bukkit.getWorld(worldName) == null) {
+                WorldCreator(worldName)
+                    .environment(World.Environment.NORMAL)
+                    .type(WorldType.NORMAL)
+                    .hardcore(false)
+                    .generateStructures(false)
+                    .createWorld()
+            }
+        }
     }
 
     enum class Difficulty {
