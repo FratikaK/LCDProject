@@ -1,7 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
-import com.shampaggon.crackshot.CSUtility
+import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.shampaggon.crackshot.events.WeaponExplodeEvent
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDeathEvent
 
 class DamageControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
+    private val manager = MatchManager
 
     @EventHandler
     fun onCrackShotExplosion(e: WeaponExplodeEvent) {
@@ -19,13 +20,11 @@ class DamageControlListener : Listener {
         val weaponDamage = plugin.crackShot.handle.getInt("${e.weaponTitle}.Shooting.Projectile_Damage")
         val distanceDecay = weaponDamage / radius
         val entities = location.getNearbyLivingEntities(radius.toDouble())
-
-        if (radius == 0 || weaponDamage == 0){
-            return
-        }
+        val lcdPlayer = manager.getLCDPlayer(e.player)
 
         //ダメージを与える処理
         entities.forEach { livingEntity ->
+            lcdPlayer.perk.getGrenade().specialEffects(e.player, livingEntity)
             if (livingEntity is HumanEntity || livingEntity.isDead) {
                 return@forEach
             }
@@ -36,11 +35,13 @@ class DamageControlListener : Listener {
     }
 
     @EventHandler
-    fun onDeath(e: EntityDeathEvent){
-        if (e.entity.killer is HumanEntity){
+    fun onDeath(e: EntityDeathEvent) {
+        if (e.entity.killer is HumanEntity) {
             val player = e.entity.killer as Player
-            player.sendMessage("Killer : ${player.displayName} \n" +
-                    "DeathEntity : ${e.entity.name}")
+            player.sendMessage(
+                "Killer : ${player.displayName} \n" +
+                        "DeathEntity : ${e.entity.name}"
+            )
         }
     }
 }
