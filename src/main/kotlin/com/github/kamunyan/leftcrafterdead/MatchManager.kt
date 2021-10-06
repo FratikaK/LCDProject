@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead
 
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.Venice
+import com.github.kamunyan.leftcrafterdead.event.MatchReStartEvent
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
@@ -26,6 +27,12 @@ object MatchManager {
 
     //使用するCampaign
     var campaign: Campaign = Venice()
+
+    lateinit var world: World
+
+    lateinit var startLocation: Location
+
+    lateinit var restLocation: Location
 
     val matchPlayer = mutableListOf<LCDPlayer>()
 
@@ -65,7 +72,7 @@ object MatchManager {
         }
         isPreparation = true
         object : BukkitRunnable() {
-            var timeLeft = 30
+            var timeLeft = 10
             override fun run() {
                 if (onlineLCDPlayer.isEmpty()) {
                     cancel()
@@ -73,8 +80,8 @@ object MatchManager {
                     return
                 }
 
-                if (timeLeft <= 30) {
-                    if (timeLeft == 30) {
+                if (timeLeft <= 10) {
+                    if (timeLeft == 10) {
                         Bukkit.getOnlinePlayers().forEach { player ->
                             player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 2f, 0f)
                             player.sendMessage("[LCD]${ChatColor.AQUA}30秒後にゲームを開始します")
@@ -107,11 +114,15 @@ object MatchManager {
             return
         }
 
-        campaign.createMapWorld()
-        campaign.config.loadCampaignConfig()
+        val config = campaign.config
+        config.loadCampaignConfig()
+        startLocation = config.yml.getConfigurationSection("${campaign.campaignTitle}.start")
+            ?.let { config.getLocation(it) } ?: lobbySpawnLocation
+        restLocation = config.yml.getConfigurationSection("${campaign.campaignTitle}.rest")
+            ?.let { config.getLocation(it) } ?: lobbySpawnLocation
 
         matchPlayer.forEach { lcdPlayer ->
-            lcdPlayer.player.teleport(campaign.startLocation)
+            lcdPlayer.player.teleport(startLocation)
             lcdPlayer.player.health = 20.0
             lcdPlayer.player.foodLevel = 6
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
@@ -132,7 +143,7 @@ object MatchManager {
         isCheckPoint = true
         if (numberOfSurvivors() > 0) {
             matchPlayer.forEach { lcdPlayer ->
-                lcdPlayer.player.teleport(campaign.restLocation)
+                lcdPlayer.player.teleport(restLocation)
                 if (!lcdPlayer.isSurvivor) {
                     lcdPlayer.isSurvivor = true
                     lcdPlayer.player.gameMode = GameMode.ADVENTURE
@@ -151,6 +162,10 @@ object MatchManager {
         }
         mobSpawnLocationList.clear()
         campaign.config.loadCampaignConfig()
+        startLocation = campaign.config.yml
+            .getConfigurationSection("${campaign.campaignTitle}.${gameProgress}")?.let {
+                campaign.config.getLocation(it)
+            } ?: lobbySpawnLocation
 
         Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}チェックポイントに到達しました！30秒後にゲームを再開します")
 
@@ -171,7 +186,9 @@ object MatchManager {
                 }
 
                 if (timeLeft <= 0) {
-
+                    Bukkit.getPluginManager().callEvent(MatchReStartEvent())
+                    this.cancel()
+                    return
                 }
                 timeLeft--
             }
@@ -254,7 +271,7 @@ object MatchManager {
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
             lcdPlayer.player.health = 20.0
             lcdPlayer.player.foodLevel = 6
-            lcdPlayer.player.teleport(campaign.restLocation)
+            lcdPlayer.player.teleport(restLocation)
         } else {
             //途中参加
             if (matchPlayer.isNotEmpty()) {
@@ -321,7 +338,7 @@ object MatchManager {
         if (mobSpawnLocationList.isEmpty()) {
             return
         }
-        val world = campaign.world ?: return
+        val world = world
         val mobType = campaign.normalMobType
         mobSpawnLocationList.forEach { location ->
             val location1 = location.clone().add(1.0, 0.0, 0.0)

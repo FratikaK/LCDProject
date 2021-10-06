@@ -22,7 +22,7 @@ abstract class Config(@NotNull val fileDir: String, @NotNull val targetFile: Str
      */
     abstract fun loadConfig()
 
-    protected lateinit var yml: YamlConfiguration
+    lateinit var yml: YamlConfiguration
 
     /**
      * 対象のファイルが存在していなければ作成
@@ -37,7 +37,7 @@ abstract class Config(@NotNull val fileDir: String, @NotNull val targetFile: Str
         yml = YamlConfiguration.loadConfiguration(dir)
     }
 
-    open fun loadCampaignConfig(){}
+    open fun loadCampaignConfig() {}
 
     fun getInt(nodes: String): Int? {
         if (yml.contains(nodes)) return yml.getInt(nodes)
