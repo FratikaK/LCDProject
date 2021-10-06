@@ -16,14 +16,15 @@ class Venice : Campaign {
     override val gameProgressLimit: Int = 3
     override val normalMobType: EntityType = EntityType.ZOMBIE
     override val config: Config = VeniceConfig
+    override val world: World? = Bukkit.getWorld(campaignTitle)
 
     override fun createMapWorld() {
         WorldCreator(campaignTitle).type(WorldType.NORMAL).createWorld()
         startLocation = VeniceConfig.startLocation
         restLocation = VeniceConfig.restLocation
-        if (world != null){
+        if (world != null) {
             startLocation.chunk.load()
-        }else{
+        } else {
             LeftCrafterDead.instance.logger.info("[createMapWorld]${ChatColor.RED}world is Null!")
         }
     }
