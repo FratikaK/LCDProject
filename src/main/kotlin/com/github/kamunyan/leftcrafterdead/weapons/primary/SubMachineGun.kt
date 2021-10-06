@@ -1,7 +1,8 @@
 package com.github.kamunyan.leftcrafterdead.weapons.primary
 
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
-import org.bukkit.entity.Entity
+import org.bukkit.entity.LivingEntity
+import org.bukkit.entity.Player
 
 class SubMachineGun(weaponTitle: String) :PrimaryWeapon(weaponTitle){
 
@@ -12,6 +13,6 @@ class SubMachineGun(weaponTitle: String) :PrimaryWeapon(weaponTitle){
     override fun loadWeaponCapabilities() {
     }
 
-    override fun specialEffects(entity: Entity) {
+    override fun specialEffects(attacker: Player, entity: LivingEntity) {
     }
 }
