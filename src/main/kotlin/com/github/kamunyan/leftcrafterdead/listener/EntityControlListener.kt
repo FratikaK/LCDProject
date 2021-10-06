@@ -16,6 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.entity.*
 import org.bukkit.event.inventory.InventoryCreativeEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
+import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerRespawnEvent
 import java.util.*
@@ -59,6 +60,7 @@ class EntityControlListener : Listener {
         val lcdPlayer = manager.getLCDPlayer(e.entity.uniqueId)
         e.deathMessage = ""
         e.keepInventory = false
+        e.drops.clear()
 
         if (manager.isMatchPlayer(lcdPlayer) && manager.isMatch) {
             if (lcdPlayer.isSurvivor) {
@@ -80,7 +82,7 @@ class EntityControlListener : Listener {
                         }
                     }
                 } else {
-                    e.respawnLocation = manager.campaign.startLocation
+                    e.respawnLocation = manager.startLocation
                 }
                 lcdPlayer.setSpectator()
             }
@@ -91,13 +93,13 @@ class EntityControlListener : Listener {
     }
 
     @EventHandler
-    fun onPlayerMove(e:PlayerMoveEvent){
-        if (e.player.location.clone().add(0.0,-0.1,0.0).block.type == Material.DIAMOND_BLOCK){
-            if (!manager.isMatch || manager.isCheckPoint){
+    fun onPlayerMove(e: PlayerMoveEvent) {
+        if (e.player.location.clone().add(0.0, -0.1, 0.0).block.type == Material.DIAMOND_BLOCK) {
+            if (!manager.isMatch || manager.isCheckPoint) {
                 return
             }
             val lcdPlayer = manager.getLCDPlayer(e.player)
-            if (lcdPlayer.isMatchPlayer && lcdPlayer.isSurvivor){
+            if (lcdPlayer.isMatchPlayer && lcdPlayer.isSurvivor) {
                 Bukkit.getPluginManager().callEvent(StartCheckPointEvent())
             }
         }
@@ -114,7 +116,7 @@ class EntityControlListener : Listener {
     }
 
     @EventHandler
-    fun onInventoryMove(e:InventoryMoveItemEvent){
+    fun onInventoryMove(e: InventoryMoveItemEvent) {
         e.isCancelled = true
     }
 
@@ -146,6 +148,11 @@ class EntityControlListener : Listener {
 
     @EventHandler
     fun onPlayerDropItem(e: EntityDropItemEvent) {
+        e.isCancelled = true
+    }
+
+    @EventHandler
+    fun onToolDamage(e: PlayerItemDamageEvent) {
         e.isCancelled = true
     }
 }

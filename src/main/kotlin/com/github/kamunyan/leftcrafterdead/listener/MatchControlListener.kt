@@ -2,9 +2,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
-import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
-import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
-import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
+import com.github.kamunyan.leftcrafterdead.event.*
 import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
@@ -66,6 +64,24 @@ class MatchControlListener : Listener {
     }
 
     @EventHandler
+    fun onStartCheckPoint(e: StartCheckPointEvent) {
+        if (manager.isMatch && !manager.isCheckPoint) {
+            manager.startCheckPoint()
+        }
+    }
+
+    @EventHandler
+    fun onMatchReStart(e: MatchReStartEvent) {
+        manager.isCheckPoint = false
+        manager.matchPlayer.forEach {
+            if (it.isMatchPlayer && it.isSurvivor) {
+                it.player.teleport(manager.startLocation)
+            }
+        }
+        manager.campaign.startRush()
+    }
+
+    @EventHandler
     fun onRushStart(e: RushStartEvent) {
         if (manager.matchPlayer.isNotEmpty()) {
             //ランダムにプレイヤーを決定する
@@ -90,29 +106,27 @@ class MatchControlListener : Listener {
                         minDistance = distance
                     }
                 }
-                if (manager.campaign.world != null) {
-                    if (minLocation == null) {
-                        plugin.logger.info("[onRushStart]${ChatColor.RED}minLocation is Null!")
-                        return
-                    }
-                    for (i in 0..(manager.matchPlayer.size * manager.campaign.determiningDifficulty().normalMobSpawnAmount)) {
-                        val locations = arrayOf(
-                            minLocation,
-                            minLocation!!.clone().add(1.0, 0.0, 0.0),
-                            minLocation!!.clone().add(-1.0, 0.0, 0.0),
-                            minLocation!!.clone().add(0.0, 0.0, 1.0),
-                            minLocation!!.clone().add(0.0, 0.0, -1.0)
-                        )
-                        locations.forEach { location ->
-                            manager.campaign.world!!.spawnEntity(
-                                minLocation!!,
-                                EntityType.ZOMBIE,
-                                CreatureSpawnEvent.SpawnReason.CUSTOM
-                            )
-                        }
-                    }
-                    plugin.logger.info("[onRushStart]${ChatColor.AQUA}RushMobがスポーンしました")
+                if (minLocation == null) {
+                    plugin.logger.info("[onRushStart]${ChatColor.RED}minLocation is Null!")
+                    return
                 }
+                for (i in 0..(manager.matchPlayer.size * manager.campaign.determiningDifficulty().normalMobSpawnAmount)) {
+                    val locations = arrayOf(
+                        minLocation,
+                        minLocation!!.clone().add(1.0, 0.0, 0.0),
+                        minLocation!!.clone().add(-1.0, 0.0, 0.0),
+                        minLocation!!.clone().add(0.0, 0.0, 1.0),
+                        minLocation!!.clone().add(0.0, 0.0, -1.0)
+                    )
+                    locations.forEach { location ->
+                        manager.world.spawnEntity(
+                            minLocation!!,
+                            EntityType.ZOMBIE,
+                            CreatureSpawnEvent.SpawnReason.CUSTOM
+                        )
+                    }
+                }
+                plugin.logger.info("[onRushStart]${ChatColor.AQUA}RushMobがスポーンしました")
             } catch (exception: IllegalArgumentException) {
                 plugin.logger.info("[onRushStart]Canceled MatchStartEvent.")
                 e.isCancelled = true
