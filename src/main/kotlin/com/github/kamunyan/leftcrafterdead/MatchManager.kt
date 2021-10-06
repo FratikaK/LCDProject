@@ -46,6 +46,7 @@ object MatchManager {
         val uuid = target.uniqueId.toString()
         if (!onlineLCDPlayer.containsKey(uuid)) {
             onlineLCDPlayer[uuid] = LCDPlayer(uuid)
+            plugin.logger.info("[LCD]${ChatColor.GREEN}${target.displayName}'s ${ChatColor.AQUA}LCDPlayer created.")
         }
         return onlineLCDPlayer[uuid]!!
     }
