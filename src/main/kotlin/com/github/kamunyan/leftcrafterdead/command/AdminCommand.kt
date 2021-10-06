@@ -22,29 +22,33 @@ class AdminCommand : CommandExecutor {
             return flag
         }
 
-        when (args[0]) {
-            "info" -> {
-                if (args.size == 2) {
-                    val player = Bukkit.getPlayer(args[1])
-                    if (player != null && MatchManager.onlineLCDPlayer.containsKey(player.uniqueId.toString())) {
-                        val lcdPlayer = MatchManager.onlineLCDPlayer[player.uniqueId.toString()]
-                        sender.sendMessage(lcdPlayer.toString())
-                        flag = true
+        try {
+            when (args[0]) {
+                "info" -> {
+                    if (args.size == 2) {
+                        val player = Bukkit.getPlayer(args[1])
+                        if (player != null && MatchManager.onlineLCDPlayer.containsKey(player.uniqueId.toString())) {
+                            val lcdPlayer = MatchManager.onlineLCDPlayer[player.uniqueId.toString()]
+                            sender.sendMessage(lcdPlayer.toString())
+                            flag = true
+                        }
                     }
                 }
+                "removeEntity" -> {
+                    MatchManager.deleteEnemyMob()
+                    flag = true
+                }
+                "reload" -> {
+                    LeftCrafterDead.instance.server.reload()
+                    flag = true
+                }
+                else -> {
+                }
             }
-            "removeEntity" -> {
-                MatchManager.deleteEnemyMob()
-                flag = true
+            if (!flag) {
+                sendAdminCommandInfo(sender)
             }
-            "reload" -> {
-                LeftCrafterDead.instance.server.reload()
-                flag = true
-            }
-            else -> {
-            }
-        }
-        if (!flag) {
+        } catch (exception: Exception) {
             sendAdminCommandInfo(sender)
         }
         return flag
