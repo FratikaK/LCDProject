@@ -1,7 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.weapons
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
-import org.bukkit.entity.Entity
+import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -25,5 +25,5 @@ abstract class LCDWeapon(val weaponTitle: String, val weaponType: WeaponType) {
 
     abstract fun loadWeaponCapabilities()
 
-    abstract fun specialEffects(entity: Entity)
+    abstract fun specialEffects(attacker: Player, entity: LivingEntity)
 }
