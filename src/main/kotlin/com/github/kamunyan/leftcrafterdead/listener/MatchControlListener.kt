@@ -127,6 +127,9 @@ class MatchControlListener : Listener {
                         )
                     }
                 }
+                manager.matchPlayer.forEach {
+                    it.player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 10f, 1f)
+                }
                 plugin.logger.info("[onRushStart]${ChatColor.AQUA}RushMobがスポーンしました")
             } catch (exception: IllegalArgumentException) {
                 plugin.logger.info("[onRushStart]Canceled MatchStartEvent.")
