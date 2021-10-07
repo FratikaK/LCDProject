@@ -258,6 +258,8 @@ object MatchManager {
         val lcdPlayer = getLCDPlayer(player)
         lcdPlayer.isMatchPlayer = true
         matchPlayer.add(lcdPlayer)
+        Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}${player.displayName}${ChatColor.AQUA}が" +
+                "ゲームに参加します")
 
         if (!isMatch && !isPreparation && matchPlayer.size == 1) {
             startPreparation()
@@ -286,7 +288,7 @@ object MatchManager {
         }
     }
 
-    fun leavePlayer(lcdPlayer: LCDPlayer) {
+    private fun leavePlayer(lcdPlayer: LCDPlayer) {
         lcdPlayer.isMatchPlayer = false
         lcdPlayer.isSurvivor = false
         matchPlayer.remove(lcdPlayer)
