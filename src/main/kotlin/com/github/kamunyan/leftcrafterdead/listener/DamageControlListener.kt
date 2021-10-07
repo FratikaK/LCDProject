@@ -3,6 +3,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.shampaggon.crackshot.events.WeaponExplodeEvent
+import org.bukkit.Sound
 import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -38,6 +39,7 @@ class DamageControlListener : Listener {
     fun onDeath(e: EntityDeathEvent) {
         if (e.entity.killer is HumanEntity) {
             val player = e.entity.killer as Player
+            player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
             player.sendMessage(
                 "Killer : ${player.displayName} \n" +
                         "DeathEntity : ${e.entity.name}"
