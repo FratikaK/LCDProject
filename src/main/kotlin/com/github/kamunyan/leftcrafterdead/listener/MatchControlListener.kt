@@ -78,6 +78,7 @@ class MatchControlListener : Listener {
                 it.player.teleport(manager.startLocation)
             }
         }
+        manager.spawnNormalEnemyMob()
         manager.campaign.startRush()
     }
 
