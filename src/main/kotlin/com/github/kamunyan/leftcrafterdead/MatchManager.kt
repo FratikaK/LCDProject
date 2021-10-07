@@ -155,6 +155,7 @@ object MatchManager {
             }
         }
 
+        deleteEnemyMob()
         gameProgress += 1
         if (campaign.gameProgressLimit < gameProgress) {
             plugin.logger.info("[startCheckPoint]${ChatColor.RED}ゲーム進行度が限界値を超えています")
@@ -167,7 +168,7 @@ object MatchManager {
                 campaign.config.getLocation(it)
             } ?: lobbySpawnLocation
 
-        Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}チェックポイントに到達しました！30秒後にゲームを再開します")
+        Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}チェックポイントに到達しました！ 30秒後にゲームを再開します")
 
         object : BukkitRunnable() {
             var timeLeft = 30
