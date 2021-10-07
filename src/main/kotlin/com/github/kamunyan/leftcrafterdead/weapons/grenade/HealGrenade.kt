@@ -18,14 +18,16 @@ class HealGrenade : Grenade("Heal Grenade") {
                 object : BukkitRunnable() {
                     var healHealth = 18.0
                     override fun run() {
+                        if (healHealth <= 0.0 || entity.isDead) {
+                            this.cancel()
+                            return
+                        }
+
                         if (entity.health == entity.maxHealth) {
                             healHealth -= 0.5
                             return
                         }
-                        if (healHealth <= 0.0) {
-                            this.cancel()
-                            return
-                        }
+
                         entity.health += 0.5
                         healHealth -= 0.5
                     }
