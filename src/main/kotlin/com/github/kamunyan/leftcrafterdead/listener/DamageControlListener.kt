@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.shampaggon.crackshot.events.WeaponDamageEntityEvent
 import com.shampaggon.crackshot.events.WeaponExplodeEvent
 import org.bukkit.Sound
 import org.bukkit.entity.HumanEntity
@@ -33,6 +34,11 @@ class DamageControlListener : Listener {
             val lastDamage = weaponDamage - (distance * distanceDecay)
             livingEntity.damage(lastDamage.toDouble(), e.player)
         }
+    }
+
+    @EventHandler
+    fun onWeaponDamage(e: WeaponDamageEntityEvent){
+
     }
 
     @EventHandler
