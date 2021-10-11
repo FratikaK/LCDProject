@@ -127,6 +127,7 @@ object MatchManager {
             lcdPlayer.player.foodLevel = 6
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
+            lcdPlayer.player.gameMode = GameMode.SURVIVAL
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true
         }
