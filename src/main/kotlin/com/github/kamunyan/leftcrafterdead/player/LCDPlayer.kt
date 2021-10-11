@@ -34,6 +34,8 @@ class LCDPlayer(uuid: String) {
 
     var healthScale = 20.0
 
+    var baseDamage = 0.0
+
     lateinit var playerData: PlayerData
 
     init {
@@ -44,6 +46,7 @@ class LCDPlayer(uuid: String) {
             perk = PerkType.getPerk(PerkType.getPerkType(perkItem.type))
         }
         perk.setSymbolItem(this)
+        player.gameMode = GameMode.SURVIVAL
     }
 
     fun setPlayerStatus() {
