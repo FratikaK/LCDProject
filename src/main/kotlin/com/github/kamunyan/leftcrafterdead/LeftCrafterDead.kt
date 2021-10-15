@@ -43,6 +43,7 @@ class LeftCrafterDead : JavaPlugin() {
         manager.registerEvents(InventoryDisplayListener(), this)
         manager.registerEvents(JoinQuitListener(), this)
         manager.registerEvents(MatchControlListener(), this)
+        manager.registerEvents(PerkListener(), this)
         manager.registerEvents(WeaponControlListener(), this)
 
         log.info("${ChatColor.AQUA}LeftCrafterDead Start!")
