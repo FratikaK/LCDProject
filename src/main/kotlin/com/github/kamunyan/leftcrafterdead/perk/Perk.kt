@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.perk
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
@@ -7,6 +8,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitRunnable
 
 abstract class Perk(val perkType: PerkType) {
     abstract fun perkSymbolMaterial(): Material
@@ -35,6 +37,21 @@ abstract class Perk(val perkType: PerkType) {
         inventory.setItem(3, perkGadgetItem())
     }
 
+    fun startGadgetStartCoolDown(lcdPlayer: LCDPlayer) {
+        object : BukkitRunnable() {
+            var timeLeft = gadgetCoolDown
+            override fun run() {
+                if (timeLeft <= 0) {
+                    setGadget(lcdPlayer)
+                    this.cancel()
+                    return
+                }
+                sendCoolDownItem(lcdPlayer, timeLeft)
+                timeLeft--
+            }
+        }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 20)
+    }
+
     fun sendCoolDownItem(lcdPlayer: LCDPlayer, timeLeft: Int) {
         val inventory = lcdPlayer.player.inventory
         val coolDownItem = ItemMetaUtil.generateMetaItem(
@@ -42,6 +59,6 @@ abstract class Perk(val perkType: PerkType) {
             "${ChatColor.GREEN}再使用可能まで${ChatColor.RED}${timeLeft}${ChatColor.GREEN}秒",
             111
         )
-        inventory.setItem(3,coolDownItem)
+        inventory.setItem(3, coolDownItem)
     }
 }
