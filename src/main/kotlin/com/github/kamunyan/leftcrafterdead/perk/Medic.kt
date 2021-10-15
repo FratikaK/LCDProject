@@ -46,6 +46,7 @@ class Medic() : Perk(PerkType.MEDIC) {
             }
             player.health = player.health + healAmount
         }
+        startGadgetStartCoolDown(lcdPlayer)
     }
 
     override val gadgetCoolDown: Int = 40
