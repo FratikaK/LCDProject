@@ -3,6 +3,7 @@ package com.github.kamunyan.leftcrafterdead.weapons.grenade
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.LCDWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -10,6 +11,8 @@ abstract class Grenade(weaponTitle: String) : LCDWeapon(weaponTitle, WeaponType.
     override fun getGunCategory(): GunCategory {
         return GunCategory.GRENADE
     }
+
+    abstract fun explosionEffects(location: Location)
 
     fun sendGrenade(player: Player, amount: Int) {
         if (weaponType != WeaponType.Grenade) {
