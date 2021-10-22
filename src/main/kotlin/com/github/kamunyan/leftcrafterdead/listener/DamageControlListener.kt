@@ -24,6 +24,7 @@ class DamageControlListener : Listener {
         val entities = location.getNearbyLivingEntities(radius.toDouble())
         val lcdPlayer = manager.getLCDPlayer(e.player)
 
+        lcdPlayer.perk.getGrenade().explosionEffects(location)
         //ダメージを与える処理
         entities.forEach { livingEntity ->
             lcdPlayer.perk.getGrenade().specialEffects(e.player, livingEntity)
