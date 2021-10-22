@@ -36,7 +36,9 @@ class LCDPlayer(uuid: String) {
 
     var baseDamage = 0.0
 
-    var rateAcceleration = 1.0
+    var reloadSpeedAcceleration: Double = 0.0
+
+    var rateAcceleration: Int = 0
 
     lateinit var playerData: PlayerData
 
