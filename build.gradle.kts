@@ -19,6 +19,7 @@ dependencies {
     implementation(kotlin("stdlib"))
     compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly(fileTree("lib/CrackShot.jar"))
+    implementation("xyz.xenondevs:particle:1.6.6")
 }
 
 tasks {
