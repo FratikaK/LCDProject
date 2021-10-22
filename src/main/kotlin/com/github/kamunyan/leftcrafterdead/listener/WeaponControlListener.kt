@@ -1,11 +1,11 @@
 package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
-import com.github.kamunyan.leftcrafterdead.weapons.LCDWeapon
+import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
 import com.shampaggon.crackshot.CSUtility
-import com.shampaggon.crackshot.events.WeaponPreShootEvent
+import com.shampaggon.crackshot.events.WeaponFireRateEvent
 import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
 import com.shampaggon.crackshot.events.WeaponReloadEvent
 import org.bukkit.ChatColor
@@ -19,11 +19,17 @@ import org.bukkit.scheduler.BukkitRunnable
 
 class WeaponControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
+    private val manager = MatchManager
 
     @EventHandler
     fun onReload(e: WeaponReloadEvent) {
         //reloadSpeedはリロードのはやさ。数値が大きいほど遅くなる
         //reloadDurationはリロード完了までの時間
+        val lcdPlayer = manager.getLCDPlayer(e.player)
+        e.reloadSpeed -= lcdPlayer.reloadSpeedAcceleration
+        if (e.reloadSpeed <= 0.1){
+            e.reloadSpeed = 0.1
+        }
         val weapon: ItemStack?
         val weaponType = WeaponUtil.getWeaponType(CSUtility().generateWeapon(e.weaponTitle).type, e.player)
         val weaponSlot = weaponType.getWeaponSlot()
@@ -67,6 +73,14 @@ class WeaponControlListener : Listener {
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 0, 1)
+    }
+
+    @EventHandler
+    fun onFireRate(e: WeaponFireRateEvent) {
+        e.fireRate += manager.getLCDPlayer(e.player).rateAcceleration
+        if (e.fireRate > 16) {
+            e.fireRate = 16
+        }
     }
 
     @EventHandler
