@@ -8,7 +8,14 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Particle
 import org.bukkit.inventory.ItemStack
+import xyz.xenondevs.particle.ParticleBuilder
+import xyz.xenondevs.particle.ParticleEffect
+import xyz.xenondevs.particle.data.color.RegularColor
+import java.awt.Color
+import kotlin.math.cos
+import kotlin.math.sin
 
 class Medic() : Perk(PerkType.MEDIC) {
     override fun perkSymbolMaterial(): Material {
@@ -36,8 +43,22 @@ class Medic() : Perk(PerkType.MEDIC) {
     }
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
+        startGadgetStartCoolDown(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
         val players = location.getNearbyPlayers(10.0)
+        for (i in 0..360) {
+            ParticleBuilder(ParticleEffect.REDSTONE)
+                .setLocation(
+                    location.clone().set(
+                        location.x + sin(Math.toRadians(i.toDouble())) * 4,
+                        location.y + 1.0,
+                        location.z + cos(Math.toRadians(i.toDouble())) * 4
+                    )
+                )
+                .setAmount(1)
+                .setParticleData(RegularColor(Color.GREEN))
+                .display()
+        }
         players.forEach { player ->
             val healAmount = (player.healthScale * 0.4).toInt()
             if (player.health + healAmount > player.healthScale) {
@@ -45,9 +66,9 @@ class Medic() : Perk(PerkType.MEDIC) {
                 return@forEach
             }
             player.health = player.health + healAmount
+            player.spawnParticle(Particle.HEART, location, 10, 0.5, 1.0, 0.5)
         }
-        startGadgetStartCoolDown(lcdPlayer)
     }
 
-    override val gadgetCoolDown: Int = 40
+    override val gadgetCoolDown: Int = 5
 }
