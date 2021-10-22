@@ -41,6 +41,10 @@ abstract class Perk(val perkType: PerkType) {
         object : BukkitRunnable() {
             var timeLeft = gadgetCoolDown
             override fun run() {
+                if (!lcdPlayer.isSurvivor || !lcdPlayer.isMatchPlayer){
+                    this.cancel()
+                    return
+                }
                 if (timeLeft <= 0) {
                     setGadget(lcdPlayer)
                     this.cancel()
