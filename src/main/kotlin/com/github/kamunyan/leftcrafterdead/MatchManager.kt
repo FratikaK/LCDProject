@@ -121,6 +121,8 @@ object MatchManager {
         restLocation = config.yml.getConfigurationSection("${campaign.campaignTitle}.rest")
             ?.let { config.getLocation(it) } ?: lobbySpawnLocation
 
+        deleteEnemyMob()
+
         matchPlayer.forEach { lcdPlayer ->
             lcdPlayer.player.teleport(startLocation)
             lcdPlayer.player.health = 20.0
