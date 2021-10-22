@@ -10,9 +10,6 @@ class AssaultRifle(weaponTitle: String) :PrimaryWeapon(weaponTitle){
         return GunCategory.ASSAULT_RIFLE
     }
 
-    override fun loadWeaponCapabilities() {
-    }
-
     override fun specialEffects(attacker: Player, entity: LivingEntity) {
     }
 }

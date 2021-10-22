@@ -10,9 +10,6 @@ class Shotgun(weaponTitle: String) : PrimaryWeapon(weaponTitle) {
        return GunCategory.SHOTGUN
     }
 
-    override fun loadWeaponCapabilities() {
-    }
-
     override fun specialEffects(attacker: Player, entity: LivingEntity) {
     }
 }

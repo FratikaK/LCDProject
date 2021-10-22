@@ -10,9 +10,6 @@ class SubMachineGun(weaponTitle: String) :PrimaryWeapon(weaponTitle){
         return GunCategory.SUB_MACHINE_GUN
     }
 
-    override fun loadWeaponCapabilities() {
-    }
-
     override fun specialEffects(attacker: Player, entity: LivingEntity) {
     }
 }
