@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.perk
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
@@ -10,6 +11,7 @@ import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitRunnable
 import xyz.xenondevs.particle.ParticleBuilder
 import xyz.xenondevs.particle.ParticleEffect
 import xyz.xenondevs.particle.data.color.RegularColor
@@ -46,19 +48,32 @@ class Medic() : Perk(PerkType.MEDIC) {
         startGadgetStartCoolDown(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
         val players = location.getNearbyPlayers(10.0)
-        for (i in 0..360) {
-            ParticleBuilder(ParticleEffect.REDSTONE)
-                .setLocation(
-                    location.clone().set(
-                        location.x + sin(Math.toRadians(i.toDouble())) * 4,
-                        location.y + 1.0,
-                        location.z + cos(Math.toRadians(i.toDouble())) * 4
-                    )
-                )
-                .setAmount(1)
-                .setParticleData(RegularColor(Color.GREEN))
-                .display()
-        }
+        object : BukkitRunnable() {
+            var range = 0.2
+            override fun run() {
+                for (i in 0..360) {
+                    val sin = sin(Math.toRadians(i.toDouble())) * range
+                    val cos = cos(Math.toRadians(i.toDouble())) * range
+                    ParticleBuilder(ParticleEffect.REDSTONE)
+                        .setLocation(
+                            location.clone().set(
+                                location.x + sin,
+                                location.y + 1.0,
+                                location.z + cos
+                            )
+                        )
+                        .setAmount(1)
+                        .setParticleData(RegularColor(Color.GREEN))
+                        .display()
+                }
+                if (range > 4) {
+                    this.cancel()
+                    return
+                }
+                range += 0.2
+            }
+        }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 1)
+
         players.forEach { player ->
             val healAmount = (player.healthScale * 0.4).toInt()
             if (player.health + healAmount > player.healthScale) {
