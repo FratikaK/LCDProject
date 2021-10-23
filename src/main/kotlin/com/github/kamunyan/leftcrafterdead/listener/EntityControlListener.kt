@@ -5,6 +5,7 @@ import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
 import com.github.kamunyan.leftcrafterdead.event.StartCheckPointEvent
 import org.bukkit.Bukkit
+import org.bukkit.EntityEffect
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -19,6 +20,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.PlayerItemDamageEvent
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 class EntityControlListener : Listener {
@@ -53,6 +55,19 @@ class EntityControlListener : Listener {
                 e.isCancelled = true
             }
         }
+    }
+
+    @EventHandler
+    fun onEntityDeath(e: EntityDeathEvent){
+        if (e.entityType == EntityType.PLAYER){
+            return
+        }
+        object : BukkitRunnable(){
+            override fun run() {
+                e.entity.remove()
+                cancel()
+            }
+        }.runTaskLater(plugin,20)
     }
 
     @EventHandler
