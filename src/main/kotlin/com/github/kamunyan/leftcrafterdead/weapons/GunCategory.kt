@@ -3,7 +3,7 @@ package com.github.kamunyan.leftcrafterdead.weapons
 enum class GunCategory {
     ASSAULT_RIFLE {
         override fun getWeaponList(): List<String> {
-            return listOf("AK12")
+            return listOf("AK12","Mini21")
         }
     },
     SUB_MACHINE_GUN {
@@ -23,7 +23,7 @@ enum class GunCategory {
     },
     GRENADE {
         override fun getWeaponList(): List<String> {
-            return listOf("Grenade")
+            return listOf("Grenade","Heal Grenade","Concussion")
         }
     };
 

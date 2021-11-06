@@ -7,10 +7,6 @@ enum class PerkType {
         override val perkName: String
             get() = "Gunslinger"
     },
-    HELLRAIZER {
-        override val perkName: String
-            get() = "Hellraizer"
-    },
     MEDIC {
         override val perkName: String
             get() = "Medic"
@@ -33,7 +29,6 @@ enum class PerkType {
     companion object {
         val perkTypeHashMap = hashMapOf(
             "Gunslinger" to GUNSLINGER,
-            "Hellraizer" to HELLRAIZER,
             "Medic" to MEDIC,
             "Fixer" to FIXER,
             "Slasher" to SLASHER,
@@ -59,6 +54,9 @@ enum class PerkType {
             return when (perkType) {
                 GUNSLINGER -> Gunslinger()
                 MEDIC -> Medic()
+                FIXER -> Fixer()
+                SLASHER -> Slasher()
+                EXTERMINATOR -> Exterminator()
                 else -> Gunslinger()
             }
         }
