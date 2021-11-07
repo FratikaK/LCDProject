@@ -15,10 +15,6 @@ enum class PerkType {
         override val perkName: String
             get() = "Fixer"
     },
-    SLASHER {
-        override val perkName: String
-            get() = "Slasher"
-    },
     EXTERMINATOR {
         override val perkName: String
             get() = "Exterminator"
@@ -31,7 +27,6 @@ enum class PerkType {
             "Gunslinger" to GUNSLINGER,
             "Medic" to MEDIC,
             "Fixer" to FIXER,
-            "Slasher" to SLASHER,
             "Exterminator" to EXTERMINATOR
         )
 
@@ -39,6 +34,8 @@ enum class PerkType {
             return when (material) {
                 Material.CROSSBOW -> GUNSLINGER
                 Material.REDSTONE -> MEDIC
+                Material.HONEYCOMB -> FIXER
+                Material.NETHERITE_INGOT -> EXTERMINATOR
                 else -> GUNSLINGER
             }
         }
@@ -55,7 +52,6 @@ enum class PerkType {
                 GUNSLINGER -> Gunslinger()
                 MEDIC -> Medic()
                 FIXER -> Fixer()
-                SLASHER -> Slasher()
                 EXTERMINATOR -> Exterminator()
                 else -> Gunslinger()
             }
