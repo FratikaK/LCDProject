@@ -13,7 +13,7 @@ enum class GunCategory {
     },
     SHOTGUN {
         override fun getWeaponList(): List<String> {
-            return listOf()
+            return listOf("M31")
         }
     },
     HANDGUN {
@@ -23,7 +23,7 @@ enum class GunCategory {
     },
     GRENADE {
         override fun getWeaponList(): List<String> {
-            return listOf("Grenade","Heal Grenade","Concussion")
+            return listOf("Grenade","Heal Grenade","Concussion","Cluster Bomb")
         }
     };
 
