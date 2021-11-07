@@ -40,5 +40,6 @@ class InventoryDisplayListener : Listener {
         }
         val perkType = PerkType.getPerkType(e.currentItem!!.type)
         lcdPlayer.setPerk(perkType)
+        e.isCancelled = true
     }
 }
