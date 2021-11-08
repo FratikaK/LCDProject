@@ -7,13 +7,16 @@ import com.github.kamunyan.leftcrafterdead.weapons.grenade.ClusterBomb
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.primary.Shotgun
+import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.inventory.ItemStack
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.util.Vector
 import xyz.xenondevs.particle.ParticleBuilder
 import xyz.xenondevs.particle.ParticleEffect
 import xyz.xenondevs.particle.data.color.RegularColor
@@ -50,37 +53,30 @@ class Exterminator : Perk(PerkType.EXTERMINATOR) {
         startGadgetStartCoolDown(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
         val entities = location.getNearbyLivingEntities(5.0)
-        object : BukkitRunnable() {
-            var range = 0.2
-            override fun run() {
-                for (i in 0..360) {
-                    val sin = sin(Math.toRadians(i.toDouble())) * range
-                    val cos = cos(Math.toRadians(i.toDouble())) * range
-                    ParticleBuilder(ParticleEffect.REDSTONE)
-                        .setLocation(
-                            location.clone().set(
-                                location.x + sin,
-                                location.y + 1.0,
-                                location.z + cos
-                            )
-                        )
-                        .setAmount(1)
-                        .setParticleData(RegularColor(Color.BLACK))
-                        .display()
-                }
-                if (range > 5) {
-                    cancel()
-                    return
-                }
-                range += 0.5
-            }
-        }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 1)
-        location.world.createExplosion(location, 4.0f, false, false)
+
+        ParticleBuilder(ParticleEffect.REDSTONE)
+            .setLocation(location.add(0.0, 1.0, 0.0))
+            .setOffset(3f, 2f, 3f)
+            .setAmount(800)
+            .setParticleData(RegularColor(Color.BLACK))
+            .display()
+        ParticleBuilder(ParticleEffect.EXPLOSION_HUGE)
+            .setLocation(location.add(0.0, 1.0, 0.0))
+            .setAmount(1)
+            .display()
+        location.world.playSound(location, Sound.ENTITY_GENERIC_EXPLODE, 3f, 1f)
+
         entities.forEach { livingEntity ->
             if (livingEntity.type == EntityType.PLAYER || livingEntity.type == EntityType.VILLAGER) {
                 return@forEach
             }
-            val defaultVector = livingEntity.velocity.clone()
+            livingEntity.damage(0.0, lcdPlayer.player)
+            livingEntity.velocity = Vector(
+                livingEntity.velocity.x * 10.0,
+                livingEntity.velocity.y,
+                livingEntity.velocity.z * 10.0
+            )
+            livingEntity.damage(0.0, lcdPlayer.player)
             livingEntity.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 60, 5, false, false))
         }
     }
