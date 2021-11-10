@@ -82,6 +82,7 @@ class Medic() : Perk(PerkType.MEDIC) {
             }
             player.health = player.health + healAmount
             player.spawnParticle(Particle.HEART, location, 10, 0.5, 1.0, 0.5)
+            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}から${healAmount}回復してもらった！")
         }
     }
 

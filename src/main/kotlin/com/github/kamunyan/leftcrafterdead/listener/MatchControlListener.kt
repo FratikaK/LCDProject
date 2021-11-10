@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
 import com.github.kamunyan.leftcrafterdead.event.*
 import org.bukkit.*
 import org.bukkit.entity.EntityType
@@ -120,11 +121,8 @@ class MatchControlListener : Listener {
                         minLocation!!.clone().add(0.0, 0.0, -1.0)
                     )
                     locations.forEach { location ->
-                        manager.world.spawnEntity(
-                            minLocation!!,
-                            EntityType.ZOMBIE,
-                            CreatureSpawnEvent.SpawnReason.CUSTOM
-                        )
+                        manager.spawnSpecialEnemyMob(minLocation!!)
+                        NormalEnemy().spawnEnemy(location!!)
                     }
                 }
                 manager.matchPlayer.forEach {

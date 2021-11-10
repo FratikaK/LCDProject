@@ -2,6 +2,11 @@ package com.github.kamunyan.leftcrafterdead
 
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.Venice
+import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
+import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
+import com.github.kamunyan.leftcrafterdead.enemy.specials.Boomer
+import com.github.kamunyan.leftcrafterdead.enemy.specials.Charger
+import com.github.kamunyan.leftcrafterdead.enemy.specials.Smoker
 import com.github.kamunyan.leftcrafterdead.event.MatchReStartEvent
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
@@ -39,6 +44,8 @@ object MatchManager {
     var gameProgress = 1
 
     val mobSpawnLocationList = ArrayList<Location>()
+
+    val enemyHashMap = ConcurrentHashMap<UUID, LCDEnemy>()
 
     var isPreparation = false
 
@@ -262,8 +269,10 @@ object MatchManager {
         val lcdPlayer = getLCDPlayer(player)
         lcdPlayer.isMatchPlayer = true
         matchPlayer.add(lcdPlayer)
-        Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}${player.displayName}${ChatColor.AQUA}が" +
-                "ゲームに参加します")
+        Bukkit.broadcastMessage(
+            "[LCD]${ChatColor.GREEN}${player.displayName}${ChatColor.AQUA}が" +
+                    "ゲームに参加します"
+        )
 
         if (!isMatch && !isPreparation && matchPlayer.size == 1) {
             startPreparation()
@@ -344,8 +353,7 @@ object MatchManager {
         if (mobSpawnLocationList.isEmpty()) {
             return
         }
-        val world = world
-        val mobType = campaign.normalMobType
+        val normalEnemy = NormalEnemy()
         mobSpawnLocationList.forEach { location ->
             val location1 = location.clone().add(1.0, 0.0, 0.0)
             val location2 = location.clone().add(0.0, 0.0, 1.0)
@@ -354,14 +362,21 @@ object MatchManager {
 
             var mobAmount = campaign.determiningDifficulty().normalMobSpawnAmount
             while (mobAmount > 0) {
-                world.spawnEntity(location, mobType)
-                world.spawnEntity(location1, mobType)
-                world.spawnEntity(location2, mobType)
-                world.spawnEntity(location3, mobType)
-                world.spawnEntity(location4, mobType)
+                spawnSpecialEnemyMob(location)
+                normalEnemy.spawnEnemy(location)
+                normalEnemy.spawnEnemy(location1)
+                normalEnemy.spawnEnemy(location2)
+                normalEnemy.spawnEnemy(location3)
+                normalEnemy.spawnEnemy(location4)
                 mobAmount--
             }
         }
+    }
+
+    fun spawnSpecialEnemyMob(location: Location) {
+        val specialEnemy = listOf(Boomer(), Charger(),Smoker())
+        val rand = Random()
+        specialEnemy[rand.nextInt(specialEnemy.size)].spawnEnemy(location)
     }
 
     /**
@@ -381,6 +396,7 @@ object MatchManager {
             livingEntity.remove()
             count += 1
         }
+        enemyHashMap.clear()
         plugin.logger.info("[deleteEnemyMob]${ChatColor.AQUA}${count}体のmobを削除しました")
     }
 }

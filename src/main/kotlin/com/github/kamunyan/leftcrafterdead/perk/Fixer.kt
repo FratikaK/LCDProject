@@ -8,7 +8,11 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.AssaultRifle
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.inventory.ItemStack
+import xyz.xenondevs.particle.ParticleBuilder
+import xyz.xenondevs.particle.ParticleEffect
+import java.awt.Color
 
 class Fixer : Perk(PerkType.FIXER) {
     override fun perkSymbolMaterial(): Material {
@@ -38,8 +42,15 @@ class Fixer : Perk(PerkType.FIXER) {
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
         startGadgetStartCoolDown(lcdPlayer)
         lcdPlayer.player.location.getNearbyPlayers(10.0).forEach { player ->
+            player.playSound(player.location, Sound.ITEM_FIRECHARGE_USE, 2f, 1f)
+            ParticleBuilder(ParticleEffect.REDSTONE, player.location.clone())
+                .setColor(Color.YELLOW)
+                .setOffset(3f, 3f, 3f)
+                .setAmount(200)
+                .display()
             val armorAmount = player.healthScale * 0.6
             player.absorptionAmount = player.absorptionAmount + armorAmount
+            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}からアーマーを${armorAmount}ポイントを付与された！")
         }
     }
 

@@ -33,6 +33,9 @@ class EntityControlListener : Listener {
     @EventHandler
     fun onLivingEntitySpawn(e: CreatureSpawnEvent) {
         val entity = e.entity
+        if(entity.type == EntityType.PLAYER){
+            return
+        }
         entity.noDamageTicks = 0
         entity.removeWhenFarAway = false
 

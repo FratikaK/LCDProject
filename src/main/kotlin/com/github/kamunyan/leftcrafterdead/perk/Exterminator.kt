@@ -43,7 +43,7 @@ class Exterminator : Perk(PerkType.EXTERMINATOR) {
             "${ChatColor.GOLD}Shock wave",
             110,
             listOf(
-                "自身の半径5mにいる周囲の敵性mobを吹っ飛ばし、",
+                "自身の半径8mにいる周囲の敵性mobを吹っ飛ばし、",
                 "動きを3秒封じる"
             )
         )
@@ -52,7 +52,7 @@ class Exterminator : Perk(PerkType.EXTERMINATOR) {
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
         startGadgetStartCoolDown(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
-        val entities = location.getNearbyLivingEntities(5.0)
+        val entities = location.getNearbyLivingEntities(8.0)
 
         ParticleBuilder(ParticleEffect.REDSTONE)
             .setLocation(location.add(0.0, 1.0, 0.0))

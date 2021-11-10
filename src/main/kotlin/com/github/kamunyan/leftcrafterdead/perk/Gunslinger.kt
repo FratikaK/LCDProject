@@ -10,6 +10,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.Sound
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarFlag
 import org.bukkit.boss.BarStyle
@@ -53,7 +54,7 @@ class Gunslinger : Perk(PerkType.GUNSLINGER) {
         var timeLeft = 1.0
         object : BukkitRunnable() {
             override fun run() {
-                if (timeLeft <= 0.0){
+                if (timeLeft <= 0.0) {
                     bossBar.removeAll()
                     bossBar.isVisible = false
                     lcdPlayer.rateAcceleration -= rateQuantity
@@ -65,6 +66,9 @@ class Gunslinger : Perk(PerkType.GUNSLINGER) {
                 timeLeft -= 0.05
             }
         }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 20)
+        lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.BLOCK_CHEST_OPEN, 1f, 1f)
+        lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1f, 1f)
+        lcdPlayer.player.sendMessage("${ChatColor.GOLD}レートとリロード速度が上昇！")
     }
 
     override val gadgetCoolDown: Int = 40
