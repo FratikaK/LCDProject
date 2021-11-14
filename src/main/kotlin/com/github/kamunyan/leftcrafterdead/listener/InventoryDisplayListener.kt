@@ -5,12 +5,12 @@ import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
 import com.github.kamunyan.leftcrafterdead.util.InventoryDisplayer
 import org.bukkit.Material
-import org.bukkit.entity.HumanEntity
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 
 class InventoryDisplayListener : Listener {
@@ -24,6 +24,15 @@ class InventoryDisplayListener : Listener {
         }
         val inventory = InventoryDisplayer.selectPerkDisplay()
         e.player.openInventory(inventory)
+    }
+
+    @EventHandler
+    fun onPlayerInteractEntity(e: PlayerInteractEntityEvent){
+        val entity = e.rightClicked
+        if (entity.type == EntityType.VILLAGER){
+            e.isCancelled = true
+            e.player.openInventory(InventoryDisplayer.merchantWeaponSelectDisplay())
+        }
     }
 
     @EventHandler
@@ -41,5 +50,18 @@ class InventoryDisplayListener : Listener {
         val perkType = PerkType.getPerkType(e.currentItem!!.type)
         lcdPlayer.setPerk(perkType)
         e.isCancelled = true
+    }
+
+    @EventHandler
+    fun onPlayerSelectWeaponType(e: InventoryClickEvent){
+        if (e.whoClicked !is Player){
+            return
+        }
+        val item = e.currentItem?:return
+        if (item.itemMeta.hasCustomModelData()){
+            when(item.itemMeta.customModelData){
+                200 -> e.whoClicked.openInventory(InventoryDisplayer.primaryDisplay())
+            }
+        }
     }
 }
