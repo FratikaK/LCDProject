@@ -25,6 +25,7 @@ class JoinQuitListener : Listener {
 
         e.player.teleport(manager.lobbySpawnLocation)
         manager.getLCDPlayer(e.player).setLobbyItem()
+        e.player.gameMode = manager.getLCDPlayer(e.player).gameMode
     }
 
     @EventHandler
