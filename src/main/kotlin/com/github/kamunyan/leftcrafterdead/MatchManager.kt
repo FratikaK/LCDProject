@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.Venice
 import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
 import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
+import com.github.kamunyan.leftcrafterdead.enemy.boss.MasterSmoker
 import com.github.kamunyan.leftcrafterdead.enemy.specials.Boomer
 import com.github.kamunyan.leftcrafterdead.enemy.specials.Charger
 import com.github.kamunyan.leftcrafterdead.enemy.specials.Smoker
@@ -19,7 +20,6 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.ArrayList
 
 object MatchManager {
     private val plugin = LeftCrafterDead.instance
@@ -43,9 +43,13 @@ object MatchManager {
 
     var gameProgress = 1
 
+    var isBossParse = false
+
     val mobSpawnLocationList = ArrayList<Location>()
 
     val enemyHashMap = ConcurrentHashMap<UUID, LCDEnemy>()
+
+    val bossList = listOf(MasterSmoker())
 
     var isPreparation = false
 
@@ -133,10 +137,10 @@ object MatchManager {
         matchPlayer.forEach { lcdPlayer ->
             lcdPlayer.player.teleport(startLocation)
             lcdPlayer.player.health = 20.0
-            lcdPlayer.player.foodLevel = 6
+            lcdPlayer.player.foodLevel = 20
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
-            lcdPlayer.player.gameMode = GameMode.SURVIVAL
+            lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true
         }
@@ -155,34 +159,44 @@ object MatchManager {
             matchPlayer.forEach { lcdPlayer ->
                 lcdPlayer.player.teleport(restLocation)
                 if (!lcdPlayer.isSurvivor) {
-                    lcdPlayer.isSurvivor = true
-                    lcdPlayer.player.gameMode = GameMode.ADVENTURE
-                    lcdPlayer.player.health = lcdPlayer.healthScale / 2
                     lcdPlayer.perk.setFirstWeapon(lcdPlayer)
-                } else {
-                    lcdPlayer.player.health = lcdPlayer.healthScale
                 }
+                lcdPlayer.player.health = lcdPlayer.healthScale
+                lcdPlayer.isSurvivor = true
+                lcdPlayer.gameMode = GameMode.ADVENTURE
             }
         }
 
         deleteEnemyMob()
         gameProgress += 1
         if (campaign.gameProgressLimit < gameProgress) {
-            plugin.logger.info("[startCheckPoint]${ChatColor.RED}ゲーム進行度が限界値を超えています")
-            return
+            isBossParse = true
         }
         mobSpawnLocationList.clear()
         campaign.config.loadCampaignConfig()
-        startLocation = campaign.config.yml
-            .getConfigurationSection("${campaign.campaignTitle}.${gameProgress}")?.let {
-                campaign.config.getLocation(it)
-            } ?: lobbySpawnLocation
+        startLocation = if (!isBossParse) {
+            campaign.config.yml
+                .getConfigurationSection("${campaign.campaignTitle}.${gameProgress}")?.let {
+                    campaign.config.getLocation(it)
+                } ?: lobbySpawnLocation
+        } else {
+            campaign.config.yml
+                .getConfigurationSection("${campaign.campaignTitle}.boss")?.let {
+                    campaign.config.getLocation(it)
+                } ?: lobbySpawnLocation
+        }
 
         Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}チェックポイントに到達しました！ 30秒後にゲームを再開します")
 
         object : BukkitRunnable() {
             var timeLeft = 30
             override fun run() {
+                if (numberOfSurvivors() <= 0) {
+                    cancel()
+                    finishCampaign()
+                    return
+                }
+
                 if (timeLeft <= 30) {
                     Bukkit.getOnlinePlayers().forEach { player ->
                         player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_HAT, 1f, 1f)
@@ -243,6 +257,7 @@ object MatchManager {
         isMatch = false
         campaign = Venice()
         gameProgress = 1
+        isBossParse = false
         mobSpawnLocationList.clear()
         isCheckPoint = false
         isFinishing = false
@@ -282,18 +297,20 @@ object MatchManager {
             lcdPlayer.isSurvivor = true
         } else if (isCheckPoint) {
             lcdPlayer.isSurvivor = true
+            lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
             lcdPlayer.player.health = 20.0
-            lcdPlayer.player.foodLevel = 6
-            lcdPlayer.player.teleport(restLocation)
+            lcdPlayer.player.foodLevel = 20
+            lcdPlayer.player.gameMode = lcdPlayer.gameMode
+            plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, restLocation)
         } else {
             //途中参加
             if (matchPlayer.isNotEmpty()) {
-                lcdPlayer.setSpectator()
                 for (p in matchPlayer) {
                     if (p.isSurvivor) {
-                        lcdPlayer.player.teleport(p.player.location)
+                        plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, p.player.location)
+                        lcdPlayer.setSpectator()
                         break
                     }
                 }
@@ -353,7 +370,7 @@ object MatchManager {
         if (mobSpawnLocationList.isEmpty()) {
             return
         }
-        val normalEnemy = NormalEnemy()
+        val normalEnemy = NormalEnemy
         mobSpawnLocationList.forEach { location ->
             val location1 = location.clone().add(1.0, 0.0, 0.0)
             val location2 = location.clone().add(0.0, 0.0, 1.0)
@@ -362,7 +379,6 @@ object MatchManager {
 
             var mobAmount = campaign.determiningDifficulty().normalMobSpawnAmount
             while (mobAmount > 0) {
-                spawnSpecialEnemyMob(location)
                 normalEnemy.spawnEnemy(location)
                 normalEnemy.spawnEnemy(location1)
                 normalEnemy.spawnEnemy(location2)
@@ -370,11 +386,12 @@ object MatchManager {
                 normalEnemy.spawnEnemy(location4)
                 mobAmount--
             }
+            spawnSpecialEnemyMob(location)
         }
     }
 
     fun spawnSpecialEnemyMob(location: Location) {
-        val specialEnemy = listOf(Boomer(), Charger(),Smoker())
+        val specialEnemy = listOf(Boomer, Charger, Smoker)
         val rand = Random()
         specialEnemy[rand.nextInt(specialEnemy.size)].spawnEnemy(location)
     }
