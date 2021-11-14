@@ -6,6 +6,7 @@ import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
 import com.github.kamunyan.leftcrafterdead.event.*
 import org.bukkit.*
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -13,6 +14,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import java.lang.IllegalArgumentException
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MatchControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
@@ -76,19 +78,54 @@ class MatchControlListener : Listener {
         manager.isCheckPoint = false
         manager.matchPlayer.forEach {
             if (it.isMatchPlayer && it.isSurvivor) {
-                it.player.teleport(manager.startLocation)
+                plugin.chiyogamiLib.smoothTeleport(it.player, manager.startLocation)
             }
         }
-        manager.spawnNormalEnemyMob()
         manager.campaign.startRush()
+        if (manager.isBossParse) {
+            Bukkit.getPluginManager().callEvent(BossParseStartEvent())
+            return
+        }
+        manager.spawnNormalEnemyMob()
+    }
+
+    @EventHandler
+    fun onBossStart(e: BossParseStartEvent) {
+        if (manager.mobSpawnLocationList.isEmpty()) {
+            plugin.logger.info("${ChatColor.RED}[onBossStart]ボスが湧ける場所がありません！")
+            return
+        }
+        val random = Random().nextInt(manager.bossList.size)
+        manager.bossList[random].spawnEnemy(manager.mobSpawnLocationList[0])
+    }
+
+    @EventHandler
+    fun onDefeatBoss(e: DefeatBossEvent) {
+        if (!manager.isMatch){
+            return
+        }
+        manager.deleteEnemyMob()
+        manager.matchPlayer.forEach {
+            it.player.sendTitle("${ChatColor.AQUA}Clear","",30,100,30)
+        }
+        plugin.sendBroadCastMessage("[LCD]${ChatColor.AQUA}生存者がボスを撃破しました！ゲームクリアです！")
+        manager.finishCampaign()
     }
 
     @EventHandler
     fun onRushStart(e: RushStartEvent) {
         if (manager.matchPlayer.isNotEmpty()) {
-            //ランダムにプレイヤーを決定する
-            val random = Random().nextInt(manager.matchPlayer.size)
-            val player = manager.matchPlayer[random].player
+            val survivorList = ArrayList<Player>()
+            manager.matchPlayer.forEach {
+                if (it.isSurvivor) {
+                    survivorList.add(it.player)
+                }
+            }
+            if (survivorList.isEmpty()) {
+                return
+            }
+            val random = Random().nextInt(survivorList.size)
+            val player = survivorList[random]
             val playerLocation = player.location.clone()
 
             //プレイヤーの座標から一番近いmobスポーンポイントにスポーンさせる
@@ -121,13 +158,14 @@ class MatchControlListener : Listener {
                         minLocation!!.clone().add(0.0, 0.0, -1.0)
                     )
                     locations.forEach { location ->
-                        manager.spawnSpecialEnemyMob(minLocation!!)
-                        NormalEnemy().spawnEnemy(location!!)
+                        NormalEnemy.spawnEnemy(location!!)
                     }
                 }
+                manager.spawnSpecialEnemyMob(minLocation!!)
                 manager.matchPlayer.forEach {
                     it.player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 10f, 1f)
                 }
+                plugin.sendBroadCastMessage("奴らが来る...")
                 plugin.logger.info("[onRushStart]${ChatColor.AQUA}RushMobがスポーンしました")
             } catch (exception: IllegalArgumentException) {
                 plugin.logger.info("[onRushStart]Canceled MatchStartEvent.")
