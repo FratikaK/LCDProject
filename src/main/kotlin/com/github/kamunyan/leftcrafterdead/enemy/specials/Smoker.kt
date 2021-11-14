@@ -1,37 +1,57 @@
 package com.github.kamunyan.leftcrafterdead.enemy.specials
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
-import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
+import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.entity.Arrow
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
+import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 import java.util.*
 
-class Smoker : LCDEnemy() {
-    override lateinit var uuid: UUID
-    override val metadataKey: String = SPECIAL_ENEMY_KEY
+
+object Smoker : LCDSpecialEnemy() {
     override val entityType: EntityType = EntityType.SKELETON
-    override val enemyType: EnemyType = EnemyType.SPECIAL
+    override fun specialEnemyRunnable(livingEntity: LivingEntity) {
+        object : BukkitRunnable() {
+            val random = Random()
+            override fun run() {
+                if (livingEntity.isDead || manager.numberOfSurvivors() <= 0) {
+                    cancel()
+                    return
+                }
+                val arrow = livingEntity.launchProjectile(Arrow::class.java)
+                arrow.damage = getPower()
+                arrow.velocity.add(Vector(random.nextInt(5).toFloat(), 0.0f, random.nextInt(5).toFloat()).normalize())
+            }
+        }.runTaskTimer(LeftCrafterDead.instance, 0, 5)
+    }
+
     override val nonHeadShotDamageResistance: Double = 7.0
     override val explosionResistance: Double = 0.0
 
     override fun getHealth(): Double {
-        val defaultHealth = 30
+        val defaultHealth = 20
         val addHealth = 15.0 * manager.numberOfSurvivors()
         return defaultHealth + addHealth
     }
 
     override fun getPower(): Double {
-        val defaultPower = 2.0
+        val defaultPower = 1.5
         val addPower = when (manager.campaign.determiningDifficulty()) {
-            Campaign.Difficulty.ADVANCED -> 2.0
-            Campaign.Difficulty.EXPERT -> 3.0
+            Campaign.Difficulty.ADVANCED -> 1.0
+            Campaign.Difficulty.EXPERT -> 2.0
             else -> 0.0
         }
         return defaultPower + addPower
     }
 
-    override fun attackSpecialEffects(target: LivingEntity) {
-        target.velocity = Vector(-target.velocity.x, 1.0, -target.velocity.z).multiply(10f)
+    override fun setLivingEntitySettings(livingEntity: LivingEntity) {
+        super.setLivingEntitySettings(livingEntity)
+        livingEntity.equipment?.helmet = ItemStack(Material.DIAMOND_HELMET)
+        livingEntity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)!!.baseValue = 0.1
     }
 }
