@@ -9,6 +9,7 @@ import com.shampaggon.crackshot.CSUtility
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
+import world.chiyogami.chiyogamilib.ChiyogamiLib
 
 class LeftCrafterDead : JavaPlugin() {
 
@@ -17,9 +18,11 @@ class LeftCrafterDead : JavaPlugin() {
     }
 
     val crackShot = CSUtility()
+    val chiyogamiLib: ChiyogamiLib
 
     init {
         instance = this
+        chiyogamiLib = ChiyogamiLib(instance)
     }
 
     override fun onEnable() {
