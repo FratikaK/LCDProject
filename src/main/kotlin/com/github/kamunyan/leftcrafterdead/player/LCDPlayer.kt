@@ -22,6 +22,8 @@ class LCDPlayer(uuid: String) {
 
     var isSurvivor = false
 
+    var gameMode: GameMode = GameMode.ADVENTURE
+
     var perk: Perk
 
     lateinit var primary: PrimaryWeapon
@@ -71,7 +73,7 @@ class LCDPlayer(uuid: String) {
 
     fun setSpectator() {
         clearInventory()
-        player.gameMode = GameMode.SPECTATOR
+        gameMode = GameMode.SPECTATOR
     }
 
     /**
@@ -120,7 +122,7 @@ class LCDPlayer(uuid: String) {
     fun initialize() {
         isMatchPlayer = false
         isSurvivor = false
-        player.gameMode = GameMode.ADVENTURE
+        gameMode = GameMode.ADVENTURE
         setPerk()
         setSpeed(0.2f)
         setPlayerStatus()
