@@ -16,7 +16,11 @@ object VeniceConfig : Config("spawns", "Venice.yml") {
 
     override fun loadCampaignConfig() {
         val section = yml.getConfigurationSection("Venice.mobs") ?: return
-        for (map in section.getMapList(manager.gameProgress.toString())) {
+        var parse = manager.gameProgress.toString()
+        if (manager.isBossParse) {
+            parse = "boss"
+        }
+        for (map in section.getMapList(parse)) {
             val location = Location(
                 Bukkit.getWorld("Venice"),
                 map["x"] as Double,
@@ -25,7 +29,7 @@ object VeniceConfig : Config("spawns", "Venice.yml") {
             )
             manager.mobSpawnLocationList.add(location)
         }
-        if(Bukkit.getWorld("Venice") != null){
+        if (Bukkit.getWorld("Venice") != null) {
             manager.world = Bukkit.getWorld("Venice")!!
         }
     }
