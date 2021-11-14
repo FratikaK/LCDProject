@@ -50,7 +50,7 @@ class Fixer : Perk(PerkType.FIXER) {
                 .display()
             val armorAmount = player.healthScale * 0.6
             player.absorptionAmount = player.absorptionAmount + armorAmount
-            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}からアーマーを${armorAmount}ポイントを付与された！")
+            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}からアーマーを${armorAmount}ポイント付与された！")
         }
     }
 
