@@ -6,8 +6,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
 import java.util.*
 
-class NormalEnemy : LCDEnemy() {
-    override lateinit var uuid: UUID
+object NormalEnemy : LCDEnemy() {
     override val metadataKey: String = NORMAL_ENEMY_KEY
     override val entityType: EntityType = manager.campaign.normalMobType
     override val enemyType: EnemyType = EnemyType.NORMAL
@@ -15,8 +14,8 @@ class NormalEnemy : LCDEnemy() {
     override val explosionResistance: Double = 0.0
 
     override fun getHealth(): Double {
-        val defaultHealth = 20.0
-        val addHealth = (defaultHealth / 0.6) * manager.numberOfSurvivors()
+        val defaultHealth = 15.0
+        val addHealth = 10 * manager.numberOfSurvivors()
         return defaultHealth + addHealth
     }
 
