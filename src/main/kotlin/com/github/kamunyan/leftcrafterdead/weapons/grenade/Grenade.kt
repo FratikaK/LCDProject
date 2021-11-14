@@ -24,4 +24,8 @@ abstract class Grenade(weaponTitle: String) : LCDWeapon(weaponTitle, WeaponType.
         itemStack.itemMeta = itemMeta
         player.inventory.setItem(2, itemStack)
     }
+
+    override fun weaponDataList(): List<String> {
+        return listOf()
+    }
 }
