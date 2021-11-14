@@ -76,6 +76,8 @@ class HealGrenade : Grenade("Heal Grenade") {
                     }
                 }.runTaskTimer(LeftCrafterDead.instance, 0, 10)
             }
-        } catch (exception: Exception) {}
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
     }
 }
