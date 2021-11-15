@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.util
 
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.primary.AssaultRifle
+import com.github.kamunyan.leftcrafterdead.weapons.primary.Shotgun
 import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -86,6 +87,16 @@ object InventoryDisplayer {
                 index += 1
             }
         }
+        index = 19
+        GunCategory.SHOTGUN.getWeaponList().forEach {
+            val weapon = Shotgun(it)
+            val type = weapon.getWeaponItemStack()?.type
+            if (type != null) {
+                val item = util.generateMetaItem(type, it, 210, weapon.weaponDataList())
+                inventory.setItem(index, item)
+                index += 1
+            }
+        }
         return inventory
     }
 
@@ -94,7 +105,7 @@ object InventoryDisplayer {
         val exit = util.generateMetaItem(Material.REDSTONE_BLOCK, "${ChatColor.RED}戻る", 198)
         val next = util.generateMetaItem(Material.EMERALD_BLOCK, "${ChatColor.GREEN}次の武器カテゴリ", 199)
         inventory.setItem(45, exit)
-        inventory.setItem(52, next)
+        inventory.setItem(53, next)
         return inventory
     }
 }
