@@ -12,6 +12,7 @@ object NormalEnemy : LCDEnemy() {
     override val enemyType: EnemyType = EnemyType.NORMAL
     override val nonHeadShotDamageResistance: Double = 1.5
     override val explosionResistance: Double = 0.0
+    override val money: Int = 10
 
     override fun getHealth(): Double {
         val defaultHealth = 15.0

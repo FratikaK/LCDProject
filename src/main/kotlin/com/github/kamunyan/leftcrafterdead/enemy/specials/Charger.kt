@@ -17,6 +17,7 @@ object Charger : LCDSpecialEnemy() {
     override val entityType: EntityType = EntityType.RAVAGER
     override val nonHeadShotDamageResistance: Double = 3.0
     override val explosionResistance: Double = 5.0
+    override val money: Int = 200
 
     override fun specialEnemyRunnable(livingEntity: LivingEntity) {}
 

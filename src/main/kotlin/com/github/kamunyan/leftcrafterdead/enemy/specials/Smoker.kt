@@ -32,6 +32,7 @@ object Smoker : LCDSpecialEnemy() {
 
     override val nonHeadShotDamageResistance: Double = 7.0
     override val explosionResistance: Double = 0.0
+    override val money: Int = 50
 
     override fun getHealth(): Double {
         val defaultHealth = 20

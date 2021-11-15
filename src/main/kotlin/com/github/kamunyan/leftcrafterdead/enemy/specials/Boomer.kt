@@ -18,6 +18,7 @@ object Boomer : LCDSpecialEnemy() {
 
     override val nonHeadShotDamageResistance: Double = 0.0
     override val explosionResistance: Double = 0.0
+    override val money: Int = 50
 
     override fun getHealth(): Double {
         return 5.0

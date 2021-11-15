@@ -13,6 +13,7 @@ import java.util.*
 abstract class LCDBoss : LCDEnemy() {
     override val metadataKey: String = BOSS_ENEMY_KEY
     override val enemyType: EnemyType = EnemyType.BOSS
+    override val money: Int = 0
     lateinit var livingEntity: LivingEntity
     abstract val bossSkills: List<BossSkill>
 

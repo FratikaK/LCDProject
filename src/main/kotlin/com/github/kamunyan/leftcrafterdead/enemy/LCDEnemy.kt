@@ -27,6 +27,7 @@ abstract class LCDEnemy {
     abstract val enemyType: EnemyType
     abstract val nonHeadShotDamageResistance: Double
     abstract val explosionResistance: Double
+    abstract val money: Int
 
     abstract fun getHealth(): Double
     abstract fun getPower(): Double

@@ -83,18 +83,19 @@ interface Campaign {
 
     enum class Difficulty {
         NORMAL {
-            override val normalMobSpawnAmount: Int
-                get() = 3
+            override val normalMobSpawnAmount: Int = 3
+            override val expRate: Int = 1
         },
         ADVANCED {
-            override val normalMobSpawnAmount: Int
-                get() = 5
+            override val normalMobSpawnAmount: Int = 5
+            override val expRate: Int = 2
         },
         EXPERT {
-            override val normalMobSpawnAmount: Int
-                get() = 8
+            override val normalMobSpawnAmount: Int = 8
+            override val expRate: Int = 3
         };
 
         abstract val normalMobSpawnAmount: Int
+        abstract val expRate: Int
     }
 }

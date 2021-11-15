@@ -30,8 +30,6 @@ class LCDPlayer(uuid: String) {
 
     var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
 
-    var kill: Int = 0
-
     var walkSpeed: Float = 0.2f
 
     var healthScale = 20.0
@@ -42,14 +40,16 @@ class LCDPlayer(uuid: String) {
 
     var rateAcceleration: Int = 0
 
+    var campaignData: CampaignPlayerData = CampaignPlayerData(0, 0, 0)
+
     lateinit var playerData: PlayerData
 
     init {
         val perkItem = player.inventory.getItem(8)
-        if (perkItem == null) {
-            perk = Gunslinger()
+        perk = if (perkItem == null) {
+            Gunslinger()
         } else {
-            perk = PerkType.getPerk(PerkType.getPerkType(perkItem.type))
+            PerkType.getPerk(PerkType.getPerkType(perkItem.type))
         }
         perk.setSymbolItem(this)
         player.gameMode = GameMode.SURVIVAL
@@ -122,6 +122,8 @@ class LCDPlayer(uuid: String) {
     fun initialize() {
         isMatchPlayer = false
         isSurvivor = false
+        player.giveExp(campaignData.exp, false)
+        campaignData = CampaignPlayerData(0, 0, 0)
         gameMode = GameMode.ADVENTURE
         setPerk()
         setSpeed(0.2f)
@@ -134,7 +136,6 @@ class LCDPlayer(uuid: String) {
                 "${ChatColor.WHITE}uuid: ${player.uniqueId}\n" +
                 "isMatchPlayer: $isMatchPlayer\n" +
                 "isSurvivor: $isSurvivor\n" +
-                "perk: $perk\n" +
-                "kill: $kill\n"
+                "perk: $perk\n"
     }
 }
