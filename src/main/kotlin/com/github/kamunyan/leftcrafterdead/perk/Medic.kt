@@ -29,7 +29,7 @@ class Medic() : Perk(PerkType.MEDIC) {
     }
 
     override fun firstPrimaryWeapon(): PrimaryWeapon {
-        return SubMachineGun("Mac10")
+        return SubMachineGun("MAC10")
     }
 
     override fun perkGadgetItem(): ItemStack {
