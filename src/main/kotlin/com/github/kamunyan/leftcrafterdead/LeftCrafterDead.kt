@@ -5,6 +5,8 @@ import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.configs.campaign.VeniceConfig
 import com.github.kamunyan.leftcrafterdead.listener.*
+import com.github.kamunyan.leftcrafterdead.task.LagFixRunnable
+import com.github.kamunyan.leftcrafterdead.task.ScoreBoardRunnable
 import com.shampaggon.crackshot.CSUtility
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -48,6 +50,10 @@ class LeftCrafterDead : JavaPlugin() {
         manager.registerEvents(MatchControlListener(), this)
         manager.registerEvents(PerkListener(), this)
         manager.registerEvents(WeaponControlListener(), this)
+
+        //Server tasks
+        ScoreBoardRunnable.runTask()
+        LagFixRunnable.runTask()
 
         log.info("${ChatColor.AQUA}LeftCrafterDead Start!")
         log.info("${ChatColor.AQUA}-------------------------------------")
