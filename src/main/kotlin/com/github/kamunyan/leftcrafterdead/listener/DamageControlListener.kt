@@ -75,19 +75,22 @@ class DamageControlListener : Listener {
 
     @EventHandler
     fun onDeath(e: EntityDeathEvent) {
-        if (e.entity.killer is HumanEntity) {
-            val player = e.entity.killer as Player
-            player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
-            player.sendMessage(
-                "Killer : ${player.displayName} \n" +
-                        "DeathEntity : ${e.entity.name}"
-            )
-        }
-
         val uuid = e.entity.uniqueId
         if (manager.enemyHashMap.containsKey(uuid)) {
-            manager.enemyHashMap[uuid]?.enemyDeathEffects(e.entity)
-            manager.enemyHashMap.remove(uuid)
+            val enemy = manager.enemyHashMap[uuid]!!
+            enemy.enemyDeathEffects(e.entity)
+            if (e.entity.killer is HumanEntity) {
+                val player = e.entity.killer as Player
+                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
+                player.sendMessage(
+                    "Killer : ${player.displayName} \n" +
+                            "DeathEntity : ${e.entity.name}"
+                )
+                val lcdPlayer = manager.getLCDPlayer(player)
+                lcdPlayer.campaignData.kill += 1
+                lcdPlayer.campaignData.money += enemy.money
+                manager.enemyHashMap.remove(uuid)
+            }
         }
     }
 

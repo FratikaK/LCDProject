@@ -4,17 +4,14 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
 import com.github.kamunyan.leftcrafterdead.event.*
+import net.kyori.adventure.text.Component
 import org.bukkit.*
-import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
-import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import java.lang.IllegalArgumentException
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MatchControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
@@ -101,12 +98,17 @@ class MatchControlListener : Listener {
 
     @EventHandler
     fun onDefeatBoss(e: DefeatBossEvent) {
-        if (!manager.isMatch){
+        if (!manager.isMatch) {
             return
         }
         manager.deleteEnemyMob()
+        val addExp = 5 * manager.campaign.determiningDifficulty().expRate
+        val getExp = 30 * manager.numberOfSurvivors() + addExp
         manager.matchPlayer.forEach {
-            it.player.sendTitle("${ChatColor.AQUA}Clear","",30,100,30)
+            it.player.sendTitle("${ChatColor.AQUA}Clear", "", 30, 100, 30)
+            it.campaignData.exp += getExp
+            it.player.sendMessage(Component.text("${ChatColor.GOLD}生存者数ボーナス ===> ${addExp}Exp"))
+            it.player.sendMessage(Component.text("獲得経験値 ===> ${getExp}Exp"))
         }
         plugin.sendBroadCastMessage("[LCD]${ChatColor.AQUA}生存者がボスを撃破しました！ゲームクリアです！")
         manager.finishCampaign()
@@ -165,7 +167,7 @@ class MatchControlListener : Listener {
                 manager.matchPlayer.forEach {
                     it.player.playSound(player.location, Sound.ENTITY_WITHER_SPAWN, 10f, 1f)
                 }
-                plugin.sendBroadCastMessage("奴らが来る...")
+                plugin.sendBroadCastMessage("${ChatColor.RED}奴らが来る...")
                 plugin.logger.info("[onRushStart]${ChatColor.AQUA}RushMobがスポーンしました")
             } catch (exception: IllegalArgumentException) {
                 plugin.logger.info("[onRushStart]Canceled MatchStartEvent.")

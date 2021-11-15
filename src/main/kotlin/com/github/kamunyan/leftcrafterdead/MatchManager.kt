@@ -13,6 +13,7 @@ import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
+import net.kyori.adventure.text.Component
 import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
@@ -156,6 +157,8 @@ object MatchManager {
         }
         isCheckPoint = true
         if (numberOfSurvivors() > 0) {
+            val addExp = numberOfSurvivors() * 5
+            val getExp = 5 * campaign.determiningDifficulty().expRate + addExp
             matchPlayer.forEach { lcdPlayer ->
                 lcdPlayer.player.teleport(restLocation)
                 if (!lcdPlayer.isSurvivor) {
@@ -164,6 +167,9 @@ object MatchManager {
                 lcdPlayer.player.health = lcdPlayer.healthScale
                 lcdPlayer.isSurvivor = true
                 lcdPlayer.gameMode = GameMode.ADVENTURE
+                lcdPlayer.campaignData.exp += getExp
+                lcdPlayer.player.sendMessage(Component.text("${ChatColor.GOLD}生存者数ボーナス ===> ${addExp}Exp"))
+                lcdPlayer.player.sendMessage(Component.text("獲得経験値 ===> ${getExp}Exp"))
             }
         }
 
