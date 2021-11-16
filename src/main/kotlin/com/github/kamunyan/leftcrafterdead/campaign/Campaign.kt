@@ -3,6 +3,7 @@ package com.github.kamunyan.leftcrafterdead.campaign
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.configs.Config
+import com.github.kamunyan.leftcrafterdead.configs.campaign.spawn.SpawnConfig
 import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
 import org.bukkit.*
 import org.bukkit.boss.BarColor
@@ -32,7 +33,7 @@ interface Campaign {
     val normalMobType: EntityType
 
     //使用するConfig
-    val config: Config
+    val config: SpawnConfig
 
     /**
      * 難易度の決定　　

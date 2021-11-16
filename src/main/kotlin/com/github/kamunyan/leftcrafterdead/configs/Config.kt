@@ -37,8 +37,6 @@ abstract class Config(@NotNull val fileDir: String, @NotNull val targetFile: Str
         yml = YamlConfiguration.loadConfiguration(dir)
     }
 
-    open fun loadCampaignConfig() {}
-
     fun getInt(nodes: String): Int? {
         if (yml.contains(nodes)) return yml.getInt(nodes)
         return null

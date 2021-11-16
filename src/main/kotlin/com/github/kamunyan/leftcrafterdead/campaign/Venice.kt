@@ -1,7 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.campaign
 
 import com.github.kamunyan.leftcrafterdead.configs.Config
-import com.github.kamunyan.leftcrafterdead.configs.campaign.VeniceConfig
+import com.github.kamunyan.leftcrafterdead.configs.campaign.spawn.VeniceConfig
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 
