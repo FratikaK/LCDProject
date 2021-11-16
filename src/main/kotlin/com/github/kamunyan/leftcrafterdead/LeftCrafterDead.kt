@@ -1,9 +1,8 @@
 package com.github.kamunyan.leftcrafterdead
 
-import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.command.AdminCommand
+import com.github.kamunyan.leftcrafterdead.configs.CampaignConfig
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
-import com.github.kamunyan.leftcrafterdead.configs.campaign.spawn.VeniceConfig
 import com.github.kamunyan.leftcrafterdead.listener.*
 import com.github.kamunyan.leftcrafterdead.task.LagFixRunnable
 import com.github.kamunyan.leftcrafterdead.task.ScoreBoardRunnable
@@ -36,11 +35,9 @@ class LeftCrafterDead : JavaPlugin() {
         //register commands
         getCommand("admin")?.setExecutor(AdminCommand())
 
-        Campaign.createWorld("Venice")
-
         //load configs
         LobbySpawnConfig.loadConfig()
-        VeniceConfig.loadConfig()
+        CampaignConfig.loadAllCampaign()
 
         val manager = this.server.pluginManager
         manager.registerEvents(DamageControlListener(), this)

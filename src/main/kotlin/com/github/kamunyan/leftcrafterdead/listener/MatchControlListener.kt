@@ -75,10 +75,10 @@ class MatchControlListener : Listener {
         manager.isCheckPoint = false
         manager.matchPlayer.forEach {
             if (it.isMatchPlayer && it.isSurvivor) {
-                plugin.chiyogamiLib.smoothTeleport(it.player, manager.startLocation)
+                plugin.chiyogamiLib.smoothTeleport(it.player, manager.campaign.startLocations[manager.gameProgress])
             }
         }
-        manager.campaign.startRush()
+        manager.startRush()
         if (manager.isBossParse) {
             Bukkit.getPluginManager().callEvent(BossParseStartEvent())
             return
@@ -88,12 +88,19 @@ class MatchControlListener : Listener {
 
     @EventHandler
     fun onBossStart(e: BossParseStartEvent) {
-        if (manager.mobSpawnLocationList.isEmpty()) {
-            plugin.logger.info("${ChatColor.RED}[onBossStart]ボスが湧ける場所がありません！")
-            return
+        val locations = manager.campaign.normalEnemyLocations[manager.gameProgress]
+        if (locations != null) {
+            if (locations.isEmpty()) {
+                plugin.logger.info("${ChatColor.RED}[onBossStart]ボスが湧ける場所がありません！")
+                manager.finishCampaign()
+                return
+            }
+
+            val random = Random().nextInt(manager.bossList.size)
+            manager.bossList[random].spawnEnemy(locations[0])
+        }else{
+            manager.finishCampaign()
         }
-        val random = Random().nextInt(manager.bossList.size)
-        manager.bossList[random].spawnEnemy(manager.mobSpawnLocationList[0])
     }
 
     @EventHandler
@@ -102,7 +109,7 @@ class MatchControlListener : Listener {
             return
         }
         manager.deleteEnemyMob()
-        val addExp = 5 * manager.campaign.determiningDifficulty().expRate
+        val addExp = 5 * manager.campaignDifficulty.expRate
         val getExp = 30 * manager.numberOfSurvivors() + addExp
         manager.matchPlayer.forEach {
             it.player.sendTitle("${ChatColor.AQUA}Clear", "", 30, 100, 30)
@@ -134,8 +141,14 @@ class MatchControlListener : Listener {
             var minLocation: Location? = null
             var minDistance: Double? = null
 
+            val enemyLocations = manager.campaign.normalEnemyLocations[manager.gameProgress]
+            if (enemyLocations == null){
+                plugin.logger.info("[RushStartEvent]${ChatColor.RED}RushEnemyを沸かせるLocationが存在しません！")
+                return
+            }
+
             try {
-                manager.mobSpawnLocationList.forEach { location ->
+                manager.campaign.normalEnemyLocations[manager.gameProgress]!!.forEach { location ->
                     if (minLocation == null) {
                         minLocation = location
                         minDistance = location.distance(playerLocation)
@@ -151,7 +164,7 @@ class MatchControlListener : Listener {
                     plugin.logger.info("[onRushStart]${ChatColor.RED}minLocation is Null!")
                     return
                 }
-                for (i in 0..(manager.matchPlayer.size * manager.campaign.determiningDifficulty().normalMobSpawnAmount)) {
+                for (i in 0..(manager.matchPlayer.size * manager.campaignDifficulty.normalMobSpawnAmount)) {
                     val locations = arrayOf(
                         minLocation,
                         minLocation!!.clone().add(1.0, 0.0, 0.0),

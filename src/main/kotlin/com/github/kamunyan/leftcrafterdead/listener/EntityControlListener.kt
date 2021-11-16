@@ -107,7 +107,7 @@ class EntityControlListener : Listener {
                         }
                     }
                 } else {
-                    e.respawnLocation = manager.startLocation
+                    e.respawnLocation = manager.campaign.startLocations[manager.gameProgress]
                 }
                 lcdPlayer.setSpectator()
             }

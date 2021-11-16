@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.enemy.specials
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
+import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Arrow
@@ -42,9 +43,9 @@ object Smoker : LCDSpecialEnemy() {
 
     override fun getPower(): Double {
         val defaultPower = 1.5
-        val addPower = when (manager.campaign.determiningDifficulty()) {
-            Campaign.Difficulty.ADVANCED -> 1.0
-            Campaign.Difficulty.EXPERT -> 2.0
+        val addPower = when (manager.campaignDifficulty) {
+            CampaignDifficulty.ADVANCED -> 1.0
+            CampaignDifficulty.EXPERT -> 2.0
             else -> 0.0
         }
         return defaultPower + addPower

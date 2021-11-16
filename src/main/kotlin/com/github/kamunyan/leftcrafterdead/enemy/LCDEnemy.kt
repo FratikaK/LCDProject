@@ -33,7 +33,7 @@ abstract class LCDEnemy {
     abstract fun getPower(): Double
 
     open fun spawnEnemy(location: Location) {
-        val enemy = manager.world.spawnEntity(location, entityType, CreatureSpawnEvent.SpawnReason.CUSTOM)
+        val enemy = location.world.spawnEntity(location, entityType, CreatureSpawnEvent.SpawnReason.CUSTOM)
         setMetadata(enemy)
         manager.enemyHashMap[enemy.uniqueId] = this
         setLivingEntitySettings(enemy as LivingEntity)

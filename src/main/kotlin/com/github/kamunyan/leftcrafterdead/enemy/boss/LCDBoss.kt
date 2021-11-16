@@ -18,7 +18,7 @@ abstract class LCDBoss : LCDEnemy() {
     abstract val bossSkills: List<BossSkill>
 
     override fun spawnEnemy(location: Location) {
-        val enemy = manager.world.spawnEntity(location, entityType, CreatureSpawnEvent.SpawnReason.CUSTOM)
+        val enemy = location.world.spawnEntity(location, entityType, CreatureSpawnEvent.SpawnReason.CUSTOM)
         setMetadata(enemy)
         manager.enemyHashMap[enemy.uniqueId] = this
         livingEntity = enemy as LivingEntity

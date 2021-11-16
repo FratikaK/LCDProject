@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.enemy.boss
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
+import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import org.bukkit.Location
 import org.bukkit.Material
@@ -63,9 +64,9 @@ class MasterSmoker : LCDBoss() {
 
     override fun getHealth(): Double {
         val baseHealth = 500.0
-        val addHealth = when (manager.campaign.determiningDifficulty()) {
-            Campaign.Difficulty.ADVANCED -> 100.0
-            Campaign.Difficulty.EXPERT -> 150.0
+        val addHealth = when (manager.campaignDifficulty) {
+            CampaignDifficulty.ADVANCED -> 100.0
+            CampaignDifficulty.EXPERT -> 150.0
             else -> 20.0
         }
         return baseHealth + (addHealth * manager.numberOfSurvivors())
@@ -73,9 +74,9 @@ class MasterSmoker : LCDBoss() {
 
     override fun getPower(): Double {
         val basePower = 2.0
-        val addPower = when (manager.campaign.determiningDifficulty()) {
-            Campaign.Difficulty.ADVANCED -> 2.0
-            Campaign.Difficulty.EXPERT -> 2.5
+        val addPower = when (manager.campaignDifficulty) {
+            CampaignDifficulty.ADVANCED -> 2.0
+            CampaignDifficulty.EXPERT -> 2.5
             else -> 0.0
         }
         return basePower + addPower

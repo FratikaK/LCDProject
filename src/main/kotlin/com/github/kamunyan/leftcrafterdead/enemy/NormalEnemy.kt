@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.enemy
 
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
+import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
 import org.bukkit.Location
 import org.bukkit.entity.Entity
 import org.bukkit.entity.EntityType
@@ -22,9 +23,9 @@ object NormalEnemy : LCDEnemy() {
 
     override fun getPower(): Double {
         val defaultPower = 4.0
-        val addPower = when (manager.campaign.determiningDifficulty()) {
-            Campaign.Difficulty.ADVANCED -> 1.5
-            Campaign.Difficulty.EXPERT -> 3.0
+        val addPower = when (manager.campaignDifficulty) {
+            CampaignDifficulty.ADVANCED -> 1.5
+            CampaignDifficulty.EXPERT -> 3.0
             else -> 0.0
         }
         return defaultPower + addPower

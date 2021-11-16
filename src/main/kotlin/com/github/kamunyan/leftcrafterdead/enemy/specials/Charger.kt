@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.enemy.specials
 
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
+import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
 import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -34,9 +35,9 @@ object Charger : LCDSpecialEnemy() {
 
     override fun getPower(): Double {
         val defaultPower = 6.0
-        val addPower = when (manager.campaign.determiningDifficulty()) {
-            Campaign.Difficulty.ADVANCED -> 2.0
-            Campaign.Difficulty.EXPERT -> 4.0
+        val addPower = when (manager.campaignDifficulty) {
+            CampaignDifficulty.ADVANCED -> 2.0
+            CampaignDifficulty.EXPERT -> 4.0
             else -> 0.0
         }
         return defaultPower + addPower

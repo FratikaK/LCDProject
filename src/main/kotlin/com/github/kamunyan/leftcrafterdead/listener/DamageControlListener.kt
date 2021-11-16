@@ -81,11 +81,11 @@ class DamageControlListener : Listener {
             enemy.enemyDeathEffects(e.entity)
             if (e.entity.killer is HumanEntity) {
                 val player = e.entity.killer as Player
-                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
-                player.sendMessage(
-                    "Killer : ${player.displayName} \n" +
-                            "DeathEntity : ${e.entity.name}"
-                )
+                player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f)
+//                player.sendMessage(
+//                    "Killer : ${player.displayName} \n" +
+//                            "DeathEntity : ${e.entity.name}"
+//                )
                 val lcdPlayer = manager.getLCDPlayer(player)
                 lcdPlayer.campaignData.kill += 1
                 lcdPlayer.campaignData.money += enemy.money

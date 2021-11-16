@@ -15,14 +15,16 @@ object ScoreBoardIndicator {
     private val matchScoreBoard = Bukkit.getScoreboardManager().newScoreboard
 
     fun updateMatchScoreBoard() {
-        val obj = matchScoreBoard.getObjective("side") ?: matchScoreBoard.registerNewObjective(
-            "side",
-            "dummy",
-            Component.text("${ChatColor.AQUA}====LeftCrafterDead====")
-        )
-        obj.displaySlot = DisplaySlot.SIDEBAR
-        val lines = matchBoardLine()
-        setScores(lines, matchScoreBoard, obj)
+        if (manager.isMatch) {
+            val obj = matchScoreBoard.getObjective("side") ?: matchScoreBoard.registerNewObjective(
+                "side",
+                "dummy",
+                Component.text("${ChatColor.AQUA}====LeftCrafterDead====")
+            )
+            obj.displaySlot = DisplaySlot.SIDEBAR
+            val lines = matchBoardLine()
+            setScores(lines, matchScoreBoard, obj)
+        }
     }
 
     private fun updateLobbyScoreBoard(player: Player): Scoreboard {
@@ -53,7 +55,7 @@ object ScoreBoardIndicator {
         val messageList = ArrayList<String>()
         messageList.add("")
         messageList.add("Stage:  ${manager.campaign.campaignTitle}")
-        messageList.add("Difficulty:  ${manager.campaign.determiningDifficulty()}")
+        messageList.add("Difficulty:  ${manager.campaignDifficulty}")
         messageList.add("${ChatColor.WHITE}Survivor:  ${ChatColor.GOLD}${manager.numberOfSurvivors()}")
         messageList.add("")
 

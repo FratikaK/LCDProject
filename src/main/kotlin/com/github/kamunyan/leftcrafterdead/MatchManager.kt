@@ -1,7 +1,7 @@
 package com.github.kamunyan.leftcrafterdead
 
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
-import com.github.kamunyan.leftcrafterdead.campaign.Venice
+import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
 import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
 import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
 import com.github.kamunyan.leftcrafterdead.enemy.boss.MasterSmoker
@@ -10,17 +10,22 @@ import com.github.kamunyan.leftcrafterdead.enemy.specials.Charger
 import com.github.kamunyan.leftcrafterdead.enemy.specials.Smoker
 import com.github.kamunyan.leftcrafterdead.event.MatchReStartEvent
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
+import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import net.kyori.adventure.text.Component
 import org.bukkit.*
+import org.bukkit.boss.BarColor
+import org.bukkit.boss.BarFlag
+import org.bukkit.boss.BarStyle
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.jetbrains.annotations.NotNull
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.ArrayList
 
 object MatchManager {
     private val plugin = LeftCrafterDead.instance
@@ -31,22 +36,18 @@ object MatchManager {
     //オンライン上のプレイヤーHashMap
     val onlineLCDPlayer = ConcurrentHashMap<String, LCDPlayer>()
 
+    val campaignList: ArrayList<Campaign> = ArrayList()
+
     //使用するCampaign
-    var campaign: Campaign = Venice()
-
-    lateinit var world: World
-
-    lateinit var startLocation: Location
-
-    lateinit var restLocation: Location
+    lateinit var campaign: Campaign
 
     val matchPlayer = mutableListOf<LCDPlayer>()
 
-    var gameProgress = 1
+    var gameProgress = 0
+
+    var campaignDifficulty = CampaignDifficulty.NORMAL
 
     var isBossParse = false
-
-    val mobSpawnLocationList = ArrayList<Location>()
 
     val enemyHashMap = ConcurrentHashMap<UUID, LCDEnemy>()
 
@@ -126,17 +127,13 @@ object MatchManager {
             return
         }
 
-        val config = campaign.config
-        config.loadCampaignConfig()
-        startLocation = config.yml.getConfigurationSection("${campaign.campaignTitle}.start")
-            ?.let { config.getLocation(it) } ?: lobbySpawnLocation
-        restLocation = config.yml.getConfigurationSection("${campaign.campaignTitle}.rest")
-            ?.let { config.getLocation(it) } ?: lobbySpawnLocation
+        //ランダムにマップを決定する
+        campaign = getRandomCampaign()
 
         deleteEnemyMob()
 
         matchPlayer.forEach { lcdPlayer ->
-            lcdPlayer.player.teleport(startLocation)
+            lcdPlayer.player.teleport(campaign.startLocations[0])
             lcdPlayer.player.health = 20.0
             lcdPlayer.player.foodLevel = 20
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
@@ -146,7 +143,7 @@ object MatchManager {
             lcdPlayer.isSurvivor = true
         }
         spawnNormalEnemyMob()
-        campaign.startRush()
+        startRush()
     }
 
     @Synchronized
@@ -158,9 +155,9 @@ object MatchManager {
         isCheckPoint = true
         if (numberOfSurvivors() > 0) {
             val addExp = numberOfSurvivors() * 5
-            val getExp = 5 * campaign.determiningDifficulty().expRate + addExp
+            val getExp = 5 * campaignDifficulty.expRate + addExp
             matchPlayer.forEach { lcdPlayer ->
-                lcdPlayer.player.teleport(restLocation)
+                lcdPlayer.player.teleport(campaign.restLocation)
                 if (!lcdPlayer.isSurvivor) {
                     lcdPlayer.perk.setFirstWeapon(lcdPlayer)
                 }
@@ -175,25 +172,10 @@ object MatchManager {
 
         deleteEnemyMob()
         gameProgress += 1
-        if (campaign.gameProgressLimit < gameProgress) {
+        if (campaign.gameProgressLimit == gameProgress) {
             isBossParse = true
         }
-        mobSpawnLocationList.clear()
-        campaign.config.loadCampaignConfig()
-        startLocation = if (!isBossParse) {
-            campaign.config.yml
-                .getConfigurationSection("${campaign.campaignTitle}.${gameProgress}")?.let {
-                    campaign.config.getLocation(it)
-                } ?: lobbySpawnLocation
-        } else {
-            campaign.config.yml
-                .getConfigurationSection("${campaign.campaignTitle}.boss")?.let {
-                    campaign.config.getLocation(it)
-                } ?: lobbySpawnLocation
-        }
-
         Bukkit.broadcastMessage("[LCD]${ChatColor.GREEN}チェックポイントに到達しました！ 30秒後にゲームを再開します")
-
         object : BukkitRunnable() {
             var timeLeft = 30
             override fun run() {
@@ -225,6 +207,36 @@ object MatchManager {
             }
         }.runTaskTimer(plugin, 0, 20)
     }
+
+    fun startRush() {
+        val bossBar = Bukkit.createBossBar("Time to Rush", BarColor.RED, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG)
+        matchPlayer.forEach { lcdPlayer ->
+            bossBar.addPlayer(lcdPlayer.player)
+        }
+        bossBar.isVisible = true
+        object : BukkitRunnable() {
+            var timeLeft = 1.0
+            override fun run() {
+                if (isCheckPoint || !isMatch) {
+                    plugin.logger.info("[startRush]${ChatColor.AQUA}ラッシュのタイマーを停止しました")
+                    bossBar.removeAll()
+                    bossBar.isVisible = false
+                    this.cancel()
+                    return
+                }
+
+                if (timeLeft <= 0) {
+                    Bukkit.getPluginManager().callEvent(RushStartEvent())
+                    timeLeft = 1.0
+                }
+
+                timeLeft -= 0.02
+                if (timeLeft < 0) return
+                bossBar.progress = timeLeft
+            }
+        }.runTaskTimer(plugin, 0, 20)
+    }
+
 
     @Synchronized
     fun finishCampaign() {
@@ -261,10 +273,8 @@ object MatchManager {
 
     fun initializeGame() {
         isMatch = false
-        campaign = Venice()
         gameProgress = 1
         isBossParse = false
-        mobSpawnLocationList.clear()
         isCheckPoint = false
         isFinishing = false
         deleteEnemyMob()
@@ -309,7 +319,7 @@ object MatchManager {
             lcdPlayer.player.health = 20.0
             lcdPlayer.player.foodLevel = 20
             lcdPlayer.player.gameMode = lcdPlayer.gameMode
-            plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, restLocation)
+            plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, campaign.restLocation)
         } else {
             //途中参加
             if (matchPlayer.isNotEmpty()) {
@@ -339,7 +349,6 @@ object MatchManager {
     fun leavePlayer(player: Player) {
         leavePlayer(getLCDPlayer(player))
     }
-
 
     /**
      * マッチプレイヤーであるかを返す
@@ -373,17 +382,17 @@ object MatchManager {
      * 通常の敵性Mobを湧かせる
      */
     fun spawnNormalEnemyMob() {
-        if (mobSpawnLocationList.isEmpty()) {
+        if (campaign.normalEnemyLocations[gameProgress] == null) {
             return
         }
         val normalEnemy = NormalEnemy
-        mobSpawnLocationList.forEach { location ->
+        campaign.normalEnemyLocations[gameProgress]?.forEach { location ->
             val location1 = location.clone().add(1.0, 0.0, 0.0)
             val location2 = location.clone().add(0.0, 0.0, 1.0)
             val location3 = location.clone().add(-1.0, 0.0, 0.0)
             val location4 = location.clone().add(0.0, 0.0, -1.0)
 
-            var mobAmount = campaign.determiningDifficulty().normalMobSpawnAmount
+            var mobAmount = campaignDifficulty.normalMobSpawnAmount
             while (mobAmount > 0) {
                 normalEnemy.spawnEnemy(location)
                 normalEnemy.spawnEnemy(location1)
@@ -421,5 +430,11 @@ object MatchManager {
         }
         enemyHashMap.clear()
         plugin.logger.info("[deleteEnemyMob]${ChatColor.AQUA}${count}体のmobを削除しました")
+    }
+
+    private fun getRandomCampaign(): Campaign {
+        campaignList.shuffle()
+        val random = Random().nextInt(campaignList.size)
+        return campaignList[random]
     }
 }
