@@ -69,19 +69,20 @@ object CampaignConfig {
                     normalMobType = type
                 }
             }
-            manager.campaignList.add(
-                Campaign(
-                    campaignTitle,
-                    gameProgressLimit,
-                    startLocations,
-                    restLocation,
-                    normalEnemyLocations,
-                    normalMobType
-                )
+            val campaign = Campaign(
+                campaignTitle,
+                gameProgressLimit,
+                startLocations,
+                restLocation,
+                normalEnemyLocations,
+                normalMobType
             )
+            manager.campaignList.add(campaign)
+            plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign has been successfully created!")
+            plugin.logger.info(campaign.toString())
         }
-        if (manager.campaignList.isEmpty()){
-            plugin.logger.info("[CampaignConfig]${ChatColor.RED}ロードされたCampaignが一つもありません")
+        if (manager.campaignList.isEmpty()) {
+            plugin.logger.info("[CampaignConfig]${ChatColor.RED}None of the loaded Campaigns are available.")
         }
     }
 

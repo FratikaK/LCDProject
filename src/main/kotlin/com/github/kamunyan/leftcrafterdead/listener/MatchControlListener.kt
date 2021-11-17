@@ -83,6 +83,7 @@ class MatchControlListener : Listener {
             Bukkit.getPluginManager().callEvent(BossParseStartEvent())
             return
         }
+        manager.determineDifficulty()
         manager.spawnNormalEnemyMob()
     }
 

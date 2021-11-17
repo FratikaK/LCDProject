@@ -15,7 +15,6 @@ abstract class Perk(val perkType: PerkType) {
     abstract fun getGrenade(): Grenade
     abstract fun firstPrimaryWeapon(): PrimaryWeapon
     abstract fun perkGadgetItem(): ItemStack
-    abstract fun gadgetRightInteract(lcdPlayer: LCDPlayer)
     abstract val gadgetCoolDown: Int
 
     fun setFirstWeapon(lcdPlayer: LCDPlayer) {
@@ -35,6 +34,10 @@ abstract class Perk(val perkType: PerkType) {
     fun setGadget(lcdPlayer: LCDPlayer) {
         val inventory = lcdPlayer.player.inventory
         inventory.setItem(3, perkGadgetItem())
+    }
+
+    open fun gadgetRightInteract(lcdPlayer: LCDPlayer){
+        startGadgetStartCoolDown(lcdPlayer)
     }
 
     fun startGadgetStartCoolDown(lcdPlayer: LCDPlayer) {

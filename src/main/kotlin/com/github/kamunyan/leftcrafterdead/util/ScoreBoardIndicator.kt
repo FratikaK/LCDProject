@@ -15,7 +15,7 @@ object ScoreBoardIndicator {
     private val matchScoreBoard = Bukkit.getScoreboardManager().newScoreboard
 
     fun updateMatchScoreBoard() {
-        if (manager.isMatch) {
+        if (manager.isMatch || manager.isPreparation) {
             val obj = matchScoreBoard.getObjective("side") ?: matchScoreBoard.registerNewObjective(
                 "side",
                 "dummy",

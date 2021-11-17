@@ -142,7 +142,11 @@ object MatchManager {
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true
         }
+        //難易度を設定
+        determineDifficulty()
+        //通常mobおよび特殊mobをスポーン
         spawnNormalEnemyMob()
+        //ラッシュタイマースタート
         startRush()
     }
 
@@ -209,7 +213,7 @@ object MatchManager {
     }
 
     fun startRush() {
-        val bossBar = Bukkit.createBossBar("Time to Rush", BarColor.RED, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG)
+        val bossBar = Bukkit.createBossBar("Rush", BarColor.RED, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG)
         matchPlayer.forEach { lcdPlayer ->
             bossBar.addPlayer(lcdPlayer.player)
         }
@@ -273,7 +277,7 @@ object MatchManager {
 
     fun initializeGame() {
         isMatch = false
-        gameProgress = 1
+        gameProgress = 0
         isBossParse = false
         isCheckPoint = false
         isFinishing = false
@@ -376,6 +380,10 @@ object MatchManager {
             }
         }
         return count
+    }
+
+    fun determineDifficulty(){
+
     }
 
     /**
