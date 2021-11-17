@@ -8,7 +8,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object SQLDriver {
     private val plugin = LeftCrafterDead.instance
 
-//    val database = Database.connect("jdbc:mysql://localhost/left_crafter_dead","com.mysql.jdbc.Driver","root","")
     lateinit var database: Database
     lateinit var url: String
     lateinit var driver: String
