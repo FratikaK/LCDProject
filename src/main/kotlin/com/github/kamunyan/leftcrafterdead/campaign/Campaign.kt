@@ -19,7 +19,7 @@ data class Campaign(
         val start = builder.toString()
         builder.clear()
         normalEnemyLocations.forEach {
-            builder.append("$it: ${it.value.size}, ")
+            builder.append("${it.key}: ${it.value.size}, ")
         }
         val normal = builder.toString()
         return "マップ名: $campaignTitle \n" +

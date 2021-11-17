@@ -33,6 +33,7 @@ class JoinQuitListener : Listener {
         if (manager.isMatchPlayer(e.player.uniqueId)) {
             manager.leavePlayer(e.player)
         }
+        manager.getLCDPlayer(e.player).updatePlayerData()
         manager.onlineLCDPlayer.remove(e.player.uniqueId.toString())
         e.quitMessage = "${ChatColor.AQUA}${e.player.displayName}がログアウトしました"
     }

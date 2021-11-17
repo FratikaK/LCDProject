@@ -1,0 +1,4 @@
+url: localhost
+driver: mysql
+user: root
+password: password

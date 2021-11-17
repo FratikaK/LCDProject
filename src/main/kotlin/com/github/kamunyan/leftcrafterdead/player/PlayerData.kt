@@ -4,5 +4,7 @@ import java.io.Serializable
 
 data class PlayerData(
     var uuid: String,
-    var totalKill : Int
-):Serializable
+    var totalKill: Int,
+    var totalExperience: Int,
+    var level:Int
+) : Serializable

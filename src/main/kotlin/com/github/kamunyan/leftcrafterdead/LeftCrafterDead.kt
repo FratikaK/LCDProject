@@ -2,7 +2,9 @@ package com.github.kamunyan.leftcrafterdead
 
 import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.CampaignConfig
+import com.github.kamunyan.leftcrafterdead.configs.DatabaseConfig
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
+import com.github.kamunyan.leftcrafterdead.data.SQLDriver
 import com.github.kamunyan.leftcrafterdead.listener.*
 import com.github.kamunyan.leftcrafterdead.task.LagFixRunnable
 import com.github.kamunyan.leftcrafterdead.task.ScoreBoardRunnable
@@ -36,6 +38,7 @@ class LeftCrafterDead : JavaPlugin() {
         getCommand("admin")?.setExecutor(AdminCommand())
 
         //load configs
+        DatabaseConfig.loadConfig()
         LobbySpawnConfig.loadConfig()
         CampaignConfig.loadAllCampaign()
 

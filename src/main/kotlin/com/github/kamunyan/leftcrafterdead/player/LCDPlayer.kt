@@ -1,6 +1,8 @@
 package com.github.kamunyan.leftcrafterdead.player
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.data.PlayerAchievement
+import com.github.kamunyan.leftcrafterdead.data.SQLDriver
 import com.github.kamunyan.leftcrafterdead.perk.Gunslinger
 import com.github.kamunyan.leftcrafterdead.perk.Perk
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
@@ -42,9 +44,10 @@ class LCDPlayer(uuid: String) {
 
     var campaignData: CampaignPlayerData = CampaignPlayerData(0, 0, 0)
 
-    lateinit var playerData: PlayerData
+    val playerData: PlayerData = PlayerData(uuid, 0, 0, 0)
 
     init {
+        loadPlayerData()
         val perkItem = player.inventory.getItem(8)
         perk = if (perkItem == null) {
             Gunslinger()
@@ -69,6 +72,7 @@ class LCDPlayer(uuid: String) {
         player.inventory.setItem(0, diamond)
         player.inventory.setItem(1, endCrystal)
         perk.setSymbolItem(this)
+        player.level
     }
 
     fun setSpectator() {
@@ -115,14 +119,22 @@ class LCDPlayer(uuid: String) {
         player.walkSpeed = walkSpeed
     }
 
-    fun loadPlayerData() {}
+    fun loadPlayerData() {
+        SQLDriver.loadPlayerData(playerData)
+    }
 
-    fun updatePlayerData() {}
+    fun updatePlayerData() {
+        SQLDriver.savePlayerData(playerData)
+    }
 
     fun initialize() {
         isMatchPlayer = false
         isSurvivor = false
         player.giveExp(campaignData.exp, false)
+        playerData.totalKill += campaignData.kill
+        playerData.totalExperience += campaignData.exp
+        playerData.level = player.level
+        updatePlayerData()
         campaignData = CampaignPlayerData(0, 0, 0)
         gameMode = GameMode.ADVENTURE
         setPerk()
@@ -136,6 +148,7 @@ class LCDPlayer(uuid: String) {
                 "${ChatColor.WHITE}uuid: ${player.uniqueId}\n" +
                 "isMatchPlayer: $isMatchPlayer\n" +
                 "isSurvivor: $isSurvivor\n" +
-                "perk: $perk\n"
+                "perk: ${perk.perkType}\n" +
+                "exp: ${player.totalExperience}"
     }
 }
