@@ -77,6 +77,9 @@ object CampaignConfig {
                 normalEnemyLocations,
                 normalMobType
             )
+            if (manager.campaignList.isEmpty()){
+                manager.campaign = campaign
+            }
             manager.campaignList.add(campaign)
             plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign has been successfully created!")
             plugin.logger.info(campaign.toString())

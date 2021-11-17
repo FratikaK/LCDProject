@@ -12,6 +12,7 @@ import com.shampaggon.crackshot.CSUtility
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
+import org.jetbrains.exposed.sql.Database
 import world.chiyogami.chiyogamilib.ChiyogamiLib
 
 class LeftCrafterDead : JavaPlugin() {
@@ -55,6 +56,7 @@ class LeftCrafterDead : JavaPlugin() {
         ScoreBoardRunnable.runTask()
         LagFixRunnable.runTask()
 
+        SQLDriver.database = Database.connect(SQLDriver.url,SQLDriver.driver,SQLDriver.user,SQLDriver.password)
         log.info("${ChatColor.AQUA}LeftCrafterDead Start!")
         log.info("${ChatColor.AQUA}-------------------------------------")
     }
