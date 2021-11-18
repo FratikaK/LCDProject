@@ -1,0 +1,89 @@
+MASTERMIND:
+  - {name: Unlock the Tree,info: リロード速度が5%上昇する,type: ,need: 1}
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+
+ENFORCER:
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+
+TECHNICIAN:
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+  - {name: ,info: ,type: ,need: }
+
+GHOST:
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+
+FUGITIVE:
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
+  - { name: ,info: ,type: ,need: }
