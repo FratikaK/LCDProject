@@ -18,6 +18,10 @@ data class StatusData(
      */
     var weaponDamageMultiplier: Double = 1.0,
     /**
+     * ヘッドショットダメージ倍率
+     */
+    var headShotDamageMultiplier :Double = 1.0,
+    /**
      * リロード速度
      */
     var reloadSpeedAcceleration: Double = 1.0,

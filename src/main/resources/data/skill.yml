@@ -1,7 +1,7 @@
 MASTERMIND:
-  - {name: Unlock the Tree,info: リロード速度が5%上昇する,type: ,need: 1}
-  - {name: ,info: ,type: ,need: }
-  - {name: ,info: ,type: ,need: }
+  - {name: Unlock the Tree,info: リロード速度が5%上昇する,type: nether_star,need: 1}
+  - {name: Stable Shot,info: 武器の精度を1段階上げる,type: polished_granite,need: 2}
+  - {name: Reserve Armor,info: アーマー上限を4ポイント上昇させる,type: prismarine_shard,need: 2}
   - {name: ,info: ,type: ,need: }
   - {name: ,info: ,type: ,need: }
   - {name: ,info: ,type: ,need: }
