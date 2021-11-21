@@ -2,10 +2,15 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
+import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
+import com.github.kamunyan.leftcrafterdead.weapons.primary.Shotgun
 import com.shampaggon.crackshot.events.WeaponDamageEntityEvent
 import com.shampaggon.crackshot.events.WeaponExplodeEvent
+import net.kyori.adventure.text.Component
+import org.bukkit.ChatColor
 import org.bukkit.Sound
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.HumanEntity
@@ -64,13 +69,37 @@ class DamageControlListener : Listener {
             return
         }
         val enemy = manager.enemyHashMap[e.victim.uniqueId]!!
+        val data = manager.getLCDPlayer(e.player).statusData
+        e.damage *= data.weaponDamageMultiplier
+        if (WeaponUtil.getGunCategory(e.weaponTitle) == GunCategory.SHOTGUN){
+            e.damage *= data.shotgunDamageMultiplier
+            if (data.specialSkillTypes.contains(SpecialSkillType.CLOSE_BY)){
+                if (e.player.location.distance(e.victim.location) <= 4){
+                    e.damage *= 1.2
+                }
+            }
+        }
+        if (data.specialSkillTypes.contains(SpecialSkillType.UNDERDOG)){
+            val entityList = e.player.location.getNearbyLivingEntities(4.0)
+            if (entityList.size >= 3){
+                e.damage *= 1.1
+            }
+        }
         if (!e.isHeadshot) {
             if (e.damage <= enemy.nonHeadShotDamageResistance) {
                 e.damage = 0.0
                 return
             }
-            e.damage = e.damage - enemy.nonHeadShotDamageResistance
         }
+        if (data.specialSkillTypes.contains(SpecialSkillType.BULLSEYE)){
+            if (Math.random() <= 0.1){
+                e.player.absorptionAmount += 1
+                if (e.player.absorptionAmount > data.armorLimit){
+                    e.player.absorptionAmount = data.armorLimit
+                }
+            }
+        }
+        e.damage = e.damage - enemy.nonHeadShotDamageResistance
     }
 
     @EventHandler
@@ -88,7 +117,14 @@ class DamageControlListener : Listener {
 //                )
                 val lcdPlayer = manager.getLCDPlayer(player)
                 lcdPlayer.campaignData.kill += 1
-                lcdPlayer.campaignData.money += enemy.money
+                lcdPlayer.campaignData.money += (enemy.money * lcdPlayer.statusData.addMoneyMultiplier).toInt()
+                if(lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.FULLY_LOADED)){
+                    if (Math.random() <= 0.05){
+                        lcdPlayer.perk.getGrenade().sendGrenade(lcdPlayer.player,1)
+                        player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1f, 24f)
+                        player.sendMessage(Component.text("${ChatColor.AQUA}Fully Loadedの効果によりグレネードを回収しました！"))
+                    }
+                }
                 manager.enemyHashMap.remove(uuid)
             }
         }

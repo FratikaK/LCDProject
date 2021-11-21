@@ -4,12 +4,16 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
 import com.github.kamunyan.leftcrafterdead.event.*
+import com.github.kamunyan.leftcrafterdead.util.InventoryDisplayer
+import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import net.kyori.adventure.text.Component
 import org.bukkit.*
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import java.util.*
 
@@ -37,8 +41,20 @@ class MatchControlListener : Listener {
         if (e.item != null && e.item!!.hasItemMeta()) {
             val item = e.item!!
             when (item.type) {
-                Material.DIAMOND -> manager.joinPlayer(e.player)
+                Material.ENCHANTED_BOOK -> e.player.openInventory(InventoryDisplayer.mainMenuDisplay())
                 else -> return
+            }
+        }
+    }
+
+    @EventHandler
+    fun onCampaignEntityDamage(e: EntityDamageByEntityEvent) {
+        if (e.entity.type == EntityType.SHEEP) {
+            e.isCancelled = true
+            if (e.damager.type == EntityType.PLAYER) {
+                manager.joinPlayer(e.damager as Player)
+                e.entity.playEffect(EntityEffect.HURT)
+                e.entity.world.playSound(e.entity.location,Sound.ENTITY_SHEEP_AMBIENT,3f,0f)
             }
         }
     }
@@ -99,7 +115,7 @@ class MatchControlListener : Listener {
 
             val random = Random().nextInt(manager.bossList.size)
             manager.bossList[random].spawnEnemy(locations[0])
-        }else{
+        } else {
             manager.finishCampaign()
         }
     }
@@ -143,7 +159,7 @@ class MatchControlListener : Listener {
             var minDistance: Double? = null
 
             val enemyLocations = manager.campaign.normalEnemyLocations[manager.gameProgress]
-            if (enemyLocations == null){
+            if (enemyLocations == null) {
                 plugin.logger.info("[RushStartEvent]${ChatColor.RED}RushEnemyを沸かせるLocationが存在しません！")
                 return
             }

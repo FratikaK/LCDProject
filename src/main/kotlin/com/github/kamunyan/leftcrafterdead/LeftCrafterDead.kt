@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.command.AdminCommand
 import com.github.kamunyan.leftcrafterdead.configs.CampaignConfig
 import com.github.kamunyan.leftcrafterdead.configs.DatabaseConfig
 import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
+import com.github.kamunyan.leftcrafterdead.configs.SkillTreeConfig
 import com.github.kamunyan.leftcrafterdead.data.SQLDriver
 import com.github.kamunyan.leftcrafterdead.listener.*
 import com.github.kamunyan.leftcrafterdead.task.LagFixRunnable
@@ -41,6 +42,7 @@ class LeftCrafterDead : JavaPlugin() {
         //load configs
         DatabaseConfig.loadConfig()
         LobbySpawnConfig.loadConfig()
+        SkillTreeConfig.loadConfig()
         CampaignConfig.loadAllCampaign()
 
         val manager = this.server.pluginManager

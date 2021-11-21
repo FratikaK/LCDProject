@@ -1,5 +1,10 @@
 package com.github.kamunyan.leftcrafterdead.util
 
+import com.github.kamunyan.leftcrafterdead.configs.SkillTreeConfig
+import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
+import com.github.kamunyan.leftcrafterdead.skill.SkillTree
+import com.github.kamunyan.leftcrafterdead.skill.SkillType
+import com.github.kamunyan.leftcrafterdead.skill.type.MasterMind
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.primary.AssaultRifle
 import com.github.kamunyan.leftcrafterdead.weapons.primary.Shotgun
@@ -7,10 +12,22 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.Inventory
+import java.util.*
+import kotlin.collections.ArrayList
 
 object InventoryDisplayer {
     private val util = ItemMetaUtil
+
+    fun mainMenuDisplay(): Inventory {
+        val inventory = Bukkit.createInventory(null, 54, "Main Menu")
+        val perk = util.generateMetaItem(Material.END_CRYSTAL, "${ChatColor.LIGHT_PURPLE}Perk", 60)
+        val skill = util.generateMetaItem(Material.OAK_SAPLING, "${ChatColor.GOLD}スキルツリー", 61)
+        inventory.setItem(20, perk)
+        inventory.setItem(21, skill)
+        return inventory
+    }
 
     fun selectPerkDisplay(): Inventory {
         val inventory = Bukkit.createInventory(null, 9, "${ChatColor.DARK_PURPLE}Select Perk")
@@ -106,6 +123,88 @@ object InventoryDisplayer {
         val next = util.generateMetaItem(Material.EMERALD_BLOCK, "${ChatColor.GREEN}次の武器カテゴリ", 199)
         inventory.setItem(45, exit)
         inventory.setItem(53, next)
+        return inventory
+    }
+
+    fun skillTreeTypeSelectDisplay(lcdPlayer: LCDPlayer): Inventory {
+        val inventory = Bukkit.createInventory(null, 9, "Select Skill Tree")
+        val tree = lcdPlayer.skillTree
+        var modelData = 500
+        var index = 0
+        tree.forEach { (t, u) ->
+            val item = util.generateMetaItem(
+                t.material,
+                "${ChatColor.AQUA}${t.name}",
+                modelData,
+                listOf("使用ポイント ${ChatColor.YELLOW}${u.useSkillPoint}")
+            )
+            inventory.setItem(index, item)
+            modelData++
+            index++
+        }
+        return inventory
+    }
+
+    fun skillBuildDisplay(lcdPlayer: LCDPlayer, skillType: SkillType): Inventory {
+        val inventory = Bukkit.createInventory(null, 54, skillType.name)
+        val returnItem = util.generateMetaItem(Material.OAK_DOOR, "スキルツリー選択へ戻る", 510)
+        val skillResetItem = util.generateMetaItem(Material.REDSTONE_BLOCK, "スキルツリーリセット", skillType.skillItemData)
+        val useSkillPointInfo = util.generateMetaItem(
+            Material.EMERALD_BLOCK,
+            "${ChatColor.AQUA}使用ポイント ${ChatColor.GOLD}${lcdPlayer.skillTree[skillType]!!.useSkillPoint}"
+        )
+        val skillInfoMap = SkillTreeConfig.skillDataHashMap[skillType]
+        if (skillInfoMap == null) {
+            val item = util.generateMetaItem(Material.BEDROCK, "${ChatColor.RED}スキルツリーデータがありません！")
+            lcdPlayer.skillTree[skillType]!!.skillMap.forEach { t, _ ->
+                inventory.setItem(t, item)
+            }
+            return inventory
+        }
+        val skillTree = lcdPlayer.skillTree[skillType]!!
+
+        lcdPlayer.skillTree[skillType]!!.skillMap.forEach { (index, isGet) ->
+            var name = ""
+            var lore: ArrayList<String>? = null
+            var type = ""
+            var material: Material = Material.BEDROCK
+            val isReachedUseSkillPoint = skillTree.useSkillPoint >= SkillTree.requireUnlockSkillTree[index]!!
+            val skillHashMap = SkillTreeConfig.skillDataHashMap[skillType]
+            val infoHashMap = skillHashMap?.get(index)
+            if (infoHashMap != null) {
+                name = "${ChatColor.AQUA}${infoHashMap["name"]}"
+                if (infoHashMap["info"] != null) {
+                    val string = infoHashMap["info"]!!.replace(" ", "")
+                    val info = string.split("|")
+                    lore = ArrayList()
+                    info.forEach { str -> lore.add(str) }
+                    lore.add("${ChatColor.AQUA}必要スキルポイント ${ChatColor.GOLD}${SkillTree.requireSkillPoint[index]}")
+                    if (!isReachedUseSkillPoint) {
+                        lore.add("${ChatColor.RED}アンロックに必要なポイント ${ChatColor.GOLD}${SkillTree.requireUnlockSkillTree[index]}")
+                    }
+                }
+                if (isReachedUseSkillPoint) {
+                    if (isGet) {
+                        if (infoHashMap["type"] != null) {
+                            type = infoHashMap["type"]!!.uppercase(Locale.getDefault())
+                            if (Material.getMaterial(type) != null) {
+                                material = Material.getMaterial(type)!!
+                            }
+                        }
+                    }else{
+                        material = Material.BLUE_STAINED_GLASS_PANE
+                    }
+                }
+                val item = util.generateMetaItem(material, name, skillType.skillItemData, lore)
+                inventory.setItem(
+                    index,
+                    item
+                )
+            }
+        }
+        inventory.setItem(45, returnItem)
+        inventory.setItem(36, skillResetItem)
+        inventory.setItem(27, useSkillPointInfo)
         return inventory
     }
 }

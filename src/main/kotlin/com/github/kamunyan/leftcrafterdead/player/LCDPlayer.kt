@@ -1,11 +1,14 @@
 package com.github.kamunyan.leftcrafterdead.player
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
-import com.github.kamunyan.leftcrafterdead.data.PlayerAchievement
 import com.github.kamunyan.leftcrafterdead.data.SQLDriver
 import com.github.kamunyan.leftcrafterdead.perk.Gunslinger
 import com.github.kamunyan.leftcrafterdead.perk.Perk
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
+import com.github.kamunyan.leftcrafterdead.skill.SkillTree
+import com.github.kamunyan.leftcrafterdead.skill.SkillType
+import com.github.kamunyan.leftcrafterdead.skill.StatusData
+import com.github.kamunyan.leftcrafterdead.skill.type.*
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
@@ -32,19 +35,23 @@ class LCDPlayer(uuid: String) {
 
     var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
 
-    var walkSpeed: Float = 0.2f
-
-    var healthScale = 20.0
-
-    var baseDamage = 0.0
-
-    var reloadSpeedAcceleration: Double = 0.0
-
-    var rateAcceleration: Int = 0
-
     var campaignData: CampaignPlayerData = CampaignPlayerData(0, 0, 0)
 
-    val playerData: PlayerData = PlayerData(uuid, 0, 0, 0)
+    val playerData: PlayerData = PlayerData(uuid, 0, 0, 0, 0)
+
+    val skillTree: LinkedHashMap<SkillType, SkillTree> = linkedMapOf(
+        SkillType.MASTERMIND to MasterMind(),
+        SkillType.ENFORCER to Enforcer(),
+        SkillType.TECHNICIAN to Technician(),
+        SkillType.GHOST to Ghost(),
+        SkillType.FUGITIVE to Fugitive()
+    )
+
+    var skillPointLimit: Int = 0
+
+    var skillPoint: Int = 0
+
+    var statusData: StatusData = StatusData()
 
     init {
         loadPlayerData()
@@ -55,24 +62,41 @@ class LCDPlayer(uuid: String) {
             PerkType.getPerk(PerkType.getPerkType(perkItem.type))
         }
         perk.setSymbolItem(this)
-        player.gameMode = GameMode.SURVIVAL
+        player.level = playerData.level
+        player.totalExperience = playerData.exp
+        setSkillPoint()
     }
 
     fun setPlayerStatus() {
-        player.walkSpeed = walkSpeed
-        player.healthScale = healthScale
+        player.walkSpeed = statusData.walkSpeed
+        player.healthScale = statusData.healthScaleAmount
         player.health = player.healthScale
+    }
+
+    private fun setSkillPoint() {
+        skillPointLimit = 5 + player.level * 3
+        var point = skillPointLimit
+        skillTree.forEach { (_, u) ->
+            point -= u.useSkillPoint
+        }
+        skillPoint = point
+    }
+
+    fun setStatusAllData() {
+        statusData = StatusData()
+        skillTree.forEach { (_, value) ->
+            value.setStatusData(statusData)
+        }
     }
 
     fun setLobbyItem() {
         val util = ItemMetaUtil
         player.inventory.clear()
-        val diamond = util.generateMetaItem(Material.DIAMOND, "${ChatColor.AQUA}Join Game")
+        val diamond = util.generateMetaItem(Material.ENCHANTED_BOOK, "${ChatColor.AQUA}Main Menu")
         val endCrystal = util.generateMetaItem(Material.END_CRYSTAL, "${ChatColor.DARK_PURPLE}Select Perk")
         player.inventory.setItem(0, diamond)
         player.inventory.setItem(1, endCrystal)
         perk.setSymbolItem(this)
-        player.level
     }
 
     fun setSpectator() {
@@ -114,11 +138,6 @@ class LCDPlayer(uuid: String) {
         player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
     }
 
-    fun setSpeed(speed: Float) {
-        this.walkSpeed = speed
-        player.walkSpeed = walkSpeed
-    }
-
     fun loadPlayerData() {
         SQLDriver.loadPlayerData(playerData)
     }
@@ -132,14 +151,15 @@ class LCDPlayer(uuid: String) {
         isSurvivor = false
         player.giveExp(campaignData.exp, false)
         playerData.totalKill += campaignData.kill
-        playerData.totalExperience += campaignData.exp
+        playerData.exp += campaignData.exp
         playerData.level = player.level
         updatePlayerData()
         campaignData = CampaignPlayerData(0, 0, 0)
+        statusData = StatusData()
         gameMode = GameMode.ADVENTURE
         setPerk()
-        setSpeed(0.2f)
         setPlayerStatus()
+        setSkillPoint()
         setLobbyItem()
     }
 

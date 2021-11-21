@@ -8,6 +8,7 @@ import org.bukkit.metadata.FixedMetadataValue
 object MetadataUtil {
     const val EXPLODE_ARROW = "EXPLODE_ARROW"
     const val MERCHANT = "MERCHANT"
+    const val CAMPAIGN_JOIN_MOB = "CAMPAIGN_JOIN_MOB"
 
     fun setProjectileMetadata(projectile: Projectile, metadata: String) {
         if (!projectile.hasMetadata(metadata)) {

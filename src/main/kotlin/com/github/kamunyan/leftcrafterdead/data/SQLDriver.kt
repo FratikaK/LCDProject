@@ -25,6 +25,7 @@ object SQLDriver {
             createPlayerAchievementTable()
             val select = PlayerAchievement.select { PlayerAchievement.uuid eq data.uuid }
             if (select.empty()) {
+                plugin.logger.info("[loadPlayerData]新しくプレイヤーのデータを作成します")
                 PlayerAchievement.insert {
                     it[uuid] = data.uuid
                     it[totalKill] = 0
@@ -34,7 +35,7 @@ object SQLDriver {
             }
             PlayerAchievement.select { PlayerAchievement.uuid eq data.uuid }.forEach {
                 data.totalKill = it[PlayerAchievement.totalKill]
-                data.totalExperience = it[PlayerAchievement.experience]
+                data.exp = it[PlayerAchievement.experience]
                 data.level = it[PlayerAchievement.level]
             }
         }
@@ -45,7 +46,7 @@ object SQLDriver {
             createPlayerAchievementTable()
             PlayerAchievement.update({ PlayerAchievement.uuid eq data.uuid }) {
                 it[totalKill] = data.totalKill
-                it[experience] = data.totalExperience
+                it[experience] = data.exp
                 it[level] = data.level
             }
         }

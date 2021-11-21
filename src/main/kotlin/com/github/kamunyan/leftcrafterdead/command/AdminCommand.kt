@@ -28,6 +28,12 @@ class AdminCommand : CommandExecutor {
 
         try {
             when (args[0]) {
+                "playerInit" -> {
+                    MatchManager.onlineLCDPlayer.forEach { _, lcdPlayer ->
+                        lcdPlayer.initialize()
+                    }
+                    sender.sendMessage("全てのプレイヤーをinitしました")
+                }
                 "info" -> {
                     if (args.size == 2) {
                         val player = Bukkit.getPlayer(args[1])
@@ -52,6 +58,24 @@ class AdminCommand : CommandExecutor {
                         if (player != null) {
                             MatchManager.getLCDPlayer(player).gameMode = GameMode.CREATIVE
                             flag = true
+                        }
+                    }
+                }
+                "campaignMob" -> {
+                    if (args.size == 3) {
+                        when (args[1]) {
+                            "spawn" -> {
+                                val player = Bukkit.getPlayer(args[2])
+                                if (player != null) {
+                                    val mob =
+                                        player.world.spawnEntity(player.location, EntityType.SHEEP) as LivingEntity
+                                    mob.setAI(false)
+                                    mob.customName = "${ChatColor.AQUA}JOIN GAME"
+                                    mob.isCustomNameVisible = true
+                                    MetadataUtil.setLivingEntityMetadata(mob, MetadataUtil.CAMPAIGN_JOIN_MOB)
+                                    flag = true
+                                }
+                            }
                         }
                     }
                 }

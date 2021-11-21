@@ -86,6 +86,7 @@ class EntityControlListener : Listener {
         val lcdPlayer = manager.getLCDPlayer(e.entity.uniqueId)
         e.deathMessage = ""
         e.keepInventory = false
+        e.setShouldDropExperience(false)
         e.drops.clear()
         if (manager.isMatchPlayer(lcdPlayer) && manager.isMatch) {
             if (lcdPlayer.isSurvivor) {

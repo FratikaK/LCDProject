@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.util
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.player.PlayerData
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -60,7 +61,7 @@ object ScoreBoardIndicator {
         messageList.add("")
 
         for (lcdPlayer in manager.matchPlayer) {
-            if (!lcdPlayer.isSurvivor){
+            if (!lcdPlayer.isSurvivor) {
                 continue
             }
             val name = lcdPlayer.player.name
@@ -79,11 +80,15 @@ object ScoreBoardIndicator {
     private fun lobbyBoardLine(player: Player): ArrayList<String> {
         val messageList = ArrayList<String>()
         val lcdPlayer = manager.getLCDPlayer(player)
+        val level = lcdPlayer.playerData.level
+        val nextExp = PlayerData.getNextLevelRequireEXP(level, lcdPlayer.playerData.exp)
+        val totalSkillPoint = lcdPlayer.playerData.totalSkillPoint
         messageList.add("")
         messageList.add("${ChatColor.AQUA}${player.name}")
-        messageList.add("${ChatColor.WHITE}レベル:  ${ChatColor.AQUA}${player.level}")
-        messageList.add("${ChatColor.WHITE}次のレベルまで  ${ChatColor.YELLOW}${player.expToLevel}Exp")
+        messageList.add("${ChatColor.WHITE}レベル:  ${ChatColor.AQUA}${lcdPlayer.playerData.level}")
+        messageList.add("${ChatColor.WHITE}次のレベルまで  ${ChatColor.YELLOW}${nextExp}Exp")
         messageList.add("${ChatColor.WHITE}Perk:  ${ChatColor.LIGHT_PURPLE}${lcdPlayer.perk.perkType.perkName}")
+        messageList.add("${ChatColor.AQUA}Skill Point: ${ChatColor.GOLD}${lcdPlayer.skillPoint}/${totalSkillPoint}")
 
         return messageList
     }

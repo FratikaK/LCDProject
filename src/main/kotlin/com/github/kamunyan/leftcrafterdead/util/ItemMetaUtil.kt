@@ -22,7 +22,10 @@ object ItemMetaUtil {
         return item
     }
 
-    fun generateMetaItem(material: Material, itemName: String, data: Int, lore: List<String>): ItemStack {
+    fun generateMetaItem(material: Material, itemName: String, data: Int, lore: List<String>?): ItemStack {
+        if (lore == null) {
+            return generateMetaItem(material, itemName, data)
+        }
         val item = generateMetaItem(material, itemName, data)
         val metadata = item.itemMeta
         metadata.lore = lore

@@ -25,6 +25,11 @@ enum class GunCategory {
         override fun getWeaponList(): List<String> {
             return listOf("Grenade","Heal Grenade","Concussion","Cluster Bomb")
         }
+    },
+    UNKNOWN{
+        override fun getWeaponList(): List<String> {
+            return listOf()
+        }
     };
 
     abstract fun getWeaponList(): List<String>

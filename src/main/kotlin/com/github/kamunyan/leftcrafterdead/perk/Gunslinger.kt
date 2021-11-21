@@ -46,8 +46,8 @@ class Gunslinger : Perk(PerkType.GUNSLINGER) {
         startGadgetStartCoolDown(lcdPlayer)
         val rateQuantity = 3
         val reloadSpeed = 0.5
-        lcdPlayer.rateAcceleration = lcdPlayer.rateAcceleration + rateQuantity
-        lcdPlayer.reloadSpeedAcceleration += reloadSpeed
+        lcdPlayer.statusData.rateAcceleration += rateQuantity
+        lcdPlayer.statusData.reloadSpeedAcceleration -= reloadSpeed
         val bossBar = Bukkit.createBossBar("レート上昇中", BarColor.PURPLE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG)
         bossBar.addPlayer(lcdPlayer.player)
         bossBar.isVisible = true
@@ -57,8 +57,8 @@ class Gunslinger : Perk(PerkType.GUNSLINGER) {
                 if (timeLeft <= 0.0) {
                     bossBar.removeAll()
                     bossBar.isVisible = false
-                    lcdPlayer.rateAcceleration -= rateQuantity
-                    lcdPlayer.reloadSpeedAcceleration -= reloadSpeed
+                    lcdPlayer.statusData.rateAcceleration -= rateQuantity
+                    lcdPlayer.statusData.reloadSpeedAcceleration += reloadSpeed
                     cancel()
                     return
                 }

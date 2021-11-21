@@ -44,4 +44,19 @@ object WeaponUtil {
         }
         return false
     }
+
+    fun getGunCategory(weaponTitle: String): GunCategory {
+        if (GunCategory.ASSAULT_RIFLE.getWeaponList().contains(weaponTitle)) {
+            return GunCategory.ASSAULT_RIFLE
+        } else if (GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(weaponTitle)) {
+            return GunCategory.SUB_MACHINE_GUN
+        } else if (GunCategory.SHOTGUN.getWeaponList().contains(weaponTitle)) {
+            return GunCategory.SHOTGUN
+        } else if (GunCategory.HANDGUN.getWeaponList().contains(weaponTitle)) {
+            return GunCategory.HANDGUN
+        } else if (GunCategory.GRENADE.getWeaponList().contains(weaponTitle)) {
+            return GunCategory.GRENADE
+        }
+        return GunCategory.UNKNOWN
+    }
 }

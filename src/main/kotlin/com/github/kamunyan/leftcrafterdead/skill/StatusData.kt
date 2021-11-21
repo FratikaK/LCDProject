@@ -8,7 +8,11 @@ data class StatusData(
     /**
      * アーマー上限
      */
-    var armorLimit: Double = 20.0,
+    var armorLimit: Double = 6.0,
+    /**
+     * アーマーが回復するまでの時間増減倍率
+     */
+    var armorRecovery: Double = 1.0,
     /**
      * 移動スピード
      */
@@ -18,13 +22,37 @@ data class StatusData(
      */
     var weaponDamageMultiplier: Double = 1.0,
     /**
+     * ショットガンダメージ増減倍率
+     */
+    var shotgunDamageMultiplier:Double = 1.0,
+    /**
+     * 回避率
+     */
+    var dodgeMultiplier:Int = 0,
+    /**
      * ヘッドショットダメージ倍率
      */
     var headShotDamageMultiplier :Double = 1.0,
     /**
-     * リロード速度
+     * リロード速度。数値が大きいほど遅くなる
      */
-    var reloadSpeedAcceleration: Double = 1.0,
+    var reloadSpeedAcceleration: Double = 0.0,
+    /**
+     * フルオート武器のリロード速度
+     */
+    var fireRateReloadSpeedAcceleration:Double = 0.0,
+    /**
+     * ショットガンのリロード速度
+     */
+    var shotgunReloadSpeedAcceleration:Double = 0.0,
+    /**
+     * マガジン容量増減倍率
+     */
+    var magazineAmountMultiplier:Double = 1.0,
+    /**
+     * 携行弾薬量増減倍率
+     */
+    var ammunitionAmountMultiplier:Double = 1.0,
     /**
      * レート増減値
      */
@@ -42,9 +70,29 @@ data class StatusData(
      */
     var mainGadgetAddPerformance: Double = 1.0,
     /**
+     * 回復ポーションの回復増加倍率
+     */
+    var healPotionMultiplier:Double = 1.0,
+    /**
+     * 回復ポーションを持てる数
+     */
+    var healPotionAmount :Int = 1,
+    /**
+     * 鎮痛剤を持てる数
+     */
+    var painKillerAmount:Int = 3,
+    /**
      * 弾拡散増減値
      */
-    var addBulletSpread: Int = 0,
+    var addBulletSpread: Double = 0.0,
+    /**
+     * スニーク時の弾拡散増減値
+     */
+    var sneakAddBulletSpread: Double = 0.0,
+    /**
+     * ファイアレート武器の弾拡散増減値
+     */
+    var fireRateAddBulletSpread:Double = 0.0,
     /**
      * グレネードダメージ倍率
      */
@@ -56,7 +104,7 @@ data class StatusData(
     /**
      * クリティカルダメージ倍率
      */
-    var criticalDamageMultiplier: Double = 1.1,
+    var criticalDamageMultiplier: Double = 1.5,
     /**
      * 獲得出来るMoney倍率
      */

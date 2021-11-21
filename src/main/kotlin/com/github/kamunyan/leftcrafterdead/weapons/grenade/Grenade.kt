@@ -22,6 +22,10 @@ abstract class Grenade(weaponTitle: String) : LCDWeapon(weaponTitle, WeaponType.
         val itemMeta = grenade.itemMeta
         val itemStack = ItemStack(grenade.type, amount)
         itemStack.itemMeta = itemMeta
+        if (player.inventory.contains(itemStack)){
+            val count = player.inventory.getItem(2)?.amount?:0
+            itemStack.amount += count
+        }
         player.inventory.setItem(2, itemStack)
     }
 

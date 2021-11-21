@@ -2,12 +2,11 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
 import com.shampaggon.crackshot.CSUtility
-import com.shampaggon.crackshot.events.WeaponFireRateEvent
-import com.shampaggon.crackshot.events.WeaponReloadCompleteEvent
-import com.shampaggon.crackshot.events.WeaponReloadEvent
+import com.shampaggon.crackshot.events.*
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -26,9 +25,14 @@ class WeaponControlListener : Listener {
         //reloadSpeedはリロードのはやさ。数値が大きいほど遅くなる
         //reloadDurationはリロード完了までの時間
         val lcdPlayer = manager.getLCDPlayer(e.player)
-        e.reloadSpeed -= lcdPlayer.reloadSpeedAcceleration
-        if (e.reloadSpeed <= 0.1){
-            e.reloadSpeed = 0.1
+        e.reloadSpeed += lcdPlayer.statusData.reloadSpeedAcceleration
+        if (GunCategory.ASSAULT_RIFLE.getWeaponList()
+                .contains(e.weaponTitle) || GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(e.weaponTitle)
+        ) {
+            e.reloadSpeed += lcdPlayer.statusData.fireRateReloadSpeedAcceleration
+        }
+        if (WeaponUtil.getGunCategory(e.weaponTitle) == GunCategory.SHOTGUN) {
+            e.reloadSpeed += lcdPlayer.statusData.shotgunReloadSpeedAcceleration
         }
         val weapon: ItemStack?
         val weaponType = WeaponUtil.getWeaponType(CSUtility().generateWeapon(e.weaponTitle).type, e.player)
@@ -77,14 +81,31 @@ class WeaponControlListener : Listener {
 
     @EventHandler
     fun onFireRate(e: WeaponFireRateEvent) {
-        e.fireRate += manager.getLCDPlayer(e.player).rateAcceleration
+        e.fireRate += manager.getLCDPlayer(e.player).statusData.rateAcceleration
         if (e.fireRate > 16) {
             e.fireRate = 16
         }
     }
 
     @EventHandler
+    fun onPreShoot(e: WeaponPreShootEvent) {
+        val lcdPlayer = manager.getLCDPlayer(e.player)
+        e.bulletSpread += lcdPlayer.statusData.addBulletSpread
+        if (GunCategory.ASSAULT_RIFLE.getWeaponList()
+                .contains(e.weaponTitle) || GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(e.weaponTitle)
+        ) {
+            e.bulletSpread += lcdPlayer.statusData.fireRateAddBulletSpread
+        }
+    }
+
+    @EventHandler
     fun onReloadComplete(e: WeaponReloadCompleteEvent) {
+    }
+
+    @EventHandler
+    fun onWeaponCapacity(e: WeaponCapacityEvent) {
+        val lcdPlayer = manager.getLCDPlayer(e.player)
+        e.capacity = (e.capacity * lcdPlayer.statusData.ammunitionAmountMultiplier).toInt()
     }
 
     /**
