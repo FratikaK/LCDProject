@@ -17,20 +17,20 @@ MASTERMIND:
   6: { name: Machine Gunner,info: ファイアレート武器のレートLvを|4段階上げる,type: spectral_arrow }
 
 ENFORCER:
-  49: { name: Unlock the Tree,info: 全ての武器の威力が5%上昇する,typeｓ nether_star }
+  49: { name: Unlock the Tree,info: 全ての武器の威力が5%上昇する,type: nether_star }
   38: { name: Underdog,info: 自身の半径4mに敵が3人以上いれば|全ての武器のダメージが10%上昇する,type: diorite }
-  40: { name: Resilience,info: アーマーの回復開始時間を15%早くする,type: iron_chestplate }
+  40: { name: Resilience,info: アーマーの上限を3ポイント増やす,type: iron_chestplate }
   42: { name: Scavenger,info: 敵を倒すことで手に入る金額を|20%増やす,type: gold_ingot }
   29: { name: Shotgun CQB,info: ショットガンのリロード速度が15%上昇する,type: light_blue_wool }
-  31: { name: Die Hard,info: アーマーの上限を6ポイント増やす,type: anvil }
+  31: { name: Die Hard,info: アーマーの上限を5ポイント増やす,type: anvil }
   33: { name: Bulletstorm,info: 全ての武器のマガジン容量を15%増やす,type: composter }
   20: { name: Shotgun Impact,info: ショットガンの攻撃力が15%上昇する,type: magma_cream }
   22: { name: Bullseye,info: ヘッドショットすると10%の確率で|アーマーが1ポイント回復する,type: ender_eye }
   24: { name: Extra Lead,info: 携行弾薬が50%増加する,type: bone_meal }
   11: { name: Close By,info: 自身の半径の4m以内にいる敵に対する|ショットガンの威力が20%上昇する,type: diamond_sword }
-  13: { name: Shock And Awe,info: アーマーの回復開始時間を30%早くする,type: comparator }
+  13: { name: Shock And Awe,info: アーマーの上限を7ポイント増やす,type: comparator }
   15: { name: Bulking Up,info: 全ての武器のマガジン容量を30%増やす,type: grass }
-  2: { name: Iron Man,info: アーマーの上限を10ポイント増やす,type: netherite_chestplate }
+  2: { name: Iron Man,info: アーマーの上限を15ポイント増やす,type: netherite_chestplate }
   4: { name: OVERKILL,info: 全ての武器の威力が30%上昇する,type: blaze_powder }
   6: { name: Fully Loaded,info: 敵を倒すと5%の確率で|グレネードを1つ回収できるようになる,type: charcoal }
 

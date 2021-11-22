@@ -53,8 +53,3 @@ data class PlayerData(
         }
     }
 }
-
-fun main() {
-    val data = PlayerData("", 0, 0, 0, 0)
-    PlayerData.addExp(600, data)
-}

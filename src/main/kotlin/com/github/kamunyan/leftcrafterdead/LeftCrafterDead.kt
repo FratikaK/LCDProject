@@ -64,7 +64,9 @@ class LeftCrafterDead : JavaPlugin() {
     }
 
     override fun onDisable() {
-
+        MatchManager.onlineLCDPlayer.forEach{ _,l->
+            l.initialize()
+        }
     }
 
     /**

@@ -79,8 +79,9 @@ abstract class SkillTree {
         val requirePoint = requireSkillPoint[index]!!
         if (lcdPlayer.skillPoint >= requirePoint) {
             skillMap[index] = true
-            lcdPlayer.skillPoint -= requirePoint
             useSkillPoint += requirePoint
+            lcdPlayer.setSkillPoint()
+            lcdPlayer.setPlayerStatus()
             lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
             lcdPlayer.player.openInventory(InventoryDisplayer.skillBuildDisplay(lcdPlayer, skillType))
         }else{

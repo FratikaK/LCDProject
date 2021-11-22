@@ -90,11 +90,17 @@ class WeaponControlListener : Listener {
     @EventHandler
     fun onPreShoot(e: WeaponPreShootEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.player)
-        e.bulletSpread += lcdPlayer.statusData.addBulletSpread
+        var addSpread = 0.0
+        addSpread += lcdPlayer.statusData.addBulletSpread
         if (GunCategory.ASSAULT_RIFLE.getWeaponList()
                 .contains(e.weaponTitle) || GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(e.weaponTitle)
         ) {
-            e.bulletSpread += lcdPlayer.statusData.fireRateAddBulletSpread
+            addSpread += lcdPlayer.statusData.fireRateAddBulletSpread
+        }
+        if (e.bulletSpread + addSpread < 0){
+            e.bulletSpread = 0.0
+        }else{
+            e.bulletSpread += addSpread
         }
     }
 
@@ -105,7 +111,8 @@ class WeaponControlListener : Listener {
     @EventHandler
     fun onWeaponCapacity(e: WeaponCapacityEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.player)
-        e.capacity = (e.capacity * lcdPlayer.statusData.ammunitionAmountMultiplier).toInt()
+        e.capacity = (e.capacity * lcdPlayer.statusData.magazineAmountMultiplier).toInt()
+        println(e.capacity)
     }
 
     /**

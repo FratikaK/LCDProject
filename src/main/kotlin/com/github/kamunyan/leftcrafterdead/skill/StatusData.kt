@@ -10,10 +10,6 @@ data class StatusData(
      */
     var armorLimit: Double = 6.0,
     /**
-     * アーマーが回復するまでの時間増減倍率
-     */
-    var armorRecovery: Double = 1.0,
-    /**
      * 移動スピード
      */
     var walkSpeed: Float = 0.2f,

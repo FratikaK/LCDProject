@@ -47,14 +47,13 @@ class LCDPlayer(uuid: String) {
         SkillType.FUGITIVE to Fugitive()
     )
 
-    var skillPointLimit: Int = 0
-
     var skillPoint: Int = 0
 
     var statusData: StatusData = StatusData()
 
     init {
         loadPlayerData()
+        setPlayerStatus()
         val perkItem = player.inventory.getItem(8)
         perk = if (perkItem == null) {
             Gunslinger()
@@ -62,27 +61,32 @@ class LCDPlayer(uuid: String) {
             PerkType.getPerk(PerkType.getPerkType(perkItem.type))
         }
         perk.setSymbolItem(this)
-        player.level = playerData.level
-        player.totalExperience = playerData.exp
         setSkillPoint()
     }
 
     fun setPlayerStatus() {
+        setSkillBuildStatus()
         player.walkSpeed = statusData.walkSpeed
         player.healthScale = statusData.healthScaleAmount
-        player.health = player.healthScale
+        player.absorptionAmount = statusData.armorLimit
+        player.foodLevel = 20
+        gameMode = GameMode.ADVENTURE
     }
 
-    private fun setSkillPoint() {
-        skillPointLimit = 5 + player.level * 3
-        var point = skillPointLimit
+    fun setSkillPoint() {
+        val total = playerData.totalSkillPoint
+        var used = 0
         skillTree.forEach { (_, u) ->
-            point -= u.useSkillPoint
+            u.skillMap.forEach { (index, isGet) ->
+                if (isGet) {
+                    used += SkillTree.requireSkillPoint[index]!!
+                }
+            }
         }
-        skillPoint = point
+        skillPoint = total - used
     }
 
-    fun setStatusAllData() {
+    private fun setSkillBuildStatus() {
         statusData = StatusData()
         skillTree.forEach { (_, value) ->
             value.setStatusData(statusData)
@@ -149,22 +153,17 @@ class LCDPlayer(uuid: String) {
     fun initialize() {
         isMatchPlayer = false
         isSurvivor = false
-        player.giveExp(campaignData.exp, false)
         playerData.totalKill += campaignData.kill
-        playerData.exp += campaignData.exp
-        playerData.level = player.level
+        PlayerData.addExp(campaignData.exp, playerData)
         updatePlayerData()
         campaignData = CampaignPlayerData(0, 0, 0)
-        statusData = StatusData()
-        gameMode = GameMode.ADVENTURE
-        setPerk()
         setPlayerStatus()
-        setSkillPoint()
+        setPerk()
         setLobbyItem()
     }
 
     override fun toString(): String {
-        return "${ChatColor.AQUA}${player.displayName}\n" +
+        return "${ChatColor.AQUA}${player.name}\n" +
                 "${ChatColor.WHITE}uuid: ${player.uniqueId}\n" +
                 "isMatchPlayer: $isMatchPlayer\n" +
                 "isSurvivor: $isSurvivor\n" +

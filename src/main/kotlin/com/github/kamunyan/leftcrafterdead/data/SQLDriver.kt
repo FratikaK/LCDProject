@@ -29,15 +29,18 @@ object SQLDriver {
                 PlayerAchievement.insert {
                     it[uuid] = data.uuid
                     it[totalKill] = 0
-                    it[experience] = 0
+                    it[exp] = 0
                     it[level] = 0
+                    it[totalSkillPoint] = 5
                 }
             }
             PlayerAchievement.select { PlayerAchievement.uuid eq data.uuid }.forEach {
                 data.totalKill = it[PlayerAchievement.totalKill]
-                data.exp = it[PlayerAchievement.experience]
+                data.exp = it[PlayerAchievement.exp]
                 data.level = it[PlayerAchievement.level]
+                data.totalSkillPoint = it[PlayerAchievement.totalSkillPoint]
             }
+            plugin.logger.info("LoadPlayerData totalKill${data.totalKill} exp${data.exp} level${data.level} totalSkillPoint${data.totalSkillPoint}")
         }
     }
 
@@ -46,9 +49,11 @@ object SQLDriver {
             createPlayerAchievementTable()
             PlayerAchievement.update({ PlayerAchievement.uuid eq data.uuid }) {
                 it[totalKill] = data.totalKill
-                it[experience] = data.exp
+                it[exp] = data.exp
                 it[level] = data.level
+                it[totalSkillPoint] = data.totalSkillPoint
             }
+            plugin.logger.info("SavePlayerData totalKill${data.totalKill} exp${data.exp} level${data.level} totalSkillPoint${data.totalSkillPoint}")
         }
     }
 }

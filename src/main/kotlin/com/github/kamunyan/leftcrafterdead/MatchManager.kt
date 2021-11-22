@@ -134,14 +134,12 @@ object MatchManager {
 
         matchPlayer.forEach { lcdPlayer ->
             lcdPlayer.player.teleport(campaign.startLocations[0])
-            lcdPlayer.player.health = 20.0
-            lcdPlayer.player.foodLevel = 20
+            lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
             lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true
-            lcdPlayer.setStatusAllData()
         }
         //難易度を設定
         determineDifficulty()
@@ -314,7 +312,6 @@ object MatchManager {
             startPreparation()
         }
 
-        lcdPlayer.setStatusAllData()
         lcdPlayer.setPlayerStatus()
 
         if (!isMatch && isPreparation) {
@@ -322,10 +319,9 @@ object MatchManager {
         } else if (isCheckPoint) {
             lcdPlayer.isSurvivor = true
             lcdPlayer.gameMode = GameMode.ADVENTURE
+            lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
-            lcdPlayer.player.health = lcdPlayer.player.healthScale
-            lcdPlayer.player.foodLevel = 20
             plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, campaign.restLocation)
         } else {
             //途中参加
