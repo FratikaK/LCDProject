@@ -13,5 +13,6 @@ enum class SpecialSkillType {
     FULLY_LOADED,
 
     //Technician
-
+    FIRE_TRAP,
+    BODY_EXPERTISE
 }

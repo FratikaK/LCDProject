@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
 import com.github.kamunyan.leftcrafterdead.skill.SkillType
+import com.github.kamunyan.leftcrafterdead.subgadget.SubGadget
 import com.github.kamunyan.leftcrafterdead.util.InventoryDisplayer
 import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
@@ -50,6 +51,8 @@ class InventoryDisplayListener : Listener {
         inventory = when (e.currentItem!!.itemMeta!!.customModelData) {
             60 -> display.selectPerkDisplay()
             61 -> display.skillTreeTypeSelectDisplay(lcdPlayer)
+            62 -> display.selectFirstSubGadgetDisplay()
+            91 -> display.mainMenuDisplay()
             500 -> display.skillBuildDisplay(lcdPlayer, SkillType.MASTERMIND)
             501 -> display.skillBuildDisplay(lcdPlayer, SkillType.ENFORCER)
             502 -> display.skillBuildDisplay(lcdPlayer, SkillType.TECHNICIAN)
@@ -60,6 +63,26 @@ class InventoryDisplayListener : Listener {
         }
         e.isCancelled = true
         e.whoClicked.openInventory(inventory)
+    }
+
+    @EventHandler
+    fun onSelectSubGadget(e: InventoryClickEvent) {
+        if (!clickItemHasCustomModelData(e.currentItem)) return
+        e.isCancelled = true
+        if (e.currentItem!!.itemMeta.customModelData == 92) {
+            val lcdPlayer = manager.getLCDPlayer(e.whoClicked.uniqueId)
+            lcdPlayer.player.openInventory(display.subGadgetSlotSelectDisplay(lcdPlayer, e.currentItem!!))
+        }
+    }
+
+    @EventHandler
+    fun onSelectSubGadgetSlot(e: InventoryClickEvent) {
+        if (!clickItemHasCustomModelData(e.currentItem)) return
+        if (e.inventory.getItem(8) == null) return
+        e.isCancelled = true
+        val lcdPlayer = manager.getLCDPlayer(e.whoClicked.uniqueId)
+        val type = SubGadget.getSubGadget(e.inventory.getItem(8)!!.type)
+        SubGadget.setFirstSubGadget(lcdPlayer,type,e.currentItem!!.itemMeta.customModelData)
     }
 
     @EventHandler

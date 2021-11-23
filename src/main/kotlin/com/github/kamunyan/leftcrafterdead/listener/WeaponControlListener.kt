@@ -112,7 +112,6 @@ class WeaponControlListener : Listener {
     fun onWeaponCapacity(e: WeaponCapacityEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.player)
         e.capacity = (e.capacity * lcdPlayer.statusData.magazineAmountMultiplier).toInt()
-        println(e.capacity)
     }
 
     /**

@@ -5,6 +5,7 @@ import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.skill.SkillTree
 import com.github.kamunyan.leftcrafterdead.skill.SkillType
 import com.github.kamunyan.leftcrafterdead.skill.type.MasterMind
+import com.github.kamunyan.leftcrafterdead.subgadget.SubGadget
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.primary.AssaultRifle
 import com.github.kamunyan.leftcrafterdead.weapons.primary.Shotgun
@@ -14,6 +15,7 @@ import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.Inventory
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,8 +26,10 @@ object InventoryDisplayer {
         val inventory = Bukkit.createInventory(null, 54, "Main Menu")
         val perk = util.generateMetaItem(Material.END_CRYSTAL, "${ChatColor.LIGHT_PURPLE}Perk", 60)
         val skill = util.generateMetaItem(Material.OAK_SAPLING, "${ChatColor.GOLD}スキルツリー", 61)
+        val subGadget = util.generateMetaItem(Material.FURNACE_MINECART, "${ChatColor.GREEN}サブガジェット", 62)
         inventory.setItem(20, perk)
         inventory.setItem(21, skill)
+        inventory.setItem(22, subGadget)
         return inventory
     }
 
@@ -126,6 +130,44 @@ object InventoryDisplayer {
         return inventory
     }
 
+    fun subGadgetSlotSelectDisplay(lcdPlayer: LCDPlayer, itemStack: ItemStack): Inventory {
+        val inventory = Bukkit.createInventory(null, 9, "Select Slot")
+        val exit = util.generateMetaItem(Material.OAK_DOOR, "${ChatColor.RED}戻る", 62)
+        inventory.setItem(0, exit)
+        inventory.setItem(8, itemStack)
+        lcdPlayer.subGadget.forEach { (t, u) ->
+            if (u != null) {
+                val gadget = SubGadget.getSubGadget(u)
+                val meta = gadget.generateItemStack().itemMeta
+                val item = ItemStack(gadget.material)
+                meta.setCustomModelData(90 + t)
+                item.itemMeta = meta
+                inventory.setItem(t - 2, item)
+            } else {
+                val item =
+                    util.generateMetaItem(Material.BLACK_STAINED_GLASS_PANE, "${ChatColor.BOLD}アイテムがセットされていません", 90 + t)
+                inventory.setItem(t - 2, item)
+            }
+        }
+        return inventory
+    }
+
+    fun selectFirstSubGadgetDisplay(): Inventory {
+        val inventory = Bukkit.createInventory(null, 9, "サブガジェット")
+        val exit = util.generateMetaItem(Material.OAK_DOOR, "${ChatColor.RED}戻る", 91)
+        inventory.setItem(0, exit)
+        SubGadget.selectGadgetDisplayItemMap.forEach { (t, u) ->
+            val gadget = SubGadget.getSubGadget(u)
+            val meta = gadget.generateItemStack().itemMeta
+            meta.setCustomModelData(92)
+            meta.lore(listOf())
+            val item = ItemStack(gadget.material)
+            item.itemMeta = meta
+            inventory.setItem(t, item)
+        }
+        return inventory
+    }
+
     fun skillTreeTypeSelectDisplay(lcdPlayer: LCDPlayer): Inventory {
         val inventory = Bukkit.createInventory(null, 9, "Select Skill Tree")
         val tree = lcdPlayer.skillTree
@@ -191,7 +233,7 @@ object InventoryDisplayer {
                                 material = Material.getMaterial(type)!!
                             }
                         }
-                    }else{
+                    } else {
                         material = Material.BLUE_STAINED_GLASS_PANE
                     }
                 }

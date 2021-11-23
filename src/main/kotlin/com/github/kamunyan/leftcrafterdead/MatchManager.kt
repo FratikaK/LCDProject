@@ -137,6 +137,7 @@ object MatchManager {
             lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
+            lcdPlayer.setFirstSubGadget()
             lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true
@@ -161,8 +162,10 @@ object MatchManager {
             val getExp = 5 * campaignDifficulty.expRate + addExp
             matchPlayer.forEach { lcdPlayer ->
                 lcdPlayer.player.teleport(campaign.restLocation)
+                //復活処理
                 if (!lcdPlayer.isSurvivor) {
                     lcdPlayer.perk.setFirstWeapon(lcdPlayer)
+                    lcdPlayer.setFirstSubGadget()
                 }
                 lcdPlayer.setPlayerStatus()
                 lcdPlayer.isSurvivor = true
@@ -321,6 +324,7 @@ object MatchManager {
             lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
+            lcdPlayer.setFirstSubGadget()
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
             plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, campaign.restLocation)
         } else {

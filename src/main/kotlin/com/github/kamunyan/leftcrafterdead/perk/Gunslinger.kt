@@ -44,8 +44,8 @@ class Gunslinger : Perk(PerkType.GUNSLINGER) {
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
         startGadgetStartCoolDown(lcdPlayer)
-        val rateQuantity = 3
-        val reloadSpeed = 0.5
+        val rateQuantity = (3 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt()
+        val reloadSpeed = 0.5 * lcdPlayer.statusData.mainGadgetAddPerformance
         lcdPlayer.statusData.rateAcceleration += rateQuantity
         lcdPlayer.statusData.reloadSpeedAcceleration -= reloadSpeed
         val bossBar = Bukkit.createBossBar("レート上昇中", BarColor.PURPLE, BarStyle.SEGMENTED_10, BarFlag.CREATE_FOG)

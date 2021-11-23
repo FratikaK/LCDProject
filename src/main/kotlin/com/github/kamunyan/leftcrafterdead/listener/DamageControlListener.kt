@@ -3,6 +3,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
+import com.github.kamunyan.leftcrafterdead.subgadget.TripMine
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
@@ -28,23 +29,34 @@ class DamageControlListener : Listener {
     @EventHandler
     fun onCrackShotExplosion(e: WeaponExplodeEvent) {
         val location = e.location.clone()
-        val radius = plugin.crackShot.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
+        val lcdPlayer = manager.getLCDPlayer(e.player)
+        var radius = plugin.crackShot.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
+        if (e.weaponTitle == "TRIP MINE") {
+            radius = ((radius * lcdPlayer.statusData.tripMineRangeMultiplier).toInt())
+        }
         val weaponDamage = plugin.crackShot.handle.getInt("${e.weaponTitle}.Shooting.Projectile_Damage")
         val distanceDecay = weaponDamage / radius
         val entities = location.getNearbyLivingEntities(radius.toDouble())
-        val lcdPlayer = manager.getLCDPlayer(e.player)
 
-        lcdPlayer.perk.getGrenade().explosionEffects(location)
+        if (GunCategory.GRENADE.getWeaponList().contains(e.weaponTitle)) {
+            lcdPlayer.perk.getGrenade().explosionEffects(location)
+        }
         //ダメージを与える処理
         entities.forEach { livingEntity ->
-            lcdPlayer.perk.getGrenade().specialEffects(e.player, livingEntity)
+            if (GunCategory.GRENADE.getWeaponList().contains(e.weaponTitle)) {
+                lcdPlayer.perk.getGrenade().specialEffects(e.player, livingEntity)
+            }
             if (manager.enemyHashMap.containsKey(livingEntity.uniqueId)) {
                 val enemy = manager.enemyHashMap[livingEntity.uniqueId]!!
                 if (livingEntity is HumanEntity || livingEntity.isDead) {
                     return@forEach
                 }
                 val distance = (livingEntity.location.distance(location)).toInt()
+                if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.FIRE_TRAP)) {
+                    livingEntity.fireTicks = 200
+                }
                 var lastDamage = weaponDamage - (distance * distanceDecay) - enemy.explosionResistance
+                lastDamage *= lcdPlayer.statusData.explosionDamageMultiplier
                 if (lastDamage <= 0) {
                     lastDamage = 0.0
                 }
@@ -60,7 +72,6 @@ class DamageControlListener : Listener {
             return
         }
         if (e.victim.type == EntityType.PLAYER) {
-            println("キャンセル！")
             e.isCancelled = true
             return
         }
@@ -70,20 +81,20 @@ class DamageControlListener : Listener {
         val enemy = manager.enemyHashMap[e.victim.uniqueId]!!
         val data = manager.getLCDPlayer(e.player).statusData
         e.damage *= data.weaponDamageMultiplier
-        if (WeaponUtil.getGunCategory(e.weaponTitle) == GunCategory.SHOTGUN) {
+        val category = WeaponUtil.getGunCategory(e.weaponTitle)
+        if (category == GunCategory.SHOTGUN) {
             e.damage *= data.shotgunDamageMultiplier
-            if (data.specialSkillTypes.contains(SpecialSkillType.CLOSE_BY)) {
-                if (e.player.location.distance(e.victim.location) <= 4) {
+        }
+        if (data.specialSkillTypes.contains(SpecialSkillType.UNDERDOG)) {
+            val entityList = e.player.location.getNearbyLivingEntities(4.0)
+            if (entityList.size >= 4) {
+                e.damage *= 1.1
+                if (category == GunCategory.SHOTGUN && data.specialSkillTypes.contains(SpecialSkillType.CLOSE_BY)) {
                     e.damage *= 1.2
                 }
             }
         }
-        if (data.specialSkillTypes.contains(SpecialSkillType.UNDERDOG)) {
-            val entityList = e.player.location.getNearbyLivingEntities(4.0)
-            if (entityList.size >= 3) {
-                e.damage *= 1.1
-            }
-        }
+
         if (!e.isHeadshot) {
             if (e.damage <= enemy.nonHeadShotDamageResistance) {
                 e.damage = 0.0
@@ -99,6 +110,20 @@ class DamageControlListener : Listener {
             }
         }
         e.damage = e.damage - enemy.nonHeadShotDamageResistance
+        if (category == GunCategory.ASSAULT_RIFLE || category == GunCategory.SUB_MACHINE_GUN) {
+            if (data.specialSkillTypes.contains(SpecialSkillType.GRAZE)) {
+                val entities = e.victim.location.getNearbyLivingEntities(5.0)
+                entities.remove(e.victim)
+                var count = 0
+                for (entity in entities) {
+                    if (entity.type == EntityType.PLAYER) continue
+                    if (count >= 3) break
+                    entity.damage(e.damage, e.player)
+                    count++
+                }
+            }
+        }
+        println("ダメージ量 ${e.damage}")
     }
 
     @EventHandler

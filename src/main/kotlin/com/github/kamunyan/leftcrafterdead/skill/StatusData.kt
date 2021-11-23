@@ -22,6 +22,10 @@ data class StatusData(
      */
     var shotgunDamageMultiplier:Double = 1.0,
     /**
+     * 爆発ダメージ増減倍率
+     */
+    var explosionDamageMultiplier:Double = 1.0,
+    /**
      * 回避率
      */
     var dodgeMultiplier:Int = 0,
@@ -58,9 +62,9 @@ data class StatusData(
      */
     var addFirstGrenade: Int = 0,
     /**
-     * クールダウン増減値
+     * クールダウン増減値倍率
      */
-    var mainGadgetCoolDown: Int = 0,
+    var addMainGadgetCoolDown: Double = 1.0,
     /**
      * メインガジェットの性能倍率
      */
@@ -72,7 +76,7 @@ data class StatusData(
     /**
      * 回復ポーションを持てる数
      */
-    var healPotionAmount :Int = 1,
+    var healPotionAmount :Int = 2,
     /**
      * 鎮痛剤を持てる数
      */
@@ -105,6 +109,26 @@ data class StatusData(
      * 獲得出来るMoney倍率
      */
     var addMoneyMultiplier:Double = 1.0,
+    /**
+     * セントリーガン稼働時間
+     */
+    var sentryGunTime :Int = 10,
+    /**
+     * セントリーガンを持てる数
+     */
+    var sentryGunAmount:Int = 2,
+    /**
+     * セントリーガンの威力増減倍率
+     */
+    var sentryGunPowerMultiplier:Double = 1.0,
+    /**
+     * Trip Mine爆発範囲増減倍率
+     */
+    var tripMineRangeMultiplier:Double = 1.0,
+    /**
+     * Trip Mineを持てる数
+     */
+    var tripMineAmount:Int = 3,
     val specialSkillTypes: ArrayList<SpecialSkillType> = ArrayList()
 ) {
 }

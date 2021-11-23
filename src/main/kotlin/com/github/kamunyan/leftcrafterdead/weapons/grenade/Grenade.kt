@@ -19,14 +19,13 @@ abstract class Grenade(weaponTitle: String) : LCDWeapon(weaponTitle, WeaponType.
             return
         }
         val grenade = crackShot.generateWeapon(weaponTitle)
-        val itemMeta = grenade.itemMeta
-        val itemStack = ItemStack(grenade.type, amount)
-        itemStack.itemMeta = itemMeta
-        if (player.inventory.contains(itemStack)){
-            val count = player.inventory.getItem(2)?.amount?:0
-            itemStack.amount += count
+        var add = 0
+        val item = player.inventory.getItem(2)
+        if (item != null) {
+            add = item.amount
         }
-        player.inventory.setItem(2, itemStack)
+        grenade.amount = (amount + add)
+        player.inventory.setItem(2, grenade)
     }
 
     override fun weaponDataList(): List<String> {

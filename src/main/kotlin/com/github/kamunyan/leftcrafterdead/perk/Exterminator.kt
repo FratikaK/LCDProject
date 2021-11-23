@@ -77,7 +77,15 @@ class Exterminator : Perk(PerkType.EXTERMINATOR) {
                 livingEntity.velocity.z * 10.0
             )
             livingEntity.damage(0.0, lcdPlayer.player)
-            livingEntity.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 60, 5, false, false))
+            livingEntity.addPotionEffect(
+                PotionEffect(
+                    PotionEffectType.SLOW,
+                    (60 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt(),
+                    5,
+                    false,
+                    false
+                )
+            )
         }
     }
 

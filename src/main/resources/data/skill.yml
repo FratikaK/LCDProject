@@ -6,19 +6,19 @@ MASTERMIND:
   29: { name: Quick Fix,info: 回復ポーションの回復量が50%増加する,type: glowstone_dust }
   31: { name: Aggressive Reload,info: アサルトライフルとサブマシンガンの|リロード速度が15%上昇する,type: prismarine_crystals }
   33: { name: Rifleman,info: アサルトライフルとサブマシンガンの|弾拡散率を1.5減少させる,type: paper }
-  20: { name: Combat Doctor,info: 回復ポーションを持てる数が1個増える,type: sweet_berries }
+  20: { name: Combat Doctor,info: 回復ポーションを持てる数が2個増える,type: sweet_berries }
   22: { name: Combat Medic,info: 回復ポーション使用時に30秒間|被ダメージを軽減する,type: beetroot }
   24: { name: Painkillers,info: Painkillerを持てる数が8個になる,type: pumpkin_seeds }
   11: { name: Uppers,info: 回復ポーションの回復量が100%増加する,type: golden_apple }
   13: { name: Confident,info: 回避率が25%上昇する,type: feather }
   15: { name: Marksman,info: アサルトライフル、サブマシンガンの|弾拡散率を2.5減少させる,type: netherite_scrap }
   2: { name: Inspire,info: 回復ポーション使用時、|味方の体力も回復する,type: diamond_horse_armor }
-  4: { name: Graze,info: アサルトライフル、サブマシンガンの|攻撃が敵にヒットした場合、|敵の半径10mにいる敵3体まで|同じダメージを与えることが出来る,type: beacon }
+  4: { name: Graze,info: アサルトライフル、サブマシンガンの|攻撃が敵にヒットした場合、|敵の半径5mにいる敵3体まで|同じダメージを与えることが出来る,type: beacon }
   6: { name: Machine Gunner,info: ファイアレート武器のレートLvを|4段階上げる,type: spectral_arrow }
 
 ENFORCER:
   49: { name: Unlock the Tree,info: 全ての武器の威力が5%上昇する,type: nether_star }
-  38: { name: Underdog,info: 自身の半径4mに敵が3人以上いれば|全ての武器のダメージが10%上昇する,type: diorite }
+  38: { name: Underdog,info: 自身の半径4mに敵が4人以上いれば|全ての武器のダメージが10%上昇する,type: diorite }
   40: { name: Resilience,info: アーマーの上限を3ポイント増やす,type: iron_chestplate }
   42: { name: Scavenger,info: 敵を倒すことで手に入る金額を|20%増やす,type: gold_ingot }
   29: { name: Shotgun CQB,info: ショットガンのリロード速度が15%上昇する,type: light_blue_wool }

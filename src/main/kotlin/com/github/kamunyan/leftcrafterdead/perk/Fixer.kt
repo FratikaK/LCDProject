@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.perk
 
+import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Concussion
@@ -41,17 +42,21 @@ class Fixer : Perk(PerkType.FIXER) {
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
         startGadgetStartCoolDown(lcdPlayer)
-        lcdPlayer.player.location.getNearbyPlayers(10.0).forEach { player ->
-            player.playSound(player.location, Sound.ITEM_FIRECHARGE_USE, 2f, 1f)
-            ParticleBuilder(ParticleEffect.REDSTONE, player.location.clone())
-                .setColor(Color.YELLOW)
-                .setOffset(3f, 3f, 3f)
-                .setAmount(200)
-                .display()
-            val armorAmount = player.healthScale * 0.6
-            player.absorptionAmount = player.absorptionAmount + armorAmount
-            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}からアーマーを${armorAmount}ポイント付与された！")
-        }
+        lcdPlayer.player.location.getNearbyPlayers(10.0 * lcdPlayer.statusData.mainGadgetAddPerformance)
+            .forEach { player ->
+                player.playSound(player.location, Sound.ITEM_FIRECHARGE_USE, 2f, 1f)
+                ParticleBuilder(ParticleEffect.REDSTONE, player.location.clone())
+                    .setColor(Color.YELLOW)
+                    .setOffset(3f, 3f, 3f)
+                    .setAmount(200)
+                    .display()
+                val armorAmount = (player.healthScale * 0.6) * lcdPlayer.statusData.mainGadgetAddPerformance
+                player.absorptionAmount = player.absorptionAmount + armorAmount
+                if (MatchManager.getLCDPlayer(player).statusData.armorLimit < player.absorptionAmount){
+                    player.absorptionAmount = MatchManager.getLCDPlayer(player).statusData.armorLimit
+                }
+                player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}からアーマーを${armorAmount}ポイント付与された！")
+            }
     }
 
     override val gadgetCoolDown: Int = 5

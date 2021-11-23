@@ -6,6 +6,10 @@ import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
 import com.github.kamunyan.leftcrafterdead.enemy.specials.LCDSpecialEnemy
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
 import com.github.kamunyan.leftcrafterdead.event.StartCheckPointEvent
+import com.github.kamunyan.leftcrafterdead.subgadget.HealPotion
+import com.github.kamunyan.leftcrafterdead.subgadget.SubGadget
+import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import io.papermc.paper.event.world.WorldGameRuleChangeEvent
 import org.bukkit.Bukkit
 import org.bukkit.EntityEffect
@@ -124,6 +128,18 @@ class EntityControlListener : Listener {
         if (e.player.gameMode != lcdPlayer.gameMode) {
             e.player.gameMode = lcdPlayer.gameMode
         }
+
+        if (lcdPlayer.isSurvivor && manager.isMatch) {
+            val inventory = e.player.inventory
+            inventory.remove(Material.GLASS_BOTTLE)
+            for (i in 5..8) {
+                if (inventory.getItem(i) == null) {
+                    inventory.setItem(i, SubGadget.nullItem())
+                    lcdPlayer.subGadget[i] = null
+                }
+            }
+        }
+
         if (e.player.location.clone().add(0.0, -0.1, 0.0).block.type == Material.DIAMOND_BLOCK) {
             if (!manager.isMatch || manager.isCheckPoint) {
                 return
@@ -213,6 +229,13 @@ class EntityControlListener : Listener {
     }
 
     @EventHandler
+    fun onRegainHealth(e: EntityRegainHealthEvent){
+        if (e.regainReason == EntityRegainHealthEvent.RegainReason.MAGIC){
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
     fun onPlayerDropItem(e: EntityDropItemEvent) {
         e.isCancelled = true
     }
@@ -231,6 +254,23 @@ class EntityControlListener : Listener {
     fun onLaunchHit(e: ProjectileHitEvent) {
         if (e.entity.type == EntityType.ARROW) {
             e.entity.remove()
+        }
+    }
+
+    @EventHandler
+    fun onItemConsume(e: PlayerItemConsumeEvent) {
+        e.replacement = null
+        if (ItemMetaUtil.hasItemMetaCustomModelData(e.item)) {
+            when (e.item.itemMeta.customModelData) {
+                HealPotion.customData -> HealPotion.rightInteract(e.player)
+            }
+        }
+    }
+
+    @EventHandler
+    fun onPotionEffect(e: EntityPotionEffectEvent) {
+        if (e.cause == EntityPotionEffectEvent.Cause.POTION_DRINK) {
+            e.isCancelled = true
         }
     }
 }

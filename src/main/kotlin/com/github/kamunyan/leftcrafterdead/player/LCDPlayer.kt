@@ -9,6 +9,10 @@ import com.github.kamunyan.leftcrafterdead.skill.SkillTree
 import com.github.kamunyan.leftcrafterdead.skill.SkillType
 import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import com.github.kamunyan.leftcrafterdead.skill.type.*
+import com.github.kamunyan.leftcrafterdead.subgadget.HealPotion
+import com.github.kamunyan.leftcrafterdead.subgadget.SubGadget
+import com.github.kamunyan.leftcrafterdead.subgadget.SubGadgetType
+import com.github.kamunyan.leftcrafterdead.subgadget.TripMine
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
@@ -16,6 +20,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
 import org.bukkit.*
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
 class LCDPlayer(uuid: String) {
@@ -34,6 +39,8 @@ class LCDPlayer(uuid: String) {
     lateinit var primary: PrimaryWeapon
 
     var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
+
+    val subGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
 
     var campaignData: CampaignPlayerData = CampaignPlayerData(0, 0, 0)
 
@@ -101,6 +108,25 @@ class LCDPlayer(uuid: String) {
         player.inventory.setItem(0, diamond)
         player.inventory.setItem(1, endCrystal)
         perk.setSymbolItem(this)
+    }
+
+    fun setFirstSubGadget() {
+        subGadget.forEach { (t, u) ->
+            val item: ItemStack = when (u) {
+                SubGadgetType.HEAL_POTION -> {
+                    val gadget = HealPotion.generateItemStack()
+                    gadget.amount = statusData.healPotionAmount
+                    gadget
+                }
+                SubGadgetType.TRIP_MINE ->{
+                    val gadget = TripMine.generateItemStack()
+                    gadget.amount = statusData.tripMineAmount
+                    gadget
+                }
+                else -> SubGadget.nullItem()
+            }
+            player.inventory.setItem(t, item)
+        }
     }
 
     fun setSpectator() {

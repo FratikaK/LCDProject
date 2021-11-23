@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.perk
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
+import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
@@ -47,7 +48,7 @@ class Medic() : Perk(PerkType.MEDIC) {
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
         startGadgetStartCoolDown(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
-        val players = location.getNearbyPlayers(10.0)
+        val players = location.getNearbyPlayers(10.0 * lcdPlayer.statusData.mainGadgetAddPerformance)
         object : BukkitRunnable() {
             var range = 0.2
             override fun run() {
@@ -75,7 +76,8 @@ class Medic() : Perk(PerkType.MEDIC) {
         }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 1)
 
         players.forEach { player ->
-            val healAmount = (player.healthScale * 0.4).toInt()
+            val healAmount =
+                (player.healthScale * 0.4 * MatchManager.getLCDPlayer(player).statusData.mainGadgetAddPerformance).toInt()
             if (player.health + healAmount > player.healthScale) {
                 player.health = player.healthScale
                 return@forEach

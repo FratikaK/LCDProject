@@ -32,4 +32,16 @@ object ItemMetaUtil {
         item.itemMeta = metadata
         return item
     }
+
+    fun hasItemMetaCustomModelData(item: ItemStack?): Boolean {
+        var flag = false
+        if (item != null) {
+            if (item.hasItemMeta()) {
+                if (item.itemMeta.hasCustomModelData()) {
+                    flag = true
+                }
+            }
+        }
+        return flag
+    }
 }
