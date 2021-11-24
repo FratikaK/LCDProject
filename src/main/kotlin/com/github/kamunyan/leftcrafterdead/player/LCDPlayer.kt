@@ -9,10 +9,7 @@ import com.github.kamunyan.leftcrafterdead.skill.SkillTree
 import com.github.kamunyan.leftcrafterdead.skill.SkillType
 import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import com.github.kamunyan.leftcrafterdead.skill.type.*
-import com.github.kamunyan.leftcrafterdead.subgadget.HealPotion
-import com.github.kamunyan.leftcrafterdead.subgadget.SubGadget
-import com.github.kamunyan.leftcrafterdead.subgadget.SubGadgetType
-import com.github.kamunyan.leftcrafterdead.subgadget.TripMine
+import com.github.kamunyan.leftcrafterdead.subgadget.*
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
@@ -119,6 +116,11 @@ class LCDPlayer(uuid: String) {
                 SubGadgetType.TRIP_MINE ->{
                     val gadget = TripMine.generateItemStack()
                     gadget.amount = statusData.tripMineAmount
+                    gadget
+                }
+                SubGadgetType.SENTRY_GUN->{
+                    val gadget = SentryGun.generateItemStack()
+                    gadget.amount = statusData.sentryGunAmount
                     gadget
                 }
                 else -> SubGadget.nullItem()

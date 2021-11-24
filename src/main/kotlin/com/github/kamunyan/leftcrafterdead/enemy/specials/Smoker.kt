@@ -55,5 +55,6 @@ object Smoker : LCDSpecialEnemy() {
         super.setLivingEntitySettings(livingEntity)
         livingEntity.equipment?.helmet = ItemStack(Material.DIAMOND_HELMET)
         livingEntity.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED)!!.baseValue = 0.1
+        livingEntity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)!!.baseValue = 3.0
     }
 }

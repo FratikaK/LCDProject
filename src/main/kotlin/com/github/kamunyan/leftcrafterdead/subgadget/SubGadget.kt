@@ -30,6 +30,7 @@ abstract class SubGadget {
             return when (type) {
                 SubGadgetType.HEAL_POTION -> HealPotion
                 SubGadgetType.TRIP_MINE -> TripMine
+                SubGadgetType.SENTRY_GUN -> SentryGun
             }
         }
 
@@ -37,6 +38,7 @@ abstract class SubGadget {
             return when (material) {
                 HealPotion.material -> HealPotion
                 TripMine.material -> TripMine
+                SentryGun.material -> SentryGun
                 else -> null
             }
         }
@@ -66,6 +68,7 @@ abstract class SubGadget {
             lcdPlayer.player.openInventory(InventoryDisplayer.selectFirstSubGadgetDisplay())
         }
 
-        val selectGadgetDisplayItemMap = hashMapOf(1 to SubGadgetType.HEAL_POTION, 2 to SubGadgetType.TRIP_MINE)
+        val selectGadgetDisplayItemMap =
+            hashMapOf(1 to SubGadgetType.HEAL_POTION, 2 to SubGadgetType.TRIP_MINE, 3 to SubGadgetType.SENTRY_GUN)
     }
 }

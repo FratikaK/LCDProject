@@ -19,6 +19,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
 
@@ -71,7 +72,7 @@ class DamageControlListener : Listener {
             e.damage = 0.0
             return
         }
-        if (e.victim.type == EntityType.PLAYER) {
+        if (e.victim.type == EntityType.PLAYER || e.victim.type == EntityType.SNOWMAN || e.victim.type == EntityType.VILLAGER) {
             e.isCancelled = true
             return
         }
@@ -152,6 +153,11 @@ class DamageControlListener : Listener {
                 manager.enemyHashMap.remove(uuid)
             }
         }
+    }
+
+    @EventHandler
+    fun onEntityDamage(e: EntityDamageEvent){
+        if (e.entity.type == EntityType.SNOWMAN) e.isCancelled = true
     }
 
     @EventHandler

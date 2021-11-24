@@ -18,6 +18,7 @@ import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
+import org.bukkit.entity.Snowman
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
@@ -59,8 +60,11 @@ class EntityControlListener : Listener {
         if (e.reason == EntityTargetEvent.TargetReason.TARGET_ATTACKED_NEARBY_ENTITY) {
             e.isCancelled = true
         }
+        if (e.entity.type == EntityType.SNOWMAN) {
+            return
+        }
         if (e.target != null) {
-            if (e.target!!.type == EntityType.VILLAGER || e.target!!.type != EntityType.PLAYER) {
+            if (e.target!!.type == EntityType.VILLAGER || e.target!!.type == EntityType.SNOWMAN) {
                 e.isCancelled = true
             }
             if (manager.enemyHashMap.containsKey(e.entity.uniqueId)) {
@@ -229,8 +233,8 @@ class EntityControlListener : Listener {
     }
 
     @EventHandler
-    fun onRegainHealth(e: EntityRegainHealthEvent){
-        if (e.regainReason == EntityRegainHealthEvent.RegainReason.MAGIC){
+    fun onRegainHealth(e: EntityRegainHealthEvent) {
+        if (e.regainReason == EntityRegainHealthEvent.RegainReason.MAGIC) {
             e.isCancelled = true
         }
     }
@@ -254,6 +258,18 @@ class EntityControlListener : Listener {
     fun onLaunchHit(e: ProjectileHitEvent) {
         if (e.entity.type == EntityType.ARROW) {
             e.entity.remove()
+        }
+        if (e.entity.type == EntityType.SNOWBALL) {
+            if (e.entity.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)) {
+                if ((e.entity.shooter != null && e.entity.shooter is Player) && e.hitEntity != null) {
+                    if (manager.enemyHashMap.containsKey(e.hitEntity!!.uniqueId)) {
+                        (e.hitEntity!! as LivingEntity).damage(
+                            4 * manager.getLCDPlayer(e.entity.shooter as Player).statusData.sentryGunPowerMultiplier,
+                            e.entity.shooter as Player
+                        )
+                    }
+                }
+            }
         }
     }
 
