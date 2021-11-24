@@ -104,9 +104,7 @@ class LCDPlayer(uuid: String) {
         val util = ItemMetaUtil
         player.inventory.clear()
         val diamond = util.generateMetaItem(Material.ENCHANTED_BOOK, "${ChatColor.AQUA}Main Menu")
-        val endCrystal = util.generateMetaItem(Material.END_CRYSTAL, "${ChatColor.DARK_PURPLE}Select Perk")
         player.inventory.setItem(0, diamond)
-        player.inventory.setItem(1, endCrystal)
         perk.setSymbolItem(this)
     }
 
