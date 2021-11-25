@@ -3,8 +3,7 @@ package com.github.kamunyan.leftcrafterdead.enemy
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
 import org.bukkit.Location
-import org.bukkit.entity.Entity
-import org.bukkit.entity.EntityType
+import org.bukkit.entity.*
 import java.util.*
 
 object NormalEnemy : LCDEnemy() {
@@ -29,5 +28,12 @@ object NormalEnemy : LCDEnemy() {
             else -> 0.0
         }
         return defaultPower + addPower
+    }
+
+    override fun setLivingEntitySettings(livingEntity: LivingEntity) {
+        super.setLivingEntitySettings(livingEntity)
+        if (livingEntity is Ageable){
+            livingEntity.setAdult()
+        }
     }
 }

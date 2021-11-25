@@ -1,8 +1,8 @@
 package com.github.kamunyan.leftcrafterdead.enemy.boss
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
-import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
+import com.github.kamunyan.leftcrafterdead.enemy.specials.Smoker
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import org.bukkit.Location
 import org.bukkit.Material
@@ -42,13 +42,21 @@ class MasterSmoker : LCDBoss() {
                     return
                 }
                 livingEntity.world.playSound(livingEntity.location, Sound.ITEM_FIRECHARGE_USE, 3f, 1f)
-                var arrow = 10
-                while (arrow >= 0) {
-                    val attack = livingEntity.launchProjectile(Arrow::class.java)
-                    attack.shooter = livingEntity
-                    attack.damage = getPower()
-                    attack.velocity = attack.velocity.add(Vector(random.nextDouble(), 0.0, random.nextDouble()))
-                    arrow--
+                for (amount in 0..10) {
+                    val arrow = livingEntity.launchProjectile(Arrow::class.java)
+                    MetadataUtil.setProjectileMetadata(arrow, MetadataUtil.ENEMY_ARROW)
+                    arrow.damage = getPower()
+                    val yaw = Math.toRadians((-livingEntity.location.yaw - 90.0f).toDouble())
+                    val pitch = Math.toRadians((-livingEntity.location.pitch).toDouble())
+                    val spread = doubleArrayOf(1.0, 1.0, 1.0)
+                    for (i in 0..3) {
+                        spread[i] = (random.nextDouble() - random.nextDouble()) * 4.0 * 0.1
+                    }
+                    val x = cos(pitch) * cos(yaw) + spread[0]
+                    val y = sin(pitch) + spread[1]
+                    val z = -sin(yaw) * cos(pitch) + spread[2]
+                    val dirVel = Vector(x, y, z)
+                    arrow.velocity = dirVel.multiply(15)
                 }
             }
         }.runTaskTimer(LeftCrafterDead.instance, 0, 30)
@@ -86,16 +94,28 @@ class MasterSmoker : LCDBoss() {
         override fun activationSkill(livingEntity: LivingEntity) {
             object : BukkitRunnable() {
                 val random = Random()
-                var arrow = 100
+                var amount = 100
                 override fun run() {
-                    if (arrow <= 0 || livingEntity.isDead) {
+                    if (amount <= 0 || livingEntity.isDead) {
                         cancel()
                         return
                     }
                     livingEntity.world.playSound(livingEntity.location, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 1f, 1f)
-                    val attack = livingEntity.launchProjectile(Arrow::class.java)
-                    attack.velocity = attack.velocity.add(Vector(random.nextDouble(), 0.0, random.nextDouble()))
-                    arrow--
+                    val arrow = livingEntity.launchProjectile(Arrow::class.java)
+                    MetadataUtil.setProjectileMetadata(arrow, MetadataUtil.ENEMY_ARROW)
+                    arrow.damage = getPower()
+                    val yaw = Math.toRadians((-livingEntity.location.yaw - 90.0f).toDouble())
+                    val pitch = Math.toRadians((-livingEntity.location.pitch).toDouble())
+                    val spread = doubleArrayOf(1.0, 1.0, 1.0)
+                    for (i in 0..3) {
+                        spread[i] = (random.nextDouble() - random.nextDouble()) * 2.0 * 0.1
+                    }
+                    val x = cos(pitch) * cos(yaw) + spread[0]
+                    val y = sin(pitch) + spread[1]
+                    val z = -sin(yaw) * cos(pitch) + spread[2]
+                    val dirVel = Vector(x, y, z)
+                    arrow.velocity = dirVel.multiply(20)
+                    amount--
                 }
             }.runTaskTimer(LeftCrafterDead.instance, 0, 1)
         }

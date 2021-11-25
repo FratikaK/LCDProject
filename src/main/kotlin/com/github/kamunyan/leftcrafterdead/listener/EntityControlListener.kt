@@ -2,7 +2,6 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
-import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
 import com.github.kamunyan.leftcrafterdead.enemy.specials.LCDSpecialEnemy
 import com.github.kamunyan.leftcrafterdead.event.LCDPlayerDeathEvent
 import com.github.kamunyan.leftcrafterdead.event.StartCheckPointEvent
@@ -10,15 +9,12 @@ import com.github.kamunyan.leftcrafterdead.subgadget.HealPotion
 import com.github.kamunyan.leftcrafterdead.subgadget.SubGadget
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
-import io.papermc.paper.event.world.WorldGameRuleChangeEvent
 import org.bukkit.Bukkit
-import org.bukkit.EntityEffect
 import org.bukkit.GameMode
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
-import org.bukkit.entity.Snowman
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
@@ -259,16 +255,10 @@ class EntityControlListener : Listener {
         if (e.entity.type == EntityType.ARROW) {
             e.entity.remove()
         }
-        if (e.entity.type == EntityType.SNOWBALL) {
-            if (e.entity.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)) {
-                if ((e.entity.shooter != null && e.entity.shooter is Player) && e.hitEntity != null) {
-                    if (manager.enemyHashMap.containsKey(e.hitEntity!!.uniqueId)) {
-                        (e.hitEntity!! as LivingEntity).damage(
-                            4 * manager.getLCDPlayer(e.entity.shooter as Player).statusData.sentryGunPowerMultiplier,
-                            e.entity.shooter as Player
-                        )
-                    }
-                }
+        if (e.hitEntity == null) return
+        if(e.entity.hasMetadata(MetadataUtil.ENEMY_ARROW)){
+            if (manager.enemyHashMap.containsKey(e.hitEntity!!.uniqueId)){
+                e.isCancelled = true
             }
         }
     }

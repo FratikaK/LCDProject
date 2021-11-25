@@ -6,6 +6,7 @@ import org.bukkit.entity.Projectile
 import org.bukkit.metadata.FixedMetadataValue
 
 object MetadataUtil {
+    const val ENEMY_ARROW = "ENEMY_ARROW"
     const val EXPLODE_ARROW = "EXPLODE_ARROW"
     const val MERCHANT = "MERCHANT"
     const val CAMPAIGN_JOIN_MOB = "CAMPAIGN_JOIN_MOB"

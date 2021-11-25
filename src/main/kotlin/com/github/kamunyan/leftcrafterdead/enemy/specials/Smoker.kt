@@ -3,6 +3,8 @@ package com.github.kamunyan.leftcrafterdead.enemy.specials
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
 import com.github.kamunyan.leftcrafterdead.campaign.CampaignDifficulty
+import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
+import com.github.kamunyan.leftcrafterdead.util.SentryGunMinion
 import org.bukkit.Material
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Arrow
@@ -12,6 +14,8 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 import java.util.*
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 object Smoker : LCDSpecialEnemy() {
@@ -25,8 +29,19 @@ object Smoker : LCDSpecialEnemy() {
                     return
                 }
                 val arrow = livingEntity.launchProjectile(Arrow::class.java)
+                MetadataUtil.setProjectileMetadata(arrow, MetadataUtil.ENEMY_ARROW)
                 arrow.damage = getPower()
-                arrow.velocity.add(Vector(random.nextInt(5).toFloat(), 0.0f, random.nextInt(5).toFloat()).normalize())
+                val yaw = Math.toRadians((-livingEntity.location.yaw - 90.0f).toDouble())
+                val pitch = Math.toRadians((-livingEntity.location.pitch).toDouble())
+                val spread = doubleArrayOf(1.0, 1.0, 1.0)
+                for (i in 0..3) {
+                    spread[i] = (random.nextDouble() - random.nextDouble()) * 2.5 * 0.1
+                }
+                val x = cos(pitch) * cos(yaw) + spread[0]
+                val y = sin(pitch) + spread[1]
+                val z = -sin(yaw) * cos(pitch) + spread[2]
+                val dirVel = Vector(x, y, z)
+                arrow.velocity = dirVel.multiply(15)
             }
         }.runTaskTimer(LeftCrafterDead.instance, 0, 5)
     }
