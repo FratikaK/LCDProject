@@ -172,6 +172,7 @@ class DamageControlListener : Listener {
         val enemy = manager.enemyHashMap[e.damager.uniqueId]!!
         enemy.attackSpecialEffects(e.damager as LivingEntity, player as LivingEntity)
         e.damage = enemy.getPower()
+        println("PlayerDamage ${e.damage}")
     }
 
     @EventHandler

@@ -55,8 +55,8 @@ object SentryGunMinion {
                     val pitch = Math.toRadians((-sentryMob.location.pitch).toDouble())
                     val spread = doubleArrayOf(1.0, 1.0, 1.0)
 
-                    for (i in 0..3) {
-                        spread[i] = (random.nextDouble() - random.nextDouble()) * 2.0 * 0.1
+                    for (i in 0..2) {
+                        spread[i] = (random.nextDouble() - random.nextDouble()) * 1.0 * 0.1
                     }
                     val x = cos(pitch) * cos(yaw) + spread[0]
                     val y = sin(pitch) + spread[1]
@@ -67,7 +67,8 @@ object SentryGunMinion {
                         "projParentNode",
                         FixedMetadataValue(plugin.crackShot.handle, lcdPlayer.primary.weaponTitle)
                     )
-                    snowball.velocity = dirVel.multiply(10)
+                    snowball.setMetadata(MetadataUtil.SENTRY_GUN_BALL,FixedMetadataValue(plugin,null))
+                    snowball.velocity = dirVel.multiply(3)
                     snowball.shooter = lcdPlayer.player
                     sentryMob.world.playSound(sentryMob.location, Sound.ENTITY_ZOMBIE_ATTACK_WOODEN_DOOR, 0.5f, 1f)
                 }

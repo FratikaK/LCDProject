@@ -30,20 +30,20 @@ object Smoker : LCDSpecialEnemy() {
                 }
                 val arrow = livingEntity.launchProjectile(Arrow::class.java)
                 MetadataUtil.setProjectileMetadata(arrow, MetadataUtil.ENEMY_ARROW)
-                arrow.damage = getPower()
+                arrow.damage = getPower() / 2
                 val yaw = Math.toRadians((-livingEntity.location.yaw - 90.0f).toDouble())
                 val pitch = Math.toRadians((-livingEntity.location.pitch).toDouble())
                 val spread = doubleArrayOf(1.0, 1.0, 1.0)
-                for (i in 0..3) {
-                    spread[i] = (random.nextDouble() - random.nextDouble()) * 2.5 * 0.1
+                for (i in 0..2) {
+                    spread[i] = (random.nextDouble() - random.nextDouble()) * 1.5 * 0.1
                 }
                 val x = cos(pitch) * cos(yaw) + spread[0]
                 val y = sin(pitch) + spread[1]
                 val z = -sin(yaw) * cos(pitch) + spread[2]
                 val dirVel = Vector(x, y, z)
-                arrow.velocity = dirVel.multiply(15)
+                arrow.velocity = dirVel.multiply(1)
             }
-        }.runTaskTimer(LeftCrafterDead.instance, 0, 5)
+        }.runTaskTimer(LeftCrafterDead.instance, 0, 10)
     }
 
     override val nonHeadShotDamageResistance: Double = 7.0
@@ -57,7 +57,7 @@ object Smoker : LCDSpecialEnemy() {
     }
 
     override fun getPower(): Double {
-        val defaultPower = 1.5
+        val defaultPower = 2.0
         val addPower = when (manager.campaignDifficulty) {
             CampaignDifficulty.ADVANCED -> 1.0
             CampaignDifficulty.EXPERT -> 2.0

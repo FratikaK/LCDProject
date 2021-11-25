@@ -41,7 +41,7 @@ object CampaignConfig {
                 yml.getStringList("start").forEach {
                     startLocations.add(locationByString(it, campaignTitle))
                 }
-                gameProgressLimit = startLocations.size
+                gameProgressLimit = startLocations.size - 1
             }
 
             if (yml.contains("rest")) {
@@ -81,7 +81,7 @@ object CampaignConfig {
                 manager.campaign = campaign
             }
             manager.campaignList.add(campaign)
-            plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign '${campaign}' has been successfully created!")
+            plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign '${campaign.campaignTitle}' has been successfully created!")
             campaign.campaignInformation()
         }
         if (manager.campaignList.isEmpty()) {

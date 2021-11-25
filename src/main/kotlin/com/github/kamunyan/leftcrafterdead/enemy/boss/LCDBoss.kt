@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.enemy.LCDEnemy
 import com.github.kamunyan.leftcrafterdead.event.DefeatBossEvent
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
 import org.bukkit.event.entity.CreatureSpawnEvent
@@ -11,6 +12,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 abstract class LCDBoss : LCDEnemy() {
+    abstract val bossName: String
     override val metadataKey: String = BOSS_ENEMY_KEY
     override val enemyType: EnemyType = EnemyType.BOSS
     override val money: Int = 0
@@ -44,6 +46,7 @@ abstract class LCDBoss : LCDEnemy() {
                     bossSkills[random.nextInt(bossSkills.size)].activationSkill(livingEntity)
                     return
                 }
+                livingEntity.customName = "${ChatColor.RED}HP${livingEntity.health.toInt()}  ${ChatColor.AQUA}${bossName}"
                 timeLeft--
             }
         }.runTaskTimer(LeftCrafterDead.instance, 0, 20)
@@ -51,6 +54,11 @@ abstract class LCDBoss : LCDEnemy() {
 
     override fun enemyDeathEffects(enemy: LivingEntity) {
         Bukkit.getPluginManager().callEvent(DefeatBossEvent())
+    }
+
+    override fun setLivingEntitySettings(livingEntity: LivingEntity) {
+        super.setLivingEntitySettings(livingEntity)
+        livingEntity.isCustomNameVisible = true
     }
 
     abstract val bossSkillCoolDown: Int

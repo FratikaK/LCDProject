@@ -256,6 +256,9 @@ class EntityControlListener : Listener {
             e.entity.remove()
         }
         if (e.hitEntity == null) return
+        if(e.hitEntity!!.type == EntityType.PLAYER && e.entity.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)){
+            e.isCancelled = true
+        }
         if(e.entity.hasMetadata(MetadataUtil.ENEMY_ARROW)){
             if (manager.enemyHashMap.containsKey(e.hitEntity!!.uniqueId)){
                 e.isCancelled = true

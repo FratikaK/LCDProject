@@ -112,7 +112,7 @@ data class StatusData(
     /**
      * セントリーガン稼働時間
      */
-    var sentryGunTime :Int = 10,
+    var sentryGunTime :Int = 20,
     /**
      * セントリーガンを持てる数
      */
