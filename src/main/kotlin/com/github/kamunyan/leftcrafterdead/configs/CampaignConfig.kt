@@ -81,8 +81,8 @@ object CampaignConfig {
                 manager.campaign = campaign
             }
             manager.campaignList.add(campaign)
-            plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign has been successfully created!")
-            plugin.logger.info(campaign.toString())
+            plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign '${campaign}' has been successfully created!")
+            campaign.campaignInformation()
         }
         if (manager.campaignList.isEmpty()) {
             plugin.logger.info("[CampaignConfig]${ChatColor.RED}None of the loaded Campaigns are available.")

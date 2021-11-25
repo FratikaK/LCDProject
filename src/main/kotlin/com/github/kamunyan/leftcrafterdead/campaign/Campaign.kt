@@ -1,5 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.campaign
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
+import org.bukkit.ChatColor
 import org.bukkit.Location
 import org.bukkit.entity.EntityType
 
@@ -11,22 +13,20 @@ data class Campaign(
     val normalEnemyLocations: Map<Int, List<Location>>,
     val normalMobType: EntityType = EntityType.ZOMBIE,
 ) {
-    override fun toString(): String {
-        val builder = StringBuilder()
+    private val plugin = LeftCrafterDead.instance
+    fun campaignInformation() {
+        plugin.logger.info("${ChatColor.GREEN}===================================")
+        plugin.logger.info("マップ名: $campaignTitle")
+        plugin.logger.info("セクション数: $gameProgressLimit")
+        plugin.logger.info("プレイヤー開始地点")
         startLocations.forEach {
-            builder.append("world: ${it.world.name}, x: ${it.x}, y: ${it.y}, z: ${it.z} \n")
+            plugin.logger.info("world: ${it.world.name}, x: ${it.x}, y: ${it.y}, z: ${it.z}")
         }
-        val start = builder.toString()
-        builder.clear()
-        normalEnemyLocations.forEach {
-            builder.append("${it.key}: ${it.value.size}, ")
+        plugin.logger.info("Enemyスポーン地点の数")
+        normalEnemyLocations.forEach { (t, u) ->
+            plugin.logger.info("section${t}: ${u.size}")
         }
-        val normal = builder.toString()
-        return "マップ名: $campaignTitle \n" +
-                "進行度上限: $gameProgressLimit \n" +
-                "スタート地点: $start" +
-                "チェックポイント地点: world: ${restLocation.world.name}, x: ${restLocation.x}, y: ${restLocation.y}, z: ${restLocation.z} \n" +
-                "通常Enemyスポーン地点数: $normal \n" +
-                "通常MobType: ${normalMobType.name}"
+        plugin.logger.info("通常Mobのタイプ: $normalMobType")
+        plugin.logger.info("${ChatColor.GREEN}===================================")
     }
 }
