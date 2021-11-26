@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.subgadget
 
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
+import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import com.github.kamunyan.leftcrafterdead.util.InventoryDisplayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
 import net.kyori.adventure.text.Component
@@ -19,7 +20,7 @@ abstract class SubGadget {
     abstract val lore: List<Component>
     abstract fun rightInteract(player: Player)
 
-    open fun generateItemStack(): ItemStack {
+    open fun generateItemStack(data: StatusData): ItemStack {
         val item = ItemMetaUtil.generateMetaItem(material, "${ChatColor.AQUA}$subGadgetName", customData)
         item.amount = limitAmount
         return item

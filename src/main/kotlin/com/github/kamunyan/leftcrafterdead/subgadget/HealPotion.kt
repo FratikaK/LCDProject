@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.subgadget
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
+import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -26,11 +27,12 @@ object HealPotion : SubGadget() {
     override val lore: List<Component>
         get() = listOf(Component.text("自身の体力を5ポイント回復する"))
 
-    override fun generateItemStack(): ItemStack {
-        val item = super.generateItemStack()
+    override fun generateItemStack(data: StatusData): ItemStack {
+        val item = super.generateItemStack(data)
         val meta = item.itemMeta as PotionMeta
         meta.addCustomEffect(PotionEffect(PotionEffectType.HEAL, 1, 1), false)
         item.itemMeta = meta
+        item.amount = data.healPotionAmount
         return item
     }
 

@@ -282,4 +282,9 @@ class EntityControlListener : Listener {
             e.isCancelled = true
         }
     }
+
+    @EventHandler
+    fun onOffHand(e: PlayerSwapHandItemsEvent){
+        e.isCancelled = true
+    }
 }

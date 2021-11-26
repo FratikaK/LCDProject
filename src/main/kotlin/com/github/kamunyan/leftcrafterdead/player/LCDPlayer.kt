@@ -37,6 +37,8 @@ class LCDPlayer(uuid: String) {
 
     var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
 
+    val firstSubGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
+
     val subGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
 
     var campaignData: CampaignPlayerData = CampaignPlayerData(0, 0, 0)
@@ -105,25 +107,14 @@ class LCDPlayer(uuid: String) {
         perk.setSymbolItem(this)
     }
 
-    fun setFirstSubGadget() {
-        subGadget.forEach { (t, u) ->
-            val item: ItemStack = when (u) {
-                SubGadgetType.HEAL_POTION -> {
-                    val gadget = HealPotion.generateItemStack()
-                    gadget.amount = statusData.healPotionAmount
-                    gadget
-                }
-                SubGadgetType.TRIP_MINE ->{
-                    val gadget = TripMine.generateItemStack()
-                    gadget.amount = statusData.tripMineAmount
-                    gadget
-                }
-                SubGadgetType.SENTRY_GUN->{
-                    val gadget = SentryGun.generateItemStack()
-                    gadget.amount = statusData.sentryGunAmount
-                    gadget
-                }
-                else -> SubGadget.nullItem()
+    fun giveFirstSubGadget() {
+        firstSubGadget.forEach { (t, u) ->
+            subGadget[t] = u
+            val item: ItemStack
+            if (u != null) {
+                item = u.getInstance().generateItemStack(statusData)
+            } else {
+                item = SubGadget.nullItem()
             }
             player.inventory.setItem(t, item)
         }

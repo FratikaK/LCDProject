@@ -14,6 +14,10 @@ data class StatusData(
      */
     var walkSpeed: Float = 0.2f,
     /**
+     * スタミナ減少速度増減倍率
+     */
+    var staminaDecreaseMultiplier:Double = 1.0,
+    /**
      * ダメージ倍率
      */
     var weaponDamageMultiplier: Double = 1.0,
@@ -58,9 +62,9 @@ data class StatusData(
      */
     var rateAcceleration: Int = 0,
     /**
-     * 初期で配布される追加グレネード個数
+     * 持てるグレネード個数
      */
-    var addFirstGrenade: Int = 0,
+    var maxGrenade: Int = 3,
     /**
      * クールダウン増減値倍率
      */

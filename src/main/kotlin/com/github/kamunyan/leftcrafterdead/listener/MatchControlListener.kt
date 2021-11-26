@@ -54,7 +54,7 @@ class MatchControlListener : Listener {
             if (e.damager.type == EntityType.PLAYER) {
                 manager.joinPlayer(e.damager as Player)
                 e.entity.playEffect(EntityEffect.HURT)
-                e.entity.world.playSound(e.entity.location,Sound.ENTITY_SHEEP_AMBIENT,3f,0f)
+                e.entity.world.playSound(e.entity.location, Sound.ENTITY_SHEEP_AMBIENT, 3f, 0f)
             }
         }
     }
@@ -92,6 +92,7 @@ class MatchControlListener : Listener {
         manager.matchPlayer.forEach {
             if (it.isMatchPlayer && it.isSurvivor) {
                 plugin.chiyogamiLib.smoothTeleport(it.player, manager.campaign.startLocations[manager.gameProgress])
+                it.player.sendTitle("Stage ${MatchManager.gameProgress + 1} Start!", null, 20, 100, 20)
             }
         }
         manager.startRush()

@@ -1,12 +1,14 @@
 package com.github.kamunyan.leftcrafterdead.subgadget
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
+import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 
-object TripMine:SubGadget() {
+object TripMine : SubGadget() {
     override val subGadgetName: String
         get() = "${ChatColor.GREEN}TRIP MINE"
     override val subGadgetType: SubGadgetType
@@ -22,6 +24,12 @@ object TripMine:SubGadget() {
 
     override fun rightInteract(player: Player) {
         val cs = LeftCrafterDead.instance.crackShot
-        cs.spawnMine(player,player.location,"TRIP MINE")
+        cs.spawnMine(player, player.location, "TRIP MINE")
+    }
+
+    override fun generateItemStack(data: StatusData): ItemStack {
+        val item = super.generateItemStack(data)
+        item.amount = data.sentryGunAmount
+        return item
     }
 }

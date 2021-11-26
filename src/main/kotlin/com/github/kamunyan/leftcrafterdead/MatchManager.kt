@@ -137,10 +137,11 @@ object MatchManager {
             lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
-            lcdPlayer.setFirstSubGadget()
+            lcdPlayer.giveFirstSubGadget()
             lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true
+            lcdPlayer.player.sendTitle("Stage ${gameProgress + 1} Start!", null, 20, 100, 20)
         }
         //難易度を設定
         determineDifficulty()
@@ -165,7 +166,7 @@ object MatchManager {
                 //復活処理
                 if (!lcdPlayer.isSurvivor) {
                     lcdPlayer.perk.setFirstWeapon(lcdPlayer)
-                    lcdPlayer.setFirstSubGadget()
+                    lcdPlayer.giveFirstSubGadget()
                 }
                 lcdPlayer.setPlayerStatus()
                 lcdPlayer.isSurvivor = true
@@ -324,7 +325,7 @@ object MatchManager {
             lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
-            lcdPlayer.setFirstSubGadget()
+            lcdPlayer.giveFirstSubGadget()
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
             plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, campaign.restLocation)
         } else {
@@ -386,7 +387,7 @@ object MatchManager {
         return count
     }
 
-    fun determineDifficulty(){
+    fun determineDifficulty() {
 
     }
 
