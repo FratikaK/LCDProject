@@ -10,6 +10,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.primary.AssaultRifle
 import com.github.kamunyan.leftcrafterdead.weapons.primary.Shotgun
 import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -135,10 +136,10 @@ object InventoryDisplayer {
         val exit = util.generateMetaItem(Material.OAK_DOOR, "${ChatColor.RED}戻る", 62)
         inventory.setItem(0, exit)
         inventory.setItem(8, itemStack)
-        lcdPlayer.subGadget.forEach { (t, u) ->
+        lcdPlayer.firstSubGadget.forEach { (t, u) ->
             if (u != null) {
                 val gadget = SubGadget.getSubGadget(u)
-                val meta = gadget.generateItemStack().itemMeta
+                val meta = gadget.generateItemStack(lcdPlayer.statusData).itemMeta
                 val item = ItemStack(gadget.material)
                 meta.setCustomModelData(90 + t)
                 item.itemMeta = meta
@@ -158,10 +159,12 @@ object InventoryDisplayer {
         inventory.setItem(0, exit)
         SubGadget.selectGadgetDisplayItemMap.forEach { (t, u) ->
             val gadget = SubGadget.getSubGadget(u)
-            val meta = gadget.generateItemStack().itemMeta
+            val name = gadget.subGadgetName
+            val item = ItemStack(gadget.material)
+            val meta = item.itemMeta
             meta.setCustomModelData(92)
             meta.lore(listOf())
-            val item = ItemStack(gadget.material)
+            meta.displayName(Component.text(ChatColor.GREEN.toString() + name))
             item.itemMeta = meta
             inventory.setItem(t, item)
         }

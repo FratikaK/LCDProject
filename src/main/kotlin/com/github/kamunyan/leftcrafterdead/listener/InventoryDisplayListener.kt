@@ -44,6 +44,16 @@ class InventoryDisplayListener : Listener {
     }
 
     @EventHandler
+    fun onExitItemClick(e: InventoryClickEvent) {
+        if (e.currentItem != null) {
+            if (e.currentItem!!.type == Material.OAK_DOOR) {
+                e.isCancelled = true
+                (e.whoClicked as Player).playSound(e.whoClicked.location, Sound.BLOCK_WOODEN_DOOR_CLOSE, 1f, 1f)
+            }
+        }
+    }
+
+    @EventHandler
     fun onMeinMenuClick(e: InventoryClickEvent) {
         if (!clickItemHasCustomModelData(e.currentItem)) return
         var inventory: Inventory? = null
@@ -62,6 +72,7 @@ class InventoryDisplayListener : Listener {
             else -> return
         }
         e.isCancelled = true
+        lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.BLOCK_WOODEN_BUTTON_CLICK_ON, 1f, 1f)
         e.whoClicked.openInventory(inventory)
     }
 
@@ -82,7 +93,7 @@ class InventoryDisplayListener : Listener {
         e.isCancelled = true
         val lcdPlayer = manager.getLCDPlayer(e.whoClicked.uniqueId)
         val type = SubGadget.getSubGadget(e.inventory.getItem(8)!!.type)
-        SubGadget.setFirstSubGadget(lcdPlayer,type,e.currentItem!!.itemMeta.customModelData)
+        SubGadget.setFirstSubGadget(lcdPlayer, type, e.currentItem!!.itemMeta.customModelData)
     }
 
     @EventHandler

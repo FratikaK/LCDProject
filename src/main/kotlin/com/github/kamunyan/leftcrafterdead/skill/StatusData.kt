@@ -18,6 +18,10 @@ data class StatusData(
      */
     var staminaDecreaseMultiplier:Double = 1.0,
     /**
+     * 被ダメージ軽減増減倍率
+     */
+    var damageResistMultiplier:Double = 1.0,
+    /**
      * ダメージ倍率
      */
     var weaponDamageMultiplier: Double = 1.0,
@@ -25,6 +29,14 @@ data class StatusData(
      * ショットガンダメージ増減倍率
      */
     var shotgunDamageMultiplier:Double = 1.0,
+    /**
+     * ハンドガンダメージ増減倍率
+     */
+    var handgunDamageMultiplier:Double = 1.0,
+    /**
+     * 特殊武器ダメージ増減倍率
+     */
+    var specialWeaponDamageMultiplier:Double = 1.0,
     /**
      * 爆発ダメージ増減倍率
      */
@@ -53,6 +65,10 @@ data class StatusData(
      * マガジン容量増減倍率
      */
     var magazineAmountMultiplier:Double = 1.0,
+    /**
+     * 追加のハンドガンマガジン数
+     */
+    var addHandgunMagazine:Int = 0,
     /**
      * 携行弾薬量増減倍率
      */
@@ -94,6 +110,10 @@ data class StatusData(
      */
     var sneakAddBulletSpread: Double = 0.0,
     /**
+     * ハンドガンの弾拡散増減値
+     */
+    var handgunAddBulletSpread: Double = 0.0,
+    /**
      * ファイアレート武器の弾拡散増減値
      */
     var fireRateAddBulletSpread:Double = 0.0,
@@ -109,6 +129,10 @@ data class StatusData(
      * クリティカルダメージ倍率
      */
     var criticalDamageMultiplier: Double = 1.5,
+    /**
+     * サプレッサー装着時のクリティカル威力倍率
+     */
+    var suppressorCriticalDamageMultiplier:Double = 1.0,
     /**
      * 獲得出来るMoney倍率
      */

@@ -66,11 +66,29 @@ abstract class SkillTree {
         6 to false
     )
 
+    private fun resetSkillTree(lcdPlayer: LCDPlayer) {
+        lcdPlayer.skillPoint += useSkillPoint
+        useSkillPoint = 0
+        skillMap.forEach { (key, value) ->
+            if (value) {
+                skillMap[key] = false
+            }
+        }
+        lcdPlayer.setPlayerStatus()
+        lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.ENTITY_GENERIC_EXPLODE, 0.5f, 1f)
+        lcdPlayer.player.openInventory(InventoryDisplayer.skillBuildDisplay(lcdPlayer, skillType))
+    }
+
     abstract val skillType: SkillType
     abstract fun setStatusData(data: StatusData)
 
     fun selectSkill(lcdPlayer: LCDPlayer, index: Int) {
-        if (!skillMap.containsKey(index)) return
+        if (!skillMap.containsKey(index)) {
+            if (index == 36) {
+                resetSkillTree(lcdPlayer)
+            }
+            return
+        }
         if (skillMap[index] == true) {
             lcdPlayer.player.sendMessage(Component.text("${ChatColor.RED}既にスキルを習得しています！"))
             lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.BLOCK_LAVA_POP, 1f, 1f)
@@ -84,10 +102,11 @@ abstract class SkillTree {
             lcdPlayer.setPlayerStatus()
             lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
             lcdPlayer.player.openInventory(InventoryDisplayer.skillBuildDisplay(lcdPlayer, skillType))
-        }else{
+        } else {
             lcdPlayer.player.sendMessage(Component.text("${ChatColor.RED}スキルポイントが足りません！"))
             lcdPlayer.player.playSound(lcdPlayer.player.location, Sound.BLOCK_LAVA_POP, 1f, 1f)
         }
     }
+
     var useSkillPoint = 0
 }

@@ -29,6 +29,8 @@ class LCDPlayer(uuid: String) {
 
     var isSurvivor = false
 
+    var isRecovery = false
+
     var gameMode: GameMode = GameMode.ADVENTURE
 
     var perk: Perk

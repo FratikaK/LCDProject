@@ -13,20 +13,24 @@ class Ghost : SkillTree() {
             when (index) {
                 49 -> data.criticalMultiplier += 5
                 38 -> data.dodgeMultiplier += 5
-                40 -> data.staminaDecreaseMultiplier -= 0.25
+                40 -> data.staminaDecreaseMultiplier += 0.25
                 42 -> data.criticalMultiplier += 8
                 29 -> data.walkSpeed *= 1.25f
                 31 -> data.maxGrenade += 2
-                33 -> data.magazineAmountMultiplier += 0.15
-                20 -> data.shotgunDamageMultiplier += 0.15
-                22 -> data.specialSkillTypes.add(SpecialSkillType.BULLSEYE)
-                24 -> data.ammunitionAmountMultiplier += 0.5
-                11 -> data.specialSkillTypes.add(SpecialSkillType.CLOSE_BY)
-                13 -> data.armorLimit += 7
-                15 -> data.magazineAmountMultiplier += 0.3
-                2 -> data.armorLimit += 15
-                4 -> data.weaponDamageMultiplier += 0.3
-                6 -> data.specialSkillTypes.add(SpecialSkillType.FULLY_LOADED)
+                33 -> {
+                    data.specialSkillTypes.add(SpecialSkillType.SILENT_KILLER)
+                    data.weaponDamageMultiplier -= 0.2
+                    data.criticalMultiplier += 15
+                }
+                20 -> data.criticalDamageMultiplier += 0.15
+                22 -> data.staminaDecreaseMultiplier += 0.3
+                24 -> data.suppressorCriticalDamageMultiplier += 0.3
+                11 -> data.dodgeMultiplier += 10
+                13 -> data.walkSpeed *= 1.3f
+                15 -> data.specialSkillTypes.add(SpecialSkillType.LOW_BLOW)
+                2 -> data.maxGrenade += 5
+                4 -> data.specialSkillTypes.add(SpecialSkillType.SNEAKY_BASTARD)
+                6 -> data.suppressorCriticalDamageMultiplier += 0.5
             }
         }
     }

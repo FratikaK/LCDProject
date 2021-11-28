@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
@@ -25,14 +26,20 @@ class WeaponControlListener : Listener {
         //reloadSpeedはリロードのはやさ。数値が大きいほど遅くなる
         //reloadDurationはリロード完了までの時間
         val lcdPlayer = manager.getLCDPlayer(e.player)
+        val data = lcdPlayer.statusData
         e.reloadSpeed += lcdPlayer.statusData.reloadSpeedAcceleration
         if (GunCategory.ASSAULT_RIFLE.getWeaponList()
                 .contains(e.weaponTitle) || GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(e.weaponTitle)
         ) {
-            e.reloadSpeed += lcdPlayer.statusData.fireRateReloadSpeedAcceleration
+            e.reloadSpeed += data.fireRateReloadSpeedAcceleration
         }
         if (WeaponUtil.getGunCategory(e.weaponTitle) == GunCategory.SHOTGUN) {
             e.reloadSpeed += lcdPlayer.statusData.shotgunReloadSpeedAcceleration
+        }
+        if (data.specialSkillTypes.contains(SpecialSkillType.RUNNING_FROM_DEATH)){
+            if (e.player.healthScale <= 10){
+                e.reloadSpeed += -0.15
+            }
         }
         val weapon: ItemStack?
         val weaponType = WeaponUtil.getWeaponType(CSUtility().generateWeapon(e.weaponTitle).type, e.player)
@@ -92,16 +99,23 @@ class WeaponControlListener : Listener {
         val lcdPlayer = manager.getLCDPlayer(e.player)
         var addSpread = 0.0
         addSpread += lcdPlayer.statusData.addBulletSpread
-        if (GunCategory.ASSAULT_RIFLE.getWeaponList()
-                .contains(e.weaponTitle) || GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(e.weaponTitle)
-        ) {
+        val category = WeaponUtil.getGunCategory(e.weaponTitle)
+        if (category == GunCategory.ASSAULT_RIFLE || category == GunCategory.SUB_MACHINE_GUN) {
             addSpread += lcdPlayer.statusData.fireRateAddBulletSpread
         }
-        if (e.bulletSpread + addSpread < 0){
+        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO){
+            addSpread += lcdPlayer.statusData.handgunAddBulletSpread
+        }
+        if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.AKIMBO)){
+            addSpread += -1.5
+        }
+
+        if (e.bulletSpread + addSpread < 0) {
             e.bulletSpread = 0.0
-        }else{
+        } else {
             e.bulletSpread += addSpread
         }
+        println("弾拡散率 ${e.bulletSpread}")
     }
 
     @EventHandler
@@ -112,6 +126,10 @@ class WeaponControlListener : Listener {
     fun onWeaponCapacity(e: WeaponCapacityEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.player)
         e.capacity = (e.capacity * lcdPlayer.statusData.magazineAmountMultiplier).toInt()
+        val category = WeaponUtil.getGunCategory(e.weaponTitle)
+        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO){
+            e.capacity += lcdPlayer.statusData.addHandgunMagazine
+        }
     }
 
     /**

@@ -22,6 +22,12 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import org.bukkit.scheduler.BukkitRunnable
+import xyz.xenondevs.particle.ParticleBuilder
+import xyz.xenondevs.particle.ParticleEffect
+import kotlin.random.Random
 
 class DamageControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
@@ -53,7 +59,9 @@ class DamageControlListener : Listener {
                     return@forEach
                 }
                 val distance = (livingEntity.location.distance(location)).toInt()
-                if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.FIRE_TRAP)) {
+                if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.FIRE_TRAP)
+                    && e.weaponTitle == "TRIP MINE"
+                ) {
                     livingEntity.fireTicks = 200
                 }
                 var lastDamage = weaponDamage - (distance * distanceDecay) - enemy.explosionResistance
@@ -86,6 +94,12 @@ class DamageControlListener : Listener {
         if (category == GunCategory.SHOTGUN) {
             e.damage *= data.shotgunDamageMultiplier
         }
+        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
+            e.damage *= data.handgunDamageMultiplier
+            if (data.specialSkillTypes.contains(SpecialSkillType.AKIMBO)) {
+                e.damage *= 0.2
+            }
+        }
         if (data.specialSkillTypes.contains(SpecialSkillType.UNDERDOG)) {
             val entityList = e.player.location.getNearbyLivingEntities(4.0)
             if (entityList.size >= 4) {
@@ -93,6 +107,43 @@ class DamageControlListener : Listener {
                 if (category == GunCategory.SHOTGUN && data.specialSkillTypes.contains(SpecialSkillType.CLOSE_BY)) {
                     e.damage *= 1.2
                 }
+            }
+        }
+        if (data.specialSkillTypes.contains(SpecialSkillType.BERSERKER) && category == GunCategory.HANDGUN) {
+            val health = e.player.healthScale
+            println(health.toInt())
+            if (health <= 20) {
+                var increase = (20 - health).toInt() / 2
+                if (increase > 8) {
+                    increase = 8
+                }
+                val addDamage = 1.08 * increase
+                e.damage *= addDamage
+                println("バーさかー　$addDamage")
+            }
+        }
+
+        //クリティカル
+        var addCritical = 0
+        if (data.specialSkillTypes.contains(SpecialSkillType.LOW_BLOW) && data.armorLimit <= 20) {
+            addCritical += (20 - data.armorLimit.toInt()) * 2
+            if (addCritical > 28) {
+                addCritical = 28
+            }
+            println("追加クリティカル率 $addCritical")
+        }
+        println("最終的なクリティカル率 ${data.criticalMultiplier + addCritical}")
+        if (data.criticalMultiplier + addCritical != 0) {
+            if (data.criticalMultiplier + addCritical >= Random.nextInt(100)) {
+                e.damage *= data.criticalDamageMultiplier
+                if (data.specialSkillTypes.contains(SpecialSkillType.SILENT_KILLER)) {
+                    e.damage *= data.suppressorCriticalDamageMultiplier
+                }
+                ParticleBuilder(ParticleEffect.CRIT_MAGIC, e.victim.location)
+                    .setOffset(1.5f, 2.5f, 1.5f)
+                    .setAmount(100)
+                    .display()
+                println("クリティカル！")
             }
         }
 
@@ -156,8 +207,60 @@ class DamageControlListener : Listener {
     }
 
     @EventHandler
-    fun onEntityDamage(e: EntityDamageEvent){
+    fun onEntityDamage(e: EntityDamageEvent) {
         if (e.entity.type == EntityType.SNOWMAN) e.isCancelled = true
+        if (e.entity.type == EntityType.PLAYER) {
+            val player = e.entity as Player
+            val lcdPlayer = manager.getLCDPlayer(player)
+            val data = lcdPlayer.statusData
+            var addDodge = 0
+            e.damage *= data.damageResistMultiplier
+            var addResist = 1.0
+            if (data.specialSkillTypes.contains(SpecialSkillType.COMMITMENT_TO_SURVIVAL)) {
+                if (player.healthScale <= 10) {
+                    addResist -= 0.15
+                }
+            }
+            if (data.specialSkillTypes.contains(SpecialSkillType.UP_YOU_GO)) {
+                if (player.healthScale <= 4 && Random.nextInt(100) <= 20) {
+                    player.addPotionEffect(PotionEffect(PotionEffectType.HEAL, 20, 2, false, false, false))
+                    println("UP YOU GO発動")
+                }
+            }
+            if (data.specialSkillTypes.contains(SpecialSkillType.SWAN_SONG)) {
+                if (player.healthScale <= 4) {
+                    addResist -= 0.2
+                }
+            }
+            e.damage *= addResist
+            if (data.specialSkillTypes.contains(SpecialSkillType.SNEAKY_BASTARD) && data.armorLimit <= 20) {
+                addDodge += (20 - data.armorLimit.toInt()) * 2
+                if (addDodge > 20) {
+                    addDodge = 20
+                }
+            }
+            if (data.dodgeMultiplier + addDodge >= Random.nextInt(100)) {
+                e.isCancelled = true
+                (e.entity as Player).playSound(e.entity.location, Sound.ITEM_FIRECHARGE_USE, 1.0f, 1.0f)
+                println("回避しました")
+                println("addDodge $addDodge")
+                println("回避率 ${data.dodgeMultiplier + addDodge}")
+            }
+            if (!e.isCancelled && !lcdPlayer.isRecovery) {
+                lcdPlayer.isRecovery = true
+                object : BukkitRunnable() {
+                    override fun run() {
+                        if (e.entity.isDead || (e.entity as Player).absorptionAmount >= data.armorLimit) {
+                            (e.entity as Player).absorptionAmount = data.armorLimit
+                            lcdPlayer.isRecovery = false
+                            cancel()
+                            return
+                        }
+                        (e.entity as Player).absorptionAmount++
+                    }
+                }.runTaskTimerAsynchronously(plugin, 0, 20)
+            }
+        }
     }
 
     @EventHandler

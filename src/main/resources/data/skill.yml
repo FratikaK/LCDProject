@@ -1,13 +1,13 @@
 MASTERMIND:
   49: { name: Unlock the Tree,info: 全ての武器のリロード速度が5%上昇する,type: nether_star }
-  38: { name: Stable Shot,info: 全ての弾拡散率を0.5下げる,type: polished_granite }
+  38: { name: Auto Fire,info: ファイアレート武器のレートLvを1段階上げる,type: polished_granite }
   40: { name: Technical Reload,info: アサルトライフルとサブマシンガンの|リロード速度が10%上昇する,type: prismarine_shard }
   42: { name: Stable Shot,info: 全ての武器の弾拡散率を0.5減少させる,type: cyan_dye }
   29: { name: Quick Fix,info: 回復ポーションの回復量が50%増加する,type: glowstone_dust }
   31: { name: Aggressive Reload,info: アサルトライフルとサブマシンガンの|リロード速度が15%上昇する,type: prismarine_crystals }
   33: { name: Rifleman,info: アサルトライフルとサブマシンガンの|弾拡散率を1.5減少させる,type: paper }
   20: { name: Combat Doctor,info: 回復ポーションを持てる数が2個増える,type: sweet_berries }
-  22: { name: Combat Medic,info: 回復ポーション使用時に30秒間|被ダメージを軽減する,type: beetroot }
+  22: { name: Combat Medic,info: 回復ポーション使用時に30秒間|被ダメージを30%軽減する,type: beetroot }
   24: { name: Painkillers,info: Painkillerを持てる数が8個になる,type: pumpkin_seeds }
   11: { name: Uppers,info: 回復ポーションの回復量が100%増加する,type: golden_apple }
   13: { name: Confident,info: 回避率が25%上昇する,type: feather }
@@ -72,18 +72,18 @@ GHOST:
 
 FUGITIVE:
   49: { name: Unlock the Tree,info: ハンドガンの威力が10%上昇する,type: nether_star}
-  38: { name: Equilibrium,info: ハンドガンの弾拡散率を1.0下げる,type: orange_dye}
+  38: { name: Equilibrium,info: ハンドガンの弾拡散率を2.0下げる,type: orange_dye}
   40: { name: Commitment to Survival,info: 体力が10ポイント以下の場合、被ダメージを15%軽減する,type: pumpkin_pie}
-  42: { name: Martial Arts,info: 近接武器の威力が15%上昇する,type: stone_sword}
+  42: { name: Special Arts,info: 特殊武器の威力が15%上昇する,type: stone_sword}
   29: { name: Gun Nut,info: ハンドガンのマガジンサイズが5発増加する,type: black_dye}
-  31: { name: Running From Death,info: 体力が10ポイント以下の場合、|全ての武器のリロード速度が15%増加する,type: oak_boat}
-  33: { name: Berserker,info: 最大体力が低いほど全ての武器の威力が上昇する|20ポイントから威力が上昇し、|2ポイントずつで8%上がる|最大で48%上昇する,type: }
-  20: { name: One Handed Talent,info: ハンドガンの威力が15%上昇する,type: bamboo}
-  22: { name: Up You Go,info: 体力が4ポイント以下になった場合|20%の確率で体力を回復する,type: heart_of_the_sea}
+  31: { name: Running From Death,info: 最大体力が10ポイント以下の場合、|全ての武器のリロード速度が15%増加する,type: oak_boat}
+  33: { name: Berserker,info: 最大体力が低いほどハンドガンとAkimboの威力が上昇する|20ポイントから威力が上昇し、|2ポイントずつで8%上がる|最大で48%上昇する,type: }
+  20: { name: One Handed Talent,info: ハンドガンの威力が20%上昇する,type: bamboo}
+  22: { name: Up You Go,info: 最大体力が4ポイント以下の場合|20%の確率で体力を回復する,type: heart_of_the_sea}
   24: { name: Weakening,info: 最大体力が4ポイント減少する,type: wither_skeleton_skull}
   11: { name: Akimbo,info: Akimboの弾拡散率を1.5減少させ|Akimboの威力が20%上昇する,type: chainmail_boots}
-  13: { name: Swan Song,info: 自分の体力が4ポイント以下の場合、被ダメージを20%軽減する,type: music_disc_pigstep}
+  13: { name: Swan Song,info: 自分の最大体力が4ポイント以下の場合、被ダメージを20%軽減する,type: music_disc_pigstep}
   15: { name: Bloodthirst,info: 最大体力が6ポイント減少する,type: redstone}
-  2: { name: Trigger Happy,info: Akimboとハンドガンのマガジンサイズが30発増加する,type: sunflower}
+  2: { name: Trigger Happy,info: ハンドガンのマガジンサイズが30発増加する,type: sunflower}
   4: { name: Frenzy,info: 最大体力が8ポイント減少する|さらに受けるダメージが30%減少する,type: brewing_stand}
   6: { name: Messiah,info: チームの誰かが死亡した場合、|自分のアーマーを全て回復する|また、自身が死亡した場合、チーム全員の体力を全て回復する,type: }

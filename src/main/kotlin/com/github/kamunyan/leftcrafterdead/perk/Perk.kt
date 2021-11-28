@@ -21,7 +21,7 @@ abstract class Perk(val perkType: PerkType) {
         lcdPlayer.primary = firstPrimaryWeapon()
         lcdPlayer.primary.sendWeapon(lcdPlayer.player)
         lcdPlayer.secondaryWeapon.sendWeapon(lcdPlayer.player)
-        getGrenade().sendGrenade(lcdPlayer.player, 3)
+        getGrenade().sendGrenade(lcdPlayer.player, lcdPlayer.statusData.maxGrenade)
         setGadget(lcdPlayer)
     }
 

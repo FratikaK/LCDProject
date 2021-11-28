@@ -30,7 +30,7 @@ object Smoker : LCDSpecialEnemy() {
                 }
                 val arrow = livingEntity.launchProjectile(Arrow::class.java)
                 MetadataUtil.setProjectileMetadata(arrow, MetadataUtil.ENEMY_ARROW)
-                arrow.damage = getPower() / 2
+                arrow.damage = getPower() / 1.2
                 val yaw = Math.toRadians((-livingEntity.location.yaw - 90.0f).toDouble())
                 val pitch = Math.toRadians((-livingEntity.location.pitch).toDouble())
                 val spread = doubleArrayOf(1.0, 1.0, 1.0)

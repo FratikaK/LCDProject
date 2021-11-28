@@ -21,7 +21,7 @@ object NormalEnemy : LCDEnemy() {
     }
 
     override fun getPower(): Double {
-        val defaultPower = 4.0
+        val defaultPower = 5.0
         val addPower = when (manager.campaignDifficulty) {
             CampaignDifficulty.ADVANCED -> 1.5
             CampaignDifficulty.EXPERT -> 3.0

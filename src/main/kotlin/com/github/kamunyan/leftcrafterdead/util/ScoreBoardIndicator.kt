@@ -66,7 +66,7 @@ object ScoreBoardIndicator {
             }
             val name = lcdPlayer.player.name
             val healthScale = lcdPlayer.player.healthScale
-            val health = lcdPlayer.player.health
+            val health = lcdPlayer.player.health.toInt()
             val money = lcdPlayer.campaignData.money
             val kill = lcdPlayer.campaignData.kill
             messageList.add(

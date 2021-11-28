@@ -165,6 +165,7 @@ class EntityControlListener : Listener {
         if (e.player.gameMode != GameMode.ADVENTURE) {
             return
         }
+        val data = manager.getLCDPlayer(e.player).statusData
         if (e.isSprinting) {
             object : BukkitRunnable() {
                 override fun run() {
@@ -174,7 +175,7 @@ class EntityControlListener : Listener {
                     }
                     e.player.foodLevel -= 1
                 }
-            }.runTaskTimerAsynchronously(plugin, 0, 8)
+            }.runTaskTimerAsynchronously(plugin, 0, (5 * data.staminaDecreaseMultiplier).toLong())
         } else {
             object : BukkitRunnable() {
                 var waitTime = 30
@@ -256,11 +257,11 @@ class EntityControlListener : Listener {
             e.entity.remove()
         }
         if (e.hitEntity == null) return
-        if(e.hitEntity!!.type == EntityType.PLAYER && e.entity.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)){
+        if (e.hitEntity!!.type == EntityType.PLAYER && e.entity.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)) {
             e.isCancelled = true
         }
-        if(e.entity.hasMetadata(MetadataUtil.ENEMY_ARROW)){
-            if (manager.enemyHashMap.containsKey(e.hitEntity!!.uniqueId)){
+        if (e.entity.hasMetadata(MetadataUtil.ENEMY_ARROW)) {
+            if (manager.enemyHashMap.containsKey(e.hitEntity!!.uniqueId)) {
                 e.isCancelled = true
             }
         }
@@ -284,7 +285,7 @@ class EntityControlListener : Listener {
     }
 
     @EventHandler
-    fun onOffHand(e: PlayerSwapHandItemsEvent){
+    fun onOffHand(e: PlayerSwapHandItemsEvent) {
         e.isCancelled = true
     }
 }

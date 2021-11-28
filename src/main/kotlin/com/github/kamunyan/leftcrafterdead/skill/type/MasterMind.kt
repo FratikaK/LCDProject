@@ -12,7 +12,7 @@ class MasterMind: SkillTree() {
             if (!flag) return@forEach
             when(index){
                 49 -> data.reloadSpeedAcceleration -= 0.05
-                38 -> data.addBulletSpread -= 0.5
+                38 -> data.rateAcceleration += 1
                 40 -> data.fireRateReloadSpeedAcceleration -= 0.1
                 42 -> data.addBulletSpread -= 0.5
                 29 -> data.healPotionMultiplier += 0.5

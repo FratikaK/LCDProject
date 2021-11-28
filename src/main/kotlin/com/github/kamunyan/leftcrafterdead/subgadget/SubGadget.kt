@@ -51,17 +51,17 @@ abstract class SubGadget {
         fun setFirstSubGadget(lcdPlayer: LCDPlayer, subGadget: SubGadget?, customData: Int) {
             if (subGadget == null) return
             val sameItemRemove = fun(player: LCDPlayer, gadgetSlot: Int) {
-                player.subGadget.forEach { (t, u) ->
+                player.firstSubGadget.forEach { (t, u) ->
                     if (t == gadgetSlot) return@forEach
                     if (u == subGadget.subGadgetType) {
-                        lcdPlayer.subGadget[t] = null
+                        lcdPlayer.firstSubGadget[t] = null
                     }
                 }
             }
             when (customData) {
-                95 -> lcdPlayer.subGadget[5] = subGadget.subGadgetType
-                96 -> lcdPlayer.subGadget[6] = subGadget.subGadgetType
-                97 -> lcdPlayer.subGadget[7] = subGadget.subGadgetType
+                95 -> lcdPlayer.firstSubGadget[5] = subGadget.subGadgetType
+                96 -> lcdPlayer.firstSubGadget[6] = subGadget.subGadgetType
+                97 -> lcdPlayer.firstSubGadget[7] = subGadget.subGadgetType
                 else -> return
             }
             sameItemRemove(lcdPlayer, customData - 90)

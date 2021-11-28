@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.subgadget
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
 import com.github.kamunyan.leftcrafterdead.skill.StatusData
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.PotionMeta
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
+import org.bukkit.scheduler.BukkitRunnable
 
 object HealPotion : SubGadget() {
     override val subGadgetName: String
@@ -44,6 +46,21 @@ object HealPotion : SubGadget() {
             player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.baseValue
         } else {
             player.health += healAmount
+        }
+        if (data.specialSkillTypes.contains(SpecialSkillType.COMBAT_MEDIC)){
+            val addResist = -0.3
+            data.damageResistMultiplier += addResist
+            object :BukkitRunnable(){
+                var timeLeft = 30
+                override fun run() {
+                    if (timeLeft <= 0 || player.isDead){
+                        data.damageResistMultiplier -= addResist
+                        cancel()
+                        return
+                    }
+                    timeLeft--
+                }
+            }.runTaskTimerAsynchronously(LeftCrafterDead.instance,0,20)
         }
         if (data.specialSkillTypes.contains(SpecialSkillType.INSPIRE)) {
             MatchManager.matchPlayer.forEach {
