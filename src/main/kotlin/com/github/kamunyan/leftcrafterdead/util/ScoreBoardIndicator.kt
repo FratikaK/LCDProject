@@ -5,6 +5,7 @@ import com.github.kamunyan.leftcrafterdead.player.PlayerData
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
+import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
@@ -65,7 +66,7 @@ object ScoreBoardIndicator {
                 continue
             }
             val name = lcdPlayer.player.name
-            val healthScale = lcdPlayer.player.healthScale
+            val healthScale = lcdPlayer.player.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.value.toInt()
             val health = lcdPlayer.player.health.toInt()
             val money = lcdPlayer.campaignData.money
             val kill = lcdPlayer.campaignData.kill
