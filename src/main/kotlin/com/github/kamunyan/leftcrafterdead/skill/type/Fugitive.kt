@@ -20,13 +20,13 @@ class Fugitive : SkillTree() {
                 33 -> data.specialSkillTypes.add(SpecialSkillType.BERSERKER)
                 20 -> data.handgunDamageMultiplier += 0.2
                 22 -> data.specialSkillTypes.add(SpecialSkillType.UP_YOU_GO)
-                24 -> data.healthScaleAmount -= 4.0
+                24 -> data.healthScaleAmount -= 2.0
                 11 -> data.specialSkillTypes.add(SpecialSkillType.AKIMBO)
                 13 -> data.specialSkillTypes.add(SpecialSkillType.SWAN_SONG)
-                15 -> data.healthScaleAmount -= 6.0
+                15 -> data.healthScaleAmount -= 3.0
                 2 -> data.addHandgunMagazine += 30
                 4 -> {
-                    data.healthScaleAmount -= 8
+                    data.healthScaleAmount -= 4.0
                     data.damageResistMultiplier -= 0.3
                 }
                 6 -> data.specialSkillTypes.add(SpecialSkillType.MESSIAH)

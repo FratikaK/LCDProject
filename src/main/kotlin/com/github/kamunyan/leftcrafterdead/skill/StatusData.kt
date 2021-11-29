@@ -4,7 +4,7 @@ data class StatusData(
     /**
      * 体力上限
      */
-    var healthScaleAmount: Double = 20.0,
+    var healthScaleAmount: Double = 10.0,
     /**
      * アーマー上限
      */

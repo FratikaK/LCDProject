@@ -388,7 +388,21 @@ object MatchManager {
     }
 
     fun determineDifficulty() {
-
+        val difficultyTable = listOf(15,30)
+        var levels = 0
+        matchPlayer.forEach {
+            if (it.isSurvivor){
+                levels += it.playerData.level
+            }
+        }
+        val average = levels / numberOfSurvivors()
+        var difficulty = CampaignDifficulty.NORMAL
+        if (average >= difficultyTable[0] && average < difficultyTable[1]){
+            difficulty = CampaignDifficulty.ADVANCED
+        }else if (average >= difficultyTable[1]){
+            difficulty = CampaignDifficulty.EXPERT
+        }
+        campaignDifficulty = difficulty
     }
 
     /**

@@ -89,6 +89,10 @@ class DamageControlListener : Listener {
         }
         val enemy = manager.enemyHashMap[e.victim.uniqueId]!!
         val data = manager.getLCDPlayer(e.player).statusData
+
+        if (!e.isHeadshot && data.specialSkillTypes.contains(SpecialSkillType.BODY_EXPERTISE)) {
+            e.damage += plugin.crackShot.handle.getInt("${e.weaponTitle}.Headshot.Bonus_Damage")
+        }
         e.damage *= data.weaponDamageMultiplier
         val category = WeaponUtil.getGunCategory(e.weaponTitle)
         if (category == GunCategory.SHOTGUN) {
@@ -112,12 +116,12 @@ class DamageControlListener : Listener {
         if (data.specialSkillTypes.contains(SpecialSkillType.BERSERKER) && category == GunCategory.HANDGUN) {
             val health = e.player.healthScale
             println(health.toInt())
-            if (health <= 20) {
-                var increase = (20 - health).toInt() / 2
+            if (health <= 10) {
+                var increase = (10 - health).toInt() / 2
                 if (increase > 8) {
                     increase = 8
                 }
-                val addDamage = 1.08 * increase
+                val addDamage = 1.1 + (increase / 10)
                 e.damage *= addDamage
                 println("バーさかー　$addDamage")
             }
@@ -222,7 +226,7 @@ class DamageControlListener : Listener {
                 }
             }
             if (data.specialSkillTypes.contains(SpecialSkillType.UP_YOU_GO)) {
-                if (player.healthScale <= 4 && Random.nextInt(100) <= 20) {
+                if (player.healthScale <= 7.0 && Random.nextInt(100) <= 20) {
                     player.addPotionEffect(PotionEffect(PotionEffectType.HEAL, 20, 2, false, false, false))
                     println("UP YOU GO発動")
                 }
