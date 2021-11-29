@@ -79,7 +79,7 @@ FUGITIVE:
   31: { name: Running From Death,info: 最大体力が10ポイント以下の場合、|全ての武器のリロード速度が15%増加する,type: oak_boat}
   33: { name: Berserker,info: 最大体力が低いほどハンドガンとAkimboの威力が上昇する|10ポイントから威力が上昇し、|2ポイントずつで10%上がる|最大で80%上昇する,type: }
   20: { name: One Handed Talent,info: ハンドガンの威力が20%上昇する,type: bamboo}
-  22: { name: Up You Go,info: 被ダメージ時、最大体力が7ポイント以下の場合|20%の確率で体力を回復する,type: heart_of_the_sea}
+  22: { name: Up You Go,info: 被ダメージ時、最大体力が7ポイント以下の場合|20%の確率でアーマーを回復する,type: heart_of_the_sea}
   24: { name: Weakening,info: 最大体力が2ポイント減少する,type: wither_skeleton_skull}
   11: { name: Akimbo,info: Akimboの弾拡散率を1.5減少させ|Akimboの威力が20%上昇する,type: chainmail_boots}
   13: { name: Swan Song,info: 自分の最大体力が4ポイント以下の場合、被ダメージを20%軽減する,type: music_disc_pigstep}

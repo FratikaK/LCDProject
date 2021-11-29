@@ -27,21 +27,14 @@ abstract class SubGadget {
     }
 
     companion object {
-        fun getSubGadget(type: SubGadgetType): SubGadget {
-            return when (type) {
-                SubGadgetType.HEAL_POTION -> HealPotion
-                SubGadgetType.TRIP_MINE -> TripMine
-                SubGadgetType.SENTRY_GUN -> SentryGun
-            }
-        }
-
         fun getSubGadget(material: Material): SubGadget? {
-            return when (material) {
-                HealPotion.material -> HealPotion
-                TripMine.material -> TripMine
-                SentryGun.material -> SentryGun
-                else -> null
+            var gadget: SubGadget? = null
+            selectGadgetDisplayItemMap.forEach { (_, u) ->
+                if (u.getInstance().material == material) {
+                    gadget = u.getInstance()
+                }
             }
+            return gadget
         }
 
         fun nullItem(): ItemStack {
@@ -70,6 +63,11 @@ abstract class SubGadget {
         }
 
         val selectGadgetDisplayItemMap =
-            hashMapOf(1 to SubGadgetType.HEAL_POTION, 2 to SubGadgetType.TRIP_MINE, 3 to SubGadgetType.SENTRY_GUN)
+            hashMapOf(
+                1 to SubGadgetType.HEAL_POTION,
+                2 to SubGadgetType.TRIP_MINE,
+                3 to SubGadgetType.SENTRY_GUN,
+                4 to SubGadgetType.PAIN_KILLER
+            )
     }
 }

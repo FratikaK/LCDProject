@@ -138,7 +138,7 @@ object InventoryDisplayer {
         inventory.setItem(8, itemStack)
         lcdPlayer.firstSubGadget.forEach { (t, u) ->
             if (u != null) {
-                val gadget = SubGadget.getSubGadget(u)
+                val gadget = u.getInstance()
                 val meta = gadget.generateItemStack(lcdPlayer.statusData).itemMeta
                 val item = ItemStack(gadget.material)
                 meta.setCustomModelData(90 + t)
@@ -158,7 +158,7 @@ object InventoryDisplayer {
         val exit = util.generateMetaItem(Material.OAK_DOOR, "${ChatColor.RED}戻る", 91)
         inventory.setItem(0, exit)
         SubGadget.selectGadgetDisplayItemMap.forEach { (t, u) ->
-            val gadget = SubGadget.getSubGadget(u)
+            val gadget = u.getInstance()
             val name = gadget.subGadgetName
             val item = ItemStack(gadget.material)
             val meta = item.itemMeta

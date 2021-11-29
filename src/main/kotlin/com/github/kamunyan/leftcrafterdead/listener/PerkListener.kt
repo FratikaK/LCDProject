@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.subgadget.PainKiller
 import com.github.kamunyan.leftcrafterdead.subgadget.SentryGun
 import com.github.kamunyan.leftcrafterdead.subgadget.TripMine
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
@@ -53,6 +54,10 @@ class PerkListener : Listener {
                 }
                 SentryGun.customData -> {
                     SentryGun.rightInteract(e.player)
+                    removeItem(e.item!!)
+                }
+                PainKiller.customData -> {
+                    PainKiller.rightInteract(e.player)
                     removeItem(e.item!!)
                 }
             }

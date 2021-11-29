@@ -16,6 +16,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
 import org.bukkit.*
+import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -75,7 +76,7 @@ class LCDPlayer(uuid: String) {
     fun setPlayerStatus() {
         setSkillBuildStatus()
         player.walkSpeed = statusData.walkSpeed
-        player.healthScale = statusData.healthScaleAmount
+        player.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.baseValue = statusData.healthScaleAmount
         player.absorptionAmount = statusData.armorLimit
         player.foodLevel = 20
         gameMode = GameMode.ADVENTURE

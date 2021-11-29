@@ -15,6 +15,11 @@ enum class SubGadgetType {
         override fun getInstance(): SubGadget {
             return SentryGun
         }
+    },
+    PAIN_KILLER{
+        override fun getInstance(): SubGadget {
+            return PainKiller
+        }
     };
 
     abstract fun getInstance(): SubGadget

@@ -11,6 +11,7 @@ import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.attribute.Attribute
 import org.bukkit.inventory.ItemStack
 import org.bukkit.scheduler.BukkitRunnable
 import xyz.xenondevs.particle.ParticleBuilder
@@ -78,13 +79,13 @@ class Medic() : Perk(PerkType.MEDIC) {
         players.forEach { player ->
             val healAmount =
                 (player.healthScale * 0.4 * MatchManager.getLCDPlayer(player).statusData.mainGadgetAddPerformance).toInt()
-            if (player.health + healAmount > player.healthScale) {
-                player.health = player.healthScale
+            player.spawnParticle(Particle.HEART, location, 10, 0.5, 1.0, 0.5)
+            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}から${healAmount}回復してもらった！")
+            if (player.health + healAmount > player.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.baseValue) {
+                player.health = player.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.baseValue
                 return@forEach
             }
             player.health = player.health + healAmount
-            player.spawnParticle(Particle.HEART, location, 10, 0.5, 1.0, 0.5)
-            player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}から${healAmount}回復してもらった！")
         }
     }
 

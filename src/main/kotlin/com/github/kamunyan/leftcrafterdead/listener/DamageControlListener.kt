@@ -90,6 +90,11 @@ class DamageControlListener : Listener {
         val enemy = manager.enemyHashMap[e.victim.uniqueId]!!
         val data = manager.getLCDPlayer(e.player).statusData
 
+        if (e.damager.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)){
+            e.damage *= data.sentryGunPowerMultiplier
+            return
+        }
+
         if (!e.isHeadshot && data.specialSkillTypes.contains(SpecialSkillType.BODY_EXPERTISE)) {
             e.damage += plugin.crackShot.handle.getInt("${e.weaponTitle}.Headshot.Bonus_Damage")
         }
@@ -101,7 +106,7 @@ class DamageControlListener : Listener {
         if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
             e.damage *= data.handgunDamageMultiplier
             if (data.specialSkillTypes.contains(SpecialSkillType.AKIMBO)) {
-                e.damage *= 0.2
+                e.damage *= 1.2
             }
         }
         if (data.specialSkillTypes.contains(SpecialSkillType.UNDERDOG)) {
@@ -114,13 +119,13 @@ class DamageControlListener : Listener {
             }
         }
         if (data.specialSkillTypes.contains(SpecialSkillType.BERSERKER) && category == GunCategory.HANDGUN) {
-            val health = e.player.healthScale
-            println(health.toInt())
+            val health = data.healthScaleAmount
             if (health <= 10) {
-                var increase = (10 - health).toInt() / 2
+                var increase = (10 - health).toInt()
                 if (increase > 8) {
                     increase = 8
                 }
+                println("increase $increase")
                 val addDamage = 1.1 + (increase / 10)
                 e.damage *= addDamage
                 println("バーさかー　$addDamage")
@@ -144,7 +149,7 @@ class DamageControlListener : Listener {
                     e.damage *= data.suppressorCriticalDamageMultiplier
                 }
                 ParticleBuilder(ParticleEffect.CRIT_MAGIC, e.victim.location)
-                    .setOffset(1.5f, 2.5f, 1.5f)
+                    .setOffset(1.0f, 2.0f, 1.0f)
                     .setAmount(100)
                     .display()
                 println("クリティカル！")
@@ -226,8 +231,8 @@ class DamageControlListener : Listener {
                 }
             }
             if (data.specialSkillTypes.contains(SpecialSkillType.UP_YOU_GO)) {
-                if (player.healthScale <= 7.0 && Random.nextInt(100) <= 20) {
-                    player.addPotionEffect(PotionEffect(PotionEffectType.HEAL, 20, 2, false, false, false))
+                if (data.healthScaleAmount <= 7.0 && Random.nextInt(100) <= 20) {
+                    player.absorptionAmount = data.armorLimit
                     println("UP YOU GO発動")
                 }
             }
