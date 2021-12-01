@@ -91,7 +91,7 @@ class MatchControlListener : Listener {
         manager.isCheckPoint = false
         manager.matchPlayer.forEach {
             if (it.isMatchPlayer && it.isSurvivor) {
-                plugin.chiyogamiLib.smoothTeleport(it.player, manager.campaign.startLocations[manager.gameProgress])
+                it.player.teleport(manager.campaign.startLocations[manager.gameProgress])
                 it.player.sendTitle("Stage ${MatchManager.gameProgress + 1} Start!", null, 20, 100, 20)
             }
         }

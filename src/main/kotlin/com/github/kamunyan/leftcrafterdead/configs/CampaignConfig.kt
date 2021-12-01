@@ -23,7 +23,7 @@ object CampaignConfig {
         dir.parentFile.mkdir()
         dir.mkdir()
         var files = dir.listFiles()
-        if (files == null) {
+        if (files.isEmpty()) {
             plugin.saveResource("campaign/Venice.yml", false)
             files = dir.listFiles()
         }

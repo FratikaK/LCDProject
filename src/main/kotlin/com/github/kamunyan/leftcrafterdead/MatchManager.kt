@@ -327,13 +327,13 @@ object MatchManager {
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.giveFirstSubGadget()
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
-            plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, campaign.restLocation)
+            lcdPlayer.player.teleport(campaign.restLocation)
         } else {
             //途中参加
             if (matchPlayer.isNotEmpty()) {
                 for (p in matchPlayer) {
                     if (p.isSurvivor) {
-                        plugin.chiyogamiLib.smoothTeleport(lcdPlayer.player, p.player.location)
+                        lcdPlayer.player.teleport(p.player.location)
                         lcdPlayer.isSurvivor = false
                         lcdPlayer.setSpectator()
                         break

@@ -14,7 +14,6 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
-import world.chiyogami.chiyogamilib.ChiyogamiLib
 
 class LeftCrafterDead : JavaPlugin() {
 
@@ -23,11 +22,9 @@ class LeftCrafterDead : JavaPlugin() {
     }
 
     val crackShot = CSUtility()
-    val chiyogamiLib: ChiyogamiLib
 
     init {
         instance = this
-        chiyogamiLib = ChiyogamiLib(instance)
     }
 
     override fun onEnable() {
@@ -58,15 +55,15 @@ class LeftCrafterDead : JavaPlugin() {
         ScoreBoardRunnable.runTask()
         LagFixRunnable.runTask()
 
+        try{
         SQLDriver.database = Database.connect(SQLDriver.url,SQLDriver.driver,SQLDriver.user,SQLDriver.password)
+        } catch (e: Exception){
+            log.info("${ChatColor.RED}Cannot connect to database.")
+            manager.disablePlugin(this)
+            return
+        }
         log.info("${ChatColor.AQUA}LeftCrafterDead Start!")
         log.info("${ChatColor.AQUA}-------------------------------------")
-    }
-
-    override fun onDisable() {
-        MatchManager.onlineLCDPlayer.forEach{ _,l->
-            l.initialize()
-        }
     }
 
     /**
