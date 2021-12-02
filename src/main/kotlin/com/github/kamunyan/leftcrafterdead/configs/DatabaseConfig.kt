@@ -20,6 +20,5 @@ object DatabaseConfig : Config("data", "data.yml") {
         } else {
             ""
         }
-        println("${SQLDriver.url} ${SQLDriver.driver} ${SQLDriver.user} ${SQLDriver.password}")
     }
 }

@@ -14,6 +14,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
 class AdminCommand : CommandExecutor {
+    private val plugin = LeftCrafterDead.instance
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<out String>): Boolean {
         var flag = false
         if (command.name != "admin") return flag
@@ -28,11 +29,18 @@ class AdminCommand : CommandExecutor {
 
         try {
             when (args[0]) {
+                "reload" -> {
+                    MatchManager.onlineLCDPlayer.forEach { (_, l) ->
+                        l.initialize()
+                    }
+                    plugin.server.reload()
+                }
                 "playerInit" -> {
-                    MatchManager.onlineLCDPlayer.forEach { _, lcdPlayer ->
+                    MatchManager.onlineLCDPlayer.forEach { (_, lcdPlayer) ->
                         lcdPlayer.initialize()
                     }
                     sender.sendMessage("全てのプレイヤーをinitしました")
+                    flag = true
                 }
                 "info" -> {
                     if (args.size == 2) {
@@ -46,10 +54,6 @@ class AdminCommand : CommandExecutor {
                 }
                 "removeEntity" -> {
                     MatchManager.deleteEnemyMob()
-                    flag = true
-                }
-                "reload" -> {
-                    LeftCrafterDead.instance.server.reload()
                     flag = true
                 }
                 "creative" -> {
@@ -123,8 +127,8 @@ class AdminCommand : CommandExecutor {
     private fun sendAdminCommandInfo(sender: CommandSender) {
         sender.sendMessage(
             "admin Command usage\n" +
+                    "admin reload: プレイヤーデータをセーブして、サーバーをリロードします\n" +
                     "admin info [player name]: LCDPlayerの詳細を返します\n" +
-                    "admin info [reload]: サーバをリロードします\n" +
                     "admin removeEntity: マップの敵性mobを削除します\n" +
                     "admin creative [player name]: 対象プレイヤーをクリエイティブにします"
         )

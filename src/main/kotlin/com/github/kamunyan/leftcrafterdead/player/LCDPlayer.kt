@@ -2,6 +2,7 @@ package com.github.kamunyan.leftcrafterdead.player
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.data.SQLDriver
+import com.github.kamunyan.leftcrafterdead.data.SkillTreeData
 import com.github.kamunyan.leftcrafterdead.perk.Gunslinger
 import com.github.kamunyan.leftcrafterdead.perk.Perk
 import com.github.kamunyan.leftcrafterdead.perk.PerkType
@@ -21,7 +22,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
 
-class LCDPlayer(uuid: String) {
+class LCDPlayer(val uuid: String) {
     private val manager = MatchManager
 
     val player: Player = Bukkit.getPlayer(UUID.fromString(uuid))!!
@@ -131,7 +132,7 @@ class LCDPlayer(uuid: String) {
     /**
      * Perkシンボル以外のアイテムを空にする
      */
-    fun clearInventory() {
+    private fun clearInventory() {
         val symbolItem = player.inventory.getItem(8)
         if (symbolItem == null) {
             player.inventory.clear()
@@ -162,12 +163,14 @@ class LCDPlayer(uuid: String) {
         player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
     }
 
-    fun loadPlayerData() {
+    private fun loadPlayerData() {
         SQLDriver.loadPlayerData(playerData)
+        SkillTreeData.loadSkillTree(this)
     }
 
     fun updatePlayerData() {
         SQLDriver.savePlayerData(playerData)
+        SkillTreeData.saveSkillTree(this)
     }
 
     fun initialize() {

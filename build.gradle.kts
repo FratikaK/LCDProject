@@ -11,6 +11,9 @@ repositories {
     maven {
         url = uri("https://papermc.io/repo/repository/maven-public/")
     }
+    maven{
+        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    }
     maven {
         url = uri("https://jitpack.io")
     }
@@ -18,11 +21,15 @@ repositories {
         name = "sonatype"
         url = uri("https://oss.sonatype.org/content/groups/public/")
     }
+    maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://oss.sonatype.org/content/repositories/central")
+    mavenLocal()
 }
 
 dependencies {
     implementation(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:1.18-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot:1.18-R0.1-SNAPSHOT")
     compileOnly(fileTree("lib/CrackShot.jar"))
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")

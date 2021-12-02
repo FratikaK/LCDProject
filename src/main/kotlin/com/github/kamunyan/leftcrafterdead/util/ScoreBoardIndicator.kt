@@ -87,6 +87,7 @@ object ScoreBoardIndicator {
         messageList.add("")
         messageList.add("${ChatColor.AQUA}${player.name}")
         messageList.add("${ChatColor.WHITE}レベル:  ${ChatColor.AQUA}${lcdPlayer.playerData.level}")
+        messageList.add("${ChatColor.WHITE}総キル数: ${ChatColor.RED}${lcdPlayer.playerData.totalKill}")
         messageList.add("${ChatColor.WHITE}次のレベルまで  ${ChatColor.YELLOW}${nextExp}Exp")
         messageList.add("${ChatColor.WHITE}Perk:  ${ChatColor.LIGHT_PURPLE}${lcdPlayer.perk.perkType.perkName}")
         messageList.add("${ChatColor.AQUA}Skill Point: ${ChatColor.GOLD}${lcdPlayer.skillPoint}/${totalSkillPoint}")
