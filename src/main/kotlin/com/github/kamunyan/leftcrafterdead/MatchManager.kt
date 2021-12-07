@@ -133,7 +133,7 @@ object MatchManager {
         deleteEnemyMob()
 
         matchPlayer.forEach { lcdPlayer ->
-            lcdPlayer.player.teleport(campaign.startLocations[0])
+            lcdPlayer.player.teleportAsync(campaign.startLocations[0])
             lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.perk.firstPrimaryWeapon()
@@ -291,7 +291,7 @@ object MatchManager {
         }
 
         Bukkit.getOnlinePlayers().forEach { player ->
-            player.teleport(lobbySpawnLocation)
+            player.teleportAsync(lobbySpawnLocation)
         }
         if (matchPlayer.isNotEmpty()) {
             matchPlayer.clear()
@@ -327,13 +327,13 @@ object MatchManager {
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.giveFirstSubGadget()
             lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
-            lcdPlayer.player.teleport(campaign.restLocation)
+            lcdPlayer.player.teleportAsync(campaign.restLocation)
         } else {
             //途中参加
             if (matchPlayer.isNotEmpty()) {
                 for (p in matchPlayer) {
                     if (p.isSurvivor) {
-                        lcdPlayer.player.teleport(p.player.location)
+                        lcdPlayer.player.teleportAsync(p.player.location)
                         lcdPlayer.isSurvivor = false
                         lcdPlayer.setSpectator()
                         break
@@ -347,9 +347,6 @@ object MatchManager {
         lcdPlayer.isMatchPlayer = false
         lcdPlayer.isSurvivor = false
         matchPlayer.remove(lcdPlayer)
-
-        lcdPlayer.player.health = 20.0
-        lcdPlayer.player.foodLevel = 20
         if (matchPlayer.isEmpty() || numberOfSurvivors() <= 0) {
             finishCampaign()
         }
