@@ -142,6 +142,7 @@ object InventoryDisplayer {
                 val meta = gadget.generateItemStack(lcdPlayer.statusData).itemMeta
                 val item = ItemStack(gadget.material)
                 meta.setCustomModelData(90 + t)
+                meta.lore(u.getInstance().lore)
                 item.itemMeta = meta
                 inventory.setItem(t - 2, item)
             } else {
@@ -163,7 +164,7 @@ object InventoryDisplayer {
             val item = ItemStack(gadget.material)
             val meta = item.itemMeta
             meta.setCustomModelData(92)
-            meta.lore(listOf())
+            meta.lore(u.getInstance().lore)
             meta.displayName(Component.text(ChatColor.GREEN.toString() + name))
             item.itemMeta = meta
             inventory.setItem(t, item)
