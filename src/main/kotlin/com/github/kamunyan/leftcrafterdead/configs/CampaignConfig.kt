@@ -10,7 +10,7 @@ import org.bukkit.WorldCreator
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.EntityType
 import java.io.File
-import java.lang.IllegalArgumentException
+import kotlin.IllegalArgumentException
 
 object CampaignConfig {
     private val manager = MatchManager
@@ -30,12 +30,19 @@ object CampaignConfig {
 
         files?.forEach { file ->
             val campaignTitle = file.name.replace(".yml", "")
+            var mapName: String?
             var gameProgressLimit = 0
             val startLocations = ArrayList<Location>()
             var restLocation: Location = manager.lobbySpawnLocation
+            val supplyLocations = HashMap<Int, List<Location>>()
             val normalEnemyLocations = HashMap<Int, List<Location>>()
             var normalMobType: EntityType = EntityType.ZOMBIE
             val yml = YamlConfiguration.loadConfiguration(file)
+
+            mapName = yml.getString("map-name")
+            if (mapName == null){
+                mapName = campaignTitle
+            }
 
             if (yml.contains("start")) {
                 yml.getStringList("start").forEach {
@@ -48,6 +55,23 @@ object CampaignConfig {
                 restLocation = yml.getString("rest")?.let { locationByString(it, campaignTitle) }!!
             } else {
                 plugin.logger.info("[CampaignConfig]${ChatColor.RED}Failed to load restLocation.")
+            }
+
+            if (yml.contains("supply")) {
+                for (i in 0..gameProgressLimit) {
+                    val locations = ArrayList<Location>()
+                    if (yml.contains("supply.$i")) {
+                        yml.getStringList("supply.$i").forEach {
+                            try {
+                                val location = locationByString(it, campaignTitle)
+                                locations.add(location)
+                            } catch (e: IllegalArgumentException) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }
+                    supplyLocations[i] = locations
+                }
             }
 
             if (yml.contains("mobs")) {
@@ -71,13 +95,15 @@ object CampaignConfig {
             }
             val campaign = Campaign(
                 campaignTitle,
+                mapName,
                 gameProgressLimit,
                 startLocations,
                 restLocation,
+                supplyLocations,
                 normalEnemyLocations,
                 normalMobType
             )
-            if (manager.campaignList.isEmpty()){
+            if (manager.campaignList.isEmpty()) {
                 manager.campaign = campaign
             }
             manager.campaignList.add(campaign)

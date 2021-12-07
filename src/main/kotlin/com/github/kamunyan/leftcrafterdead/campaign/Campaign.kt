@@ -7,9 +7,11 @@ import org.bukkit.entity.EntityType
 
 data class Campaign(
     val campaignTitle: String,
+    val mapName:String,
     val gameProgressLimit: Int,
     val startLocations: List<Location>,
     val restLocation: Location,
+    val supplyLocations: Map<Int,List<Location>>,
     val normalEnemyLocations: Map<Int, List<Location>>,
     val normalMobType: EntityType = EntityType.ZOMBIE,
 ) {

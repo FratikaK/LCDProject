@@ -56,7 +56,7 @@ object ScoreBoardIndicator {
     private fun matchBoardLine(): ArrayList<String> {
         val messageList = ArrayList<String>()
         messageList.add("")
-        messageList.add("Stage:  ${manager.campaign.campaignTitle}")
+        messageList.add("Stage:  ${manager.campaign.mapName}")
         messageList.add("Difficulty:  ${manager.campaignDifficulty}")
         messageList.add("${ChatColor.WHITE}Survivor:  ${ChatColor.GOLD}${manager.numberOfSurvivors()}")
         messageList.add("")
