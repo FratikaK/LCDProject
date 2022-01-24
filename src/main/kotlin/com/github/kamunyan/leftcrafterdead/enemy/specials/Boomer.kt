@@ -14,6 +14,7 @@ import xyz.xenondevs.particle.ParticleEffect
 
 object Boomer : LCDSpecialEnemy() {
     override val entityType: EntityType = EntityType.CREEPER
+    override val enemyName: String = "Boomer"
     override fun specialEnemyRunnable(livingEntity: LivingEntity) {}
 
     override val nonHeadShotDamageResistance: Double = 0.0

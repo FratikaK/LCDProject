@@ -20,6 +20,7 @@ import kotlin.math.sin
 
 object Smoker : LCDSpecialEnemy() {
     override val entityType: EntityType = EntityType.SKELETON
+    override val enemyName: String = "Smoker"
     override fun specialEnemyRunnable(livingEntity: LivingEntity) {
         object : BukkitRunnable() {
             val random = Random()
