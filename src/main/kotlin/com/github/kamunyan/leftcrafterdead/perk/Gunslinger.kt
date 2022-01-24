@@ -43,7 +43,7 @@ class Gunslinger : Perk(PerkType.GUNSLINGER) {
     }
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
-        startGadgetStartCoolDown(lcdPlayer)
+        super.gadgetRightInteract(lcdPlayer)
         val rateQuantity = (3 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt()
         val reloadSpeed = 0.5 * lcdPlayer.statusData.mainGadgetAddPerformance
         lcdPlayer.statusData.rateAcceleration += rateQuantity

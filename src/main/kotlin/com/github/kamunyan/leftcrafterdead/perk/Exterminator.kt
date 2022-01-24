@@ -50,7 +50,7 @@ class Exterminator : Perk(PerkType.EXTERMINATOR) {
     }
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
-        startGadgetStartCoolDown(lcdPlayer)
+        super.gadgetRightInteract(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
         val entities = location.getNearbyLivingEntities(8.0)
 

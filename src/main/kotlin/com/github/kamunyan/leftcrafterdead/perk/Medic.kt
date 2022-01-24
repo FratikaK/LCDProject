@@ -47,7 +47,7 @@ class Medic() : Perk(PerkType.MEDIC) {
     }
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
-        startGadgetStartCoolDown(lcdPlayer)
+        super.gadgetRightInteract(lcdPlayer)
         val location = lcdPlayer.player.location.clone()
         val players = location.getNearbyPlayers(10.0 * lcdPlayer.statusData.mainGadgetAddPerformance)
         object : BukkitRunnable() {

@@ -41,7 +41,7 @@ class Fixer : Perk(PerkType.FIXER) {
     }
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
-        startGadgetStartCoolDown(lcdPlayer)
+        super.gadgetRightInteract(lcdPlayer)
         lcdPlayer.player.location.getNearbyPlayers(10.0 * lcdPlayer.statusData.mainGadgetAddPerformance)
             .forEach { player ->
                 player.playSound(player.location, Sound.ITEM_FIRECHARGE_USE, 2f, 1f)
