@@ -41,6 +41,8 @@ abstract class LCDWeapon(val weaponTitle: String, val weaponType: WeaponType) {
 
     abstract fun getGunCategory(): GunCategory
 
+    abstract fun getAmmoType(): AmmoCategory
+
     abstract fun specialEffects(attacker: Player, entity: LivingEntity)
 
     abstract fun weaponDataList(): List<String>

@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.weapons.grenade
 
+import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.LCDWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
@@ -30,5 +31,9 @@ abstract class Grenade(weaponTitle: String) : LCDWeapon(weaponTitle, WeaponType.
 
     override fun weaponDataList(): List<String> {
         return listOf()
+    }
+
+    override fun getAmmoType(): AmmoCategory {
+        return AmmoCategory.UNKNOWN
     }
 }

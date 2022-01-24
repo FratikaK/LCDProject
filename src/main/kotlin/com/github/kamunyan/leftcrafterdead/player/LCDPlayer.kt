@@ -12,6 +12,7 @@ import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import com.github.kamunyan.leftcrafterdead.skill.type.*
 import com.github.kamunyan.leftcrafterdead.subgadget.*
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
@@ -39,7 +40,18 @@ class LCDPlayer(val uuid: String) {
 
     lateinit var primary: PrimaryWeapon
 
+    var firstPrimaryWeapon: PrimaryWeapon? = null
+
     var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
+
+    var firstSecondaryWeapon: SecondaryWeapon? = null
+
+    val ammoLimits = mapOf(
+        AmmoCategory.RIFLE to 300,
+        AmmoCategory.SUB to 600,
+        AmmoCategory.SHELL to 120,
+        AmmoCategory.MAGNUM to 100
+    )
 
     val firstSubGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
 
@@ -68,7 +80,7 @@ class LCDPlayer(val uuid: String) {
         perk = if (perkItem == null) {
             Gunslinger()
         } else {
-            PerkType.getPerk(PerkType.getPerkType(perkItem.type))
+            PerkType.getPerkInstance(PerkType.getPerkType(perkItem.type))
         }
         perk.setSymbolItem(this)
         setSkillPoint()
@@ -148,13 +160,13 @@ class LCDPlayer(val uuid: String) {
      */
     @Synchronized
     fun setPerk() {
-        perk = PerkType.getPerk(perk.perkType)
+        perk = PerkType.getPerkInstance(perk.perkType)
         perk.setSymbolItem(this)
     }
 
     @Synchronized
     fun setPerk(perkType: PerkType) {
-        perk = PerkType.getPerk(perkType)
+        perk = PerkType.getPerkInstance(perkType)
         perk.setSymbolItem(this)
         player.sendMessage(
             "${ChatColor.AQUA}Perkを${ChatColor.LIGHT_PURPLE}" +

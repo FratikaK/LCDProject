@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.weapons.secondary
 
+import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import org.bukkit.entity.LivingEntity
@@ -15,5 +16,9 @@ class HandGun(weaponTitle: String, weaponType: WeaponType) :SecondaryWeapon(weap
 
     override fun weaponDataList(): List<String> {
         return listOf()
+    }
+
+    override fun getAmmoType(): AmmoCategory {
+        return AmmoCategory.SUB
     }
 }
