@@ -14,7 +14,7 @@ class SupplyMinions {
     companion object{
         private val manager = MatchManager
         val supplies = HashMap<UUID,SupplyMinions>()
-        fun setCampaignSpawnSupplies(){
+        fun spawnCampaignSupplies(){
             val locations = manager.campaign.supplyLocations
             supplies.clear()
             if (locations[manager.gameProgress] == null || locations[manager.gameProgress]!!.isEmpty()){

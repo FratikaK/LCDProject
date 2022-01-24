@@ -47,7 +47,7 @@ enum class PerkType {
             return null
         }
 
-        fun getPerk(perkType: PerkType): Perk {
+        fun getPerkInstance(perkType: PerkType): Perk {
             return when (perkType) {
                 GUNSLINGER -> Gunslinger()
                 MEDIC -> Medic()
