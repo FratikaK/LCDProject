@@ -13,6 +13,6 @@ abstract class LCDSpecialEnemy : LCDEnemy() {
     override fun setLivingEntitySettings(livingEntity: LivingEntity) {
         super.setLivingEntitySettings(livingEntity)
         livingEntity.customName = ChatColor.RED.toString() + enemyName
-        livingEntity.isCustomNameVisible = false
+        livingEntity.isCustomNameVisible = true
     }
 }
