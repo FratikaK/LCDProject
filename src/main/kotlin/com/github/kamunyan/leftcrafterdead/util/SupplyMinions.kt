@@ -17,10 +17,10 @@ class SupplyMinions {
         fun spawnCampaignSupplies(){
             val locations = manager.campaign.supplyLocations
             supplies.clear()
-            if (locations[manager.gameProgress] == null || locations[manager.gameProgress]!!.isEmpty()){
+            if (locations.isEmpty()){
                 return
             }
-            locations[manager.gameProgress]!!.forEach {
+            locations.forEach {
                 SupplyMinions().spawnSupply(it)
             }
         }
