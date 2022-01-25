@@ -11,7 +11,7 @@ data class Campaign(
     val gameProgressLimit: Int,
     val startLocations: List<Location>,
     val restLocation: Location,
-    val supplyLocations: Map<Int,List<Location>>,
+    val supplyLocations: List<Location>,
     val normalEnemyLocations: Map<Int, List<Location>>,
     val normalMobType: EntityType = EntityType.ZOMBIE,
 ) {

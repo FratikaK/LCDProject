@@ -34,13 +34,13 @@ object CampaignConfig {
             var gameProgressLimit = 0
             val startLocations = ArrayList<Location>()
             var restLocation: Location = manager.lobbySpawnLocation
-            val supplyLocations = HashMap<Int, List<Location>>()
+            val supplyLocations = ArrayList<Location>()
             val normalEnemyLocations = HashMap<Int, List<Location>>()
             var normalMobType: EntityType = EntityType.ZOMBIE
             val yml = YamlConfiguration.loadConfiguration(file)
 
             mapName = yml.getString("map-name")
-            if (mapName == null){
+            if (mapName == null) {
                 mapName = campaignTitle
             }
 
@@ -58,19 +58,15 @@ object CampaignConfig {
             }
 
             if (yml.contains("supply")) {
-                for (i in 0..gameProgressLimit) {
-                    val locations = ArrayList<Location>()
-                    if (yml.contains("supply.$i")) {
-                        yml.getStringList("supply.$i").forEach {
-                            try {
-                                val location = locationByString(it, campaignTitle)
-                                locations.add(location)
-                            } catch (e: IllegalArgumentException) {
-                                e.printStackTrace()
-                            }
+                if (yml.contains("supply")) {
+                    yml.getStringList("supply").forEach {
+                        try {
+                            val location = locationByString(it, campaignTitle)
+                            supplyLocations.add(location)
+                        } catch (e: IllegalArgumentException) {
+                            e.printStackTrace()
                         }
                     }
-                    supplyLocations[i] = locations
                 }
             }
 
