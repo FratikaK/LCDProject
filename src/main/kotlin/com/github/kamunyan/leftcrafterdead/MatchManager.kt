@@ -59,7 +59,7 @@ object MatchManager {
 
     var isCheckPoint = false
 
-    var isFinishing = false
+    private var isFinishing = false
 
     @Synchronized
     fun getLCDPlayer(@NotNull target: Player): LCDPlayer {
@@ -149,6 +149,8 @@ object MatchManager {
         spawnNormalEnemyMob()
         //ラッシュタイマースタート
         startRush()
+
+        spawnMinions()
     }
 
     @Synchronized
@@ -285,6 +287,7 @@ object MatchManager {
         isCheckPoint = false
         isFinishing = false
         deleteEnemyMob()
+        deleteMinions()
 
         matchPlayer.forEach { lcdPlayer ->
             lcdPlayer.initialize()
@@ -454,6 +457,14 @@ object MatchManager {
         }
         enemyHashMap.clear()
         plugin.logger.info("[deleteEnemyMob]${ChatColor.AQUA}${count}体のmobを削除しました")
+    }
+
+    private fun spawnMinions(){
+
+    }
+
+    private fun deleteMinions(){
+
     }
 
     private fun getRandomCampaign(): Campaign {
