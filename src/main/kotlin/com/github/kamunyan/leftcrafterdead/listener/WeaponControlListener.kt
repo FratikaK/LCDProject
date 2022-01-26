@@ -3,11 +3,14 @@ package com.github.kamunyan.leftcrafterdead.listener
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
+import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
 import com.shampaggon.crackshot.CSUtility
 import com.shampaggon.crackshot.events.*
+import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
@@ -36,8 +39,8 @@ class WeaponControlListener : Listener {
         if (WeaponUtil.getGunCategory(e.weaponTitle) == GunCategory.SHOTGUN) {
             e.reloadSpeed += lcdPlayer.statusData.shotgunReloadSpeedAcceleration
         }
-        if (data.specialSkillTypes.contains(SpecialSkillType.RUNNING_FROM_DEATH)){
-            if (e.player.healthScale <= 10){
+        if (data.specialSkillTypes.contains(SpecialSkillType.RUNNING_FROM_DEATH)) {
+            if (e.player.healthScale <= 10) {
                 e.reloadSpeed += -0.15
             }
         }
@@ -103,10 +106,10 @@ class WeaponControlListener : Listener {
         if (category == GunCategory.ASSAULT_RIFLE || category == GunCategory.SUB_MACHINE_GUN) {
             addSpread += lcdPlayer.statusData.fireRateAddBulletSpread
         }
-        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO){
+        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
             addSpread += lcdPlayer.statusData.handgunAddBulletSpread
         }
-        if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.AKIMBO)){
+        if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.AKIMBO)) {
             addSpread += -1.5
         }
 
@@ -119,6 +122,30 @@ class WeaponControlListener : Listener {
     }
 
     @EventHandler
+    fun onWeaponShoot(e: WeaponShootEvent) {
+        val item = e.player.inventory.itemInMainHand
+        if (item.hasItemMeta() && item.itemMeta.hasDisplayName()) {
+            val remainAmmo = remainAmmoCheck(item.itemMeta.displayName().toString())
+            if (remainAmmo.toIntOrNull() != null) {
+                val ammoType = WeaponUtil.getGunCategory(e.weaponTitle).ammoType
+                if (ammoType == AmmoCategory.UNKNOWN) {
+                    return
+                }
+                val lcdPlayer = manager.getLCDPlayer(e.player)
+                val ammoLimit = lcdPlayer.ammoLimits[ammoType]!!
+                val remainTotalAmmo = WeaponUtil.remainTotalAmmo(ammoType, e.player)
+                val color = if (remainTotalAmmo / ammoLimit <= 0.2) {
+                    ChatColor.YELLOW
+                } else {
+                    ChatColor.WHITE
+                }
+                val stringActionBar = "${e.weaponTitle}  $remainAmmo / ${color}${remainTotalAmmo}"
+                e.player.sendActionBar(Component.text(stringActionBar))
+            }
+        }
+    }
+
+    @EventHandler
     fun onReloadComplete(e: WeaponReloadCompleteEvent) {
     }
 
@@ -127,7 +154,7 @@ class WeaponControlListener : Listener {
         val lcdPlayer = manager.getLCDPlayer(e.player)
         e.capacity = (e.capacity * lcdPlayer.statusData.magazineAmountMultiplier).toInt()
         val category = WeaponUtil.getGunCategory(e.weaponTitle)
-        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO){
+        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
             e.capacity += lcdPlayer.statusData.addHandgunMagazine
         }
     }
@@ -148,5 +175,14 @@ class WeaponControlListener : Listener {
     @EventHandler
     fun onItemDrop(e: PlayerDropItemEvent) {
         e.isCancelled = true
+    }
+
+    private fun remainAmmoCheck(name: String): String {
+        return if (!name.contains("«")) {
+            '×'.toString()
+        } else {
+            val nameDigger = name.split("«").toTypedArray()
+            nameDigger[1].split("»").toTypedArray()[0]
+        }
     }
 }
