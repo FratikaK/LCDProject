@@ -59,4 +59,20 @@ object WeaponUtil {
         }
         return GunCategory.UNKNOWN
     }
+
+    fun remainTotalAmmo(ammoCategory: AmmoCategory,player: Player):Int{
+        val material = ammoCategory.material
+        if (player.inventory.contains(material)){
+            var count = 0
+            player.inventory.all(material).forEach{(_,item) ->
+                count += item.amount
+            }
+            return count
+        }
+        return 0
+    }
+
+    fun remainTotalAmmo(gunCategory: GunCategory, player: Player): Int {
+        return remainTotalAmmo(gunCategory.ammoType,player)
+    }
 }
