@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.data
 
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
+import com.github.kamunyan.leftcrafterdead.skill.SkillTree
 import com.github.kamunyan.leftcrafterdead.skill.SkillType
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -39,23 +40,28 @@ object SkillTreeData {
                         it[tier5_3] = false
                     }
                 }
-                table.select { table.uuid eq lcdPlayer.uuid }.forEach {
-                    s.skillMap[49] = it[table.tier0]
-                    s.skillMap[38] = it[table.tier1_1]
-                    s.skillMap[40] = it[table.tier1_2]
-                    s.skillMap[42] = it[table.tier1_3]
-                    s.skillMap[29] = it[table.tier2_1]
-                    s.skillMap[31] = it[table.tier2_2]
-                    s.skillMap[33] = it[table.tier2_3]
-                    s.skillMap[20] = it[table.tier3_1]
-                    s.skillMap[22] = it[table.tier3_2]
-                    s.skillMap[24] = it[table.tier3_3]
-                    s.skillMap[11] = it[table.tier4_1]
-                    s.skillMap[13] = it[table.tier4_2]
-                    s.skillMap[15] = it[table.tier4_3]
-                    s.skillMap[2] = it[table.tier5_1]
-                    s.skillMap[4] = it[table.tier5_2]
-                    s.skillMap[6] = it[table.tier5_3]
+                s.skillMap.forEach{ (id, bool) ->
+                    table.select { table.uuid eq lcdPlayer.uuid }.forEach {
+                        s.skillMap[49] = it[table.tier0]
+                        s.skillMap[38] = it[table.tier1_1]
+                        s.skillMap[40] = it[table.tier1_2]
+                        s.skillMap[42] = it[table.tier1_3]
+                        s.skillMap[29] = it[table.tier2_1]
+                        s.skillMap[31] = it[table.tier2_2]
+                        s.skillMap[33] = it[table.tier2_3]
+                        s.skillMap[20] = it[table.tier3_1]
+                        s.skillMap[22] = it[table.tier3_2]
+                        s.skillMap[24] = it[table.tier3_3]
+                        s.skillMap[11] = it[table.tier4_1]
+                        s.skillMap[13] = it[table.tier4_2]
+                        s.skillMap[15] = it[table.tier4_3]
+                        s.skillMap[2] = it[table.tier5_1]
+                        s.skillMap[4] = it[table.tier5_2]
+                        s.skillMap[6] = it[table.tier5_3]
+                        if (s.skillMap[id]!!){
+                            s.useSkillPoint += SkillTree.requireSkillPoint[id]!!
+                        }
+                    }
                 }
             }
         }
@@ -72,23 +78,25 @@ object SkillTreeData {
                     SkillType.GHOST -> GhostData
                     SkillType.FUGITIVE -> FugitiveData
                 }
-                table.update({ table.uuid eq lcdPlayer.uuid }) {
-                    it[tier0] = s.skillMap[49]!!
-                    it[tier1_1] = s.skillMap[38]!!
-                    it[tier1_2] = s.skillMap[40]!!
-                    it[tier1_3] = s.skillMap[42]!!
-                    it[tier2_1] = s.skillMap[29]!!
-                    it[tier2_2] = s.skillMap[31]!!
-                    it[tier2_3] = s.skillMap[33]!!
-                    it[tier3_1] = s.skillMap[20]!!
-                    it[tier3_2] = s.skillMap[22]!!
-                    it[tier3_3] = s.skillMap[24]!!
-                    it[tier4_1] = s.skillMap[11]!!
-                    it[tier4_2] = s.skillMap[13]!!
-                    it[tier4_3] = s.skillMap[15]!!
-                    it[tier5_1] = s.skillMap[2]!!
-                    it[tier5_2] = s.skillMap[4]!!
-                    it[tier5_3] = s.skillMap[6]!!
+                s.skillMap.forEach { (_, _) ->
+                    table.update({ table.uuid eq lcdPlayer.uuid }) {
+                        it[tier0] = s.skillMap[49]!!
+                        it[tier1_1] = s.skillMap[38]!!
+                        it[tier1_2] = s.skillMap[40]!!
+                        it[tier1_3] = s.skillMap[42]!!
+                        it[tier2_1] = s.skillMap[29]!!
+                        it[tier2_2] = s.skillMap[31]!!
+                        it[tier2_3] = s.skillMap[33]!!
+                        it[tier3_1] = s.skillMap[20]!!
+                        it[tier3_2] = s.skillMap[22]!!
+                        it[tier3_3] = s.skillMap[24]!!
+                        it[tier4_1] = s.skillMap[11]!!
+                        it[tier4_2] = s.skillMap[13]!!
+                        it[tier4_3] = s.skillMap[15]!!
+                        it[tier5_1] = s.skillMap[2]!!
+                        it[tier5_2] = s.skillMap[4]!!
+                        it[tier5_3] = s.skillMap[6]!!
+                    }
                 }
             }
         }
