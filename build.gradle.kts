@@ -29,7 +29,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     compileOnly("io.papermc.paper:paper-api:1.18.1-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot:1.18.1-R0.1-SNAPSHOT")
     compileOnly(fileTree("lib/CrackShot.jar"))
     implementation("org.jetbrains.exposed:exposed-core:0.36.1")
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
