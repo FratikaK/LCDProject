@@ -24,7 +24,7 @@ object CampaignConfig {
         dir.mkdir()
         var files = dir.listFiles()
         if (files.isEmpty()) {
-            plugin.saveResource("campaign/Venice.yml", false)
+            plugin.saveResource("campaign/Tokyo.yml", false)
             files = dir.listFiles()
         }
 
