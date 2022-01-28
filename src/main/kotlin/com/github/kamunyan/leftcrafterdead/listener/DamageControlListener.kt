@@ -296,8 +296,14 @@ class DamageControlListener : Listener {
 
     @EventHandler
     fun onArrowHit(e: ProjectileHitEvent) {
+        // MasterSmoker
         if (e.entity.hasMetadata(MetadataUtil.EXPLODE_ARROW)) {
-            e.entity.location.createExplosion(2.0f, false, false)
+            e.entity.location.clone().getNearbyPlayers(5.0).forEach {
+                val lcdPlayer = manager.getLCDPlayer(it)
+                if (lcdPlayer.isSurvivor){
+
+                }
+            }
         }
     }
 }
