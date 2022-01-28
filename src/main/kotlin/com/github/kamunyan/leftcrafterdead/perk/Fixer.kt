@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.perk
 
+import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
@@ -11,6 +12,7 @@ import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
 import org.bukkit.inventory.ItemStack
+import org.bukkit.scheduler.BukkitRunnable
 import xyz.xenondevs.particle.ParticleBuilder
 import xyz.xenondevs.particle.ParticleEffect
 import java.awt.Color
@@ -34,8 +36,8 @@ class Fixer : Perk(PerkType.FIXER) {
             "${ChatColor.GOLD}Armor Boost",
             110,
             listOf(
-                "半径10mにいるプレイヤーに、",
-                "最大体力の60%のアーマーを付与する"
+                "半径10mにいるプレイヤーの",
+                "アーマー回復速度を100%上昇させる"
             )
         )
     }
@@ -50,12 +52,20 @@ class Fixer : Perk(PerkType.FIXER) {
                     .setOffset(3f, 3f, 3f)
                     .setAmount(200)
                     .display()
-                val armorAmount = (player.healthScale * 0.6) * lcdPlayer.statusData.mainGadgetAddPerformance
-                player.absorptionAmount = player.absorptionAmount + armorAmount
-                if (MatchManager.getLCDPlayer(player).statusData.armorLimit < player.absorptionAmount){
-                    player.absorptionAmount = MatchManager.getLCDPlayer(player).statusData.armorLimit
-                }
-                player.sendMessage("${ChatColor.GOLD}${lcdPlayer.player.name}からアーマーを${armorAmount}ポイント付与された！")
+                val targetLCDPlayer = MatchManager.getLCDPlayer(player)
+                val limitArmor = targetLCDPlayer.statusData.armorLimit
+                var timeLeft = (10 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt()
+                object : BukkitRunnable() {
+                    override fun run() {
+                        if (targetLCDPlayer.isSurvivor || !MatchManager.isMatch) {
+                            cancel()
+                            return
+                        }
+                        if (player.absorptionAmount < limitArmor) {
+                            player.absorptionAmount++
+                        }
+                    }
+                }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 10)
             }
     }
 
