@@ -11,9 +11,6 @@ class SubMachineGun(weaponTitle: String) :PrimaryWeapon(weaponTitle){
         return GunCategory.SUB_MACHINE_GUN
     }
 
-    override fun specialEffects(attacker: Player, entity: LivingEntity) {
-    }
-
     override fun getAmmoType(): AmmoCategory {
         return AmmoCategory.SUB
     }

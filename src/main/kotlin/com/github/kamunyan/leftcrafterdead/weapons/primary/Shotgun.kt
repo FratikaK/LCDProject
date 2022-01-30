@@ -11,9 +11,6 @@ class Shotgun(weaponTitle: String) : PrimaryWeapon(weaponTitle) {
        return GunCategory.SHOTGUN
     }
 
-    override fun specialEffects(attacker: Player, entity: LivingEntity) {
-    }
-
     override fun getAmmoType(): AmmoCategory {
         return AmmoCategory.SHELL
     }

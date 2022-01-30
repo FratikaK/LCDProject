@@ -11,9 +11,6 @@ class HandGun(weaponTitle: String, weaponType: WeaponType) :SecondaryWeapon(weap
         return GunCategory.HANDGUN
     }
 
-    override fun specialEffects(attacker: Player, entity: LivingEntity) {
-    }
-
     override fun weaponDataList(): List<String> {
         return listOf()
     }
