@@ -12,6 +12,8 @@ import com.github.kamunyan.leftcrafterdead.event.MatchReStartEvent
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
+import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
+import com.github.kamunyan.leftcrafterdead.util.SupplyMinions
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import net.kyori.adventure.text.Component
@@ -20,6 +22,7 @@ import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarFlag
 import org.bukkit.boss.BarStyle
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Minecart
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitRunnable
 import org.jetbrains.annotations.NotNull
@@ -460,11 +463,18 @@ object MatchManager {
     }
 
     private fun spawnMinions(){
-
+        SupplyMinions.spawnCampaignSupplies()
     }
 
     private fun deleteMinions(){
-
+        val world = Bukkit.getWorld(campaign.mapName) ?: return
+        world.entities.forEach {
+            if(it is Minecart){
+                if (it.hasMetadata(MetadataUtil.SUPPLY_CART)){
+                    it.remove()
+                }
+            }
+        }
     }
 
     private fun getRandomCampaign(): Campaign {
