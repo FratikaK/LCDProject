@@ -108,6 +108,11 @@ class LCDPlayer(val uuid: String) {
         }
     }
 
+    fun sendFirstEquipment() {
+        clearInventory()
+        perk.setFirstWeapon(this)
+    }
+
     fun setLobbyItem() {
         val util = ItemMetaUtil
         player.inventory.clear()
