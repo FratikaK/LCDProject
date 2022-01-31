@@ -118,7 +118,6 @@ class WeaponControlListener : Listener {
         } else {
             e.bulletSpread += addSpread
         }
-        println("弾拡散率 ${e.bulletSpread}")
     }
 
     @EventHandler
@@ -139,7 +138,8 @@ class WeaponControlListener : Listener {
                 } else {
                     ChatColor.WHITE
                 }
-                val stringActionBar = "${e.weaponTitle}  $remainAmmo / ${color}${remainTotalAmmo}"
+                val stringActionBar =
+                    "${ChatColor.YELLOW}${e.weaponTitle}  ${ChatColor.WHITE}$remainAmmo / ${color}${remainTotalAmmo}"
                 e.player.sendActionBar(Component.text(stringActionBar))
             }
         }
