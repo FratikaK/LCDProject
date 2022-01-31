@@ -10,7 +10,6 @@ import org.bukkit.entity.Player
 import org.bukkit.scoreboard.DisplaySlot
 import org.bukkit.scoreboard.Objective
 import org.bukkit.scoreboard.Scoreboard
-import kotlin.collections.ArrayList
 
 object ScoreBoardIndicator {
     private val manager = MatchManager
@@ -51,6 +50,14 @@ object ScoreBoardIndicator {
         } else {
             player.scoreboard = updateLobbyScoreBoard(player)
         }
+        //player head name
+        val displayName: String = if (lcdPlayer.isMatchPlayer) {
+            "${ChatColor.RED}HP${player.health.toInt()}/${lcdPlayer.statusData.healthScaleAmount}" +
+                    " ${ChatColor.WHITE}${player.name} ${ChatColor.AQUA}Lv${lcdPlayer.playerData.level}"
+        } else {
+            "${player.name} ${ChatColor.AQUA}Lv${lcdPlayer.playerData.level}"
+        }
+        player.displayName(Component.text(displayName))
     }
 
     private fun matchBoardLine(): ArrayList<String> {
