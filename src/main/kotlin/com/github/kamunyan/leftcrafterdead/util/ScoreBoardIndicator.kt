@@ -58,6 +58,7 @@ object ScoreBoardIndicator {
             "${player.name} ${ChatColor.AQUA}Lv${lcdPlayer.playerData.level}"
         }
         player.displayName(Component.text(displayName))
+        player.isCustomNameVisible = true
     }
 
     private fun matchBoardLine(): ArrayList<String> {
