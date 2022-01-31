@@ -105,6 +105,24 @@ object CampaignConfig {
             manager.campaignList.add(campaign)
             plugin.logger.info("[CampaignConfig]${ChatColor.AQUA}Campaign '${campaign.campaignTitle}' has been successfully created!")
             campaign.campaignInformation()
+
+            //load chunks
+            startLocations.forEach {
+                if (!it.isChunkLoaded) {
+                    it.chunk.isForceLoaded = true
+                    it.chunk.load()
+                }
+            }
+            if (!restLocation.isChunkLoaded) {
+                restLocation.chunk.isForceLoaded = true
+                restLocation.chunk.load()
+            }
+            supplyLocations.forEach {
+                if (!it.isChunkLoaded) {
+                    it.chunk.isForceLoaded = true
+                    it.chunk.load()
+                }
+            }
         }
         if (manager.campaignList.isEmpty()) {
             plugin.logger.info("[CampaignConfig]${ChatColor.RED}None of the loaded Campaigns are available.")
