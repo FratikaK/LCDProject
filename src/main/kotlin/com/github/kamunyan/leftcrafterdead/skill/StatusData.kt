@@ -1,5 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.skill
 
+import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
+
 data class StatusData(
     /**
      * 体力上限
@@ -157,6 +159,15 @@ data class StatusData(
      * Trip Mineを持てる数
      */
     var tripMineAmount:Int = 3,
-    val specialSkillTypes: ArrayList<SpecialSkillType> = ArrayList()
+    val specialSkillTypes: ArrayList<SpecialSkillType> = ArrayList(),
+    /**
+     * 弾薬所持上限
+     */
+    val ammoLimits: Map<AmmoCategory, Int> = mapOf(
+        AmmoCategory.RIFLE to 300,
+        AmmoCategory.SUB to 600,
+        AmmoCategory.SHELL to 120,
+        AmmoCategory.MAGNUM to 100
+    )
 ) {
 }

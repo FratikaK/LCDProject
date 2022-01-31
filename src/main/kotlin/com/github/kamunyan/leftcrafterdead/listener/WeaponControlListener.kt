@@ -132,7 +132,7 @@ class WeaponControlListener : Listener {
                     return
                 }
                 val lcdPlayer = manager.getLCDPlayer(e.player)
-                val ammoLimit = lcdPlayer.ammoLimits[ammoType]!!
+                val ammoLimit = lcdPlayer.statusData.ammoLimits[ammoType]!!
                 val remainTotalAmmo = WeaponUtil.remainTotalAmmo(ammoType, e.player)
                 val color = if (remainTotalAmmo / ammoLimit <= 0.2) {
                     ChatColor.YELLOW

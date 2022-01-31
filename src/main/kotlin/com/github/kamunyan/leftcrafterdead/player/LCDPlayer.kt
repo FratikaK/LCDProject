@@ -46,13 +46,6 @@ class LCDPlayer(val uuid: String) {
 
     var firstSecondaryWeapon: SecondaryWeapon? = null
 
-    val ammoLimits = mapOf(
-        AmmoCategory.RIFLE to 300,
-        AmmoCategory.SUB to 600,
-        AmmoCategory.SHELL to 120,
-        AmmoCategory.MAGNUM to 100
-    )
-
     val firstSubGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
 
     val subGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
