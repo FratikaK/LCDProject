@@ -34,7 +34,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-dao:0.36.1")
     implementation("org.jetbrains.exposed:exposed-jdbc:0.36.1")
     implementation("mysql:mysql-connector-java:8.0.25")
-    implementation("xyz.xenondevs:particle:1.6.6")
+    implementation("xyz.xenondevs:particle:1.7")
 }
 
 java {
