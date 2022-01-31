@@ -14,6 +14,7 @@ import org.bukkit.Bukkit
 import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 import org.jetbrains.exposed.sql.Database
+import java.io.File
 
 class LeftCrafterDead : JavaPlugin() {
 
@@ -51,13 +52,24 @@ class LeftCrafterDead : JavaPlugin() {
         manager.registerEvents(PerkListener(), this)
         manager.registerEvents(WeaponControlListener(), this)
 
+        if (!manager.isPluginEnabled("CrackShot")) {
+            val crackShotPlugin = manager.loadPlugin(File("CrackShot.jar"))
+            if (crackShotPlugin == null) {
+                log.info("${ChatColor.RED}CrackShot, a prerequisite plugin, is missing.")
+                manager.disablePlugin(this)
+                return
+            }
+        }
+
+        //loadWeapon handle
+
         //Server tasks
         ScoreBoardRunnable.runTask()
         LagFixRunnable.runTask()
 
-        try{
-        SQLDriver.database = Database.connect(SQLDriver.url,SQLDriver.driver,SQLDriver.user,SQLDriver.password)
-        } catch (e: Exception){
+        try {
+            SQLDriver.database = Database.connect(SQLDriver.url, SQLDriver.driver, SQLDriver.user, SQLDriver.password)
+        } catch (e: Exception) {
             log.info("${ChatColor.RED}Cannot connect to database.")
             manager.disablePlugin(this)
             return
