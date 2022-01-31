@@ -18,6 +18,9 @@ abstract class Perk(val perkType: PerkType) {
     abstract val gadgetCoolDown: Int
 
     fun setFirstWeapon(lcdPlayer: LCDPlayer) {
+        if (lcdPlayer.firstPrimaryWeapon == null){
+            lcdPlayer.firstPrimaryWeapon = firstPrimaryWeapon()
+        }
         lcdPlayer.primary = firstPrimaryWeapon()
         lcdPlayer.primary.sendWeapon(lcdPlayer.player)
         lcdPlayer.secondaryWeapon.sendWeapon(lcdPlayer.player)
@@ -40,7 +43,7 @@ abstract class Perk(val perkType: PerkType) {
         startGadgetStartCoolDown(lcdPlayer)
     }
 
-    fun startGadgetStartCoolDown(lcdPlayer: LCDPlayer) {
+    private fun startGadgetStartCoolDown(lcdPlayer: LCDPlayer) {
         object : BukkitRunnable() {
             var timeLeft = (gadgetCoolDown * lcdPlayer.statusData.addMainGadgetCoolDown).toInt()
             override fun run() {
