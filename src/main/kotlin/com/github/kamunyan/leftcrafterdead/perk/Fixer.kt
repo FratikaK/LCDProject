@@ -57,13 +57,14 @@ class Fixer : Perk(PerkType.FIXER) {
                 var timeLeft = (10 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt()
                 object : BukkitRunnable() {
                     override fun run() {
-                        if (targetLCDPlayer.isSurvivor || !MatchManager.isMatch) {
+                        if (targetLCDPlayer.isSurvivor || !MatchManager.isMatch || timeLeft <= 0) {
                             cancel()
                             return
                         }
                         if (player.absorptionAmount < limitArmor) {
                             player.absorptionAmount++
                         }
+                        timeLeft--
                     }
                 }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 10)
             }
