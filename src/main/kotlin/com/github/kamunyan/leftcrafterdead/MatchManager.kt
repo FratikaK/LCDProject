@@ -138,9 +138,7 @@ object MatchManager {
         matchPlayer.forEach { lcdPlayer ->
             lcdPlayer.player.teleportAsync(campaign.startLocations[0])
             lcdPlayer.setPlayerStatus()
-            lcdPlayer.perk.setFirstWeapon(lcdPlayer)
-            lcdPlayer.perk.firstPrimaryWeapon()
-            lcdPlayer.giveFirstSubGadget()
+            lcdPlayer.sendFirstEquipment()
             lcdPlayer.gameMode = GameMode.ADVENTURE
             lcdPlayer.isMatchPlayer = true
             lcdPlayer.isSurvivor = true

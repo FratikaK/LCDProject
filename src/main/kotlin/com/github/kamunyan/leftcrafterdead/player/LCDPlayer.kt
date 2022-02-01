@@ -50,7 +50,7 @@ class LCDPlayer(val uuid: String) {
 
     val subGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
 
-    var campaignData: CampaignPlayerData = CampaignPlayerData(0, 0, 0)
+    var campaignData: CampaignPlayerData = CampaignPlayerData(0, 300, 0)
 
     val playerData: PlayerData = PlayerData(uuid, 0, 0, 0, 0)
 
@@ -111,6 +111,8 @@ class LCDPlayer(val uuid: String) {
     fun sendFirstEquipment() {
         clearInventory()
         perk.setFirstWeapon(this)
+        giveFirstSubGadget()
+        sendFirstAmmo()
     }
 
     fun setLobbyItem() {
@@ -171,6 +173,29 @@ class LCDPlayer(val uuid: String) {
                     "${perkType.perkName}${ChatColor.AQUA}に変更しました！"
         )
         player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
+    }
+
+    fun sendFirstAmmo() {
+        statusData.ammoLimits.forEach { (category, limit) ->
+            val ammoItemStack = ItemMetaUtil.createAmmunition(category, limit)
+            player.inventory.setItem(category.itemSlot, ammoItemStack)
+        }
+    }
+
+    fun addAmmo(ammoCategory: AmmoCategory, amount: Int) {
+        if (ammoCategory == AmmoCategory.UNKNOWN) return
+
+        var remainAmmo = player.inventory.getItem(ammoCategory.itemSlot)
+        if (remainAmmo == null) {
+            remainAmmo = ItemMetaUtil.createAmmunition(ammoCategory, amount)
+            player.inventory.setItem(ammoCategory.itemSlot, remainAmmo)
+        } else {
+            remainAmmo.amount += amount
+        }
+
+        if (remainAmmo.amount > statusData.ammoLimits[ammoCategory]!!){
+            remainAmmo.amount = statusData.ammoLimits[ammoCategory]!!
+        }
     }
 
     private fun loadPlayerData() {
