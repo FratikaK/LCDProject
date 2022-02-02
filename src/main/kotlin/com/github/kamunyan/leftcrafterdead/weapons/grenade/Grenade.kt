@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.weapons.grenade
 
+import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.LCDWeapon
@@ -28,6 +29,9 @@ abstract class Grenade(weaponTitle: String) : LCDWeapon(weaponTitle, WeaponType.
             add = item.amount
         }
         grenade.amount = (amount + add)
+        if (MatchManager.getLCDPlayer(player).statusData.maxGrenade < grenade.amount) {
+            grenade.amount = MatchManager.getLCDPlayer(player).statusData.maxGrenade
+        }
         player.inventory.setItem(2, grenade)
     }
 
