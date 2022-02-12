@@ -1,0 +1,18 @@
+Weapon:
+  Assault:
+    AK12: {money: 300}
+    Mini21: {money: 300}
+  Sub:
+    MAC10: {money: 300}
+  ShotGun:
+    M31: {money: 300}
+  HandGun:
+    P226: {money: 200}
+
+Grenade: {money: 300}
+
+SubGadget:
+  HealPotion: {money: 500}
+  PainKiller: {money: 300}
+  SentryGun: {money: 500}
+  TripMine: {money: 400}
