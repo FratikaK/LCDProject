@@ -78,6 +78,10 @@ class LeftCrafterDead : JavaPlugin() {
         log.info("${ChatColor.AQUA}-------------------------------------")
     }
 
+    override fun onDisable() {
+        Bukkit.getScheduler().cancelTasks(this)
+    }
+
     /**
      * 全プレイヤーにメッセージを表示する
      */

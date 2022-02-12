@@ -17,13 +17,13 @@ import org.bukkit.scheduler.BukkitRunnable
 
 object HealPotion : SubGadget() {
     override val subGadgetName: String
-        get() = "${ChatColor.GREEN}回復ポーション"
+        get() = "${ChatColor.GREEN}回復のグロウベリー"
     override val subGadgetType: SubGadgetType
         get() = SubGadgetType.HEAL_POTION
     override val customData: Int
         get() = 70
     override val limitAmount: Int
-        get() = 2
+        get() = 1
     override val material: Material
         get() = Material.POTION
     override val lore: List<Component>
@@ -34,7 +34,6 @@ object HealPotion : SubGadget() {
         val meta = item.itemMeta as PotionMeta
         meta.addCustomEffect(PotionEffect(PotionEffectType.HEAL, 1, 1), false)
         item.itemMeta = meta
-        item.amount = data.healPotionAmount
         return item
     }
 

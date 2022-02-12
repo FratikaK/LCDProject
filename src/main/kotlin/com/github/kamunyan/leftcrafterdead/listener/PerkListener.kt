@@ -5,10 +5,13 @@ import com.github.kamunyan.leftcrafterdead.subgadget.PainKiller
 import com.github.kamunyan.leftcrafterdead.subgadget.SentryGun
 import com.github.kamunyan.leftcrafterdead.subgadget.TripMine
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
+import com.github.kamunyan.leftcrafterdead.util.SupplyMinions
 import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 
@@ -61,6 +64,13 @@ class PerkListener : Listener {
                     removeItem(e.item!!)
                 }
             }
+        }
+    }
+
+    @EventHandler
+    fun onSupplyMinionsInteract(e: PlayerInteractEntityEvent){
+        if (e.rightClicked.hasMetadata(MetadataUtil.SUPPLY_CART)){
+            SupplyMinions.supplies[e.rightClicked.uniqueId]?.retrievedSupply(e.player)
         }
     }
 }

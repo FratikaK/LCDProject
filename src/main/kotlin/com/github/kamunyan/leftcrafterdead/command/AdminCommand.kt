@@ -112,6 +112,18 @@ class AdminCommand : CommandExecutor {
                         }
                     }
                 }
+                "teleport" -> {
+                    if (args.size == 3) {
+                        if (Bukkit.getWorld(args[1]) != null && Bukkit.getPlayer(args[2]) != null) {
+                            MatchManager.campaignList.forEach {
+                                if (it.mapName == args[1]) {
+                                    Bukkit.getPlayer(args[2])!!.teleport(it.startLocations[0])
+                                    flag = true
+                                }
+                            }
+                        }
+                    }
+                }
                 else -> {
                 }
             }

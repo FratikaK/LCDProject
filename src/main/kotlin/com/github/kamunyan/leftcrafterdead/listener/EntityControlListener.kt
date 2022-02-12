@@ -24,6 +24,8 @@ import org.bukkit.event.entity.*
 import org.bukkit.event.inventory.InventoryCreativeEvent
 import org.bukkit.event.inventory.InventoryMoveItemEvent
 import org.bukkit.event.player.*
+import org.bukkit.event.vehicle.VehicleDestroyEvent
+import org.bukkit.event.vehicle.VehicleEnterEvent
 import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
@@ -195,6 +197,20 @@ class EntityControlListener : Listener {
                     waitTime--
                 }
             }.runTaskTimerAsynchronously(plugin, 0, 2)
+        }
+    }
+
+    @EventHandler
+    fun onVehicleEnter(e: VehicleEnterEvent){
+        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)){
+            e.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun onVehicleDestroy(e: VehicleDestroyEvent){
+        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)){
+            e.isCancelled = true
         }
     }
 

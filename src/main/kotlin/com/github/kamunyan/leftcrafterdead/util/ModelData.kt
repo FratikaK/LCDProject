@@ -14,5 +14,6 @@ enum class ModelData(val data: Int) {
     SELECT_SKILL_GHOST(503),
     SELECT_SKILL_FUGITIVE(504),
     SKILL_BUILD_RETURN(510),
-    AMMO(550)
+    AMMO(550),
+    TRADER(20)
 }

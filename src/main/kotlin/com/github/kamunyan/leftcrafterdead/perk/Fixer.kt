@@ -57,7 +57,7 @@ class Fixer : Perk(PerkType.FIXER) {
                 var timeLeft = (10 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt()
                 object : BukkitRunnable() {
                     override fun run() {
-                        if (targetLCDPlayer.isSurvivor || !MatchManager.isMatch || timeLeft <= 0) {
+                        if (!targetLCDPlayer.isSurvivor || !MatchManager.isMatch || timeLeft <= 0) {
                             cancel()
                             return
                         }

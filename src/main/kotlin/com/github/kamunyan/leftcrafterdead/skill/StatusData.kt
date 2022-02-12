@@ -164,9 +164,9 @@ data class StatusData(
      * 弾薬所持上限
      */
     val ammoLimits: Map<AmmoCategory, Int> = mapOf(
-        AmmoCategory.RIFLE to 300,
-        AmmoCategory.SUB to 600,
-        AmmoCategory.SHELL to 120,
+        AmmoCategory.RIFLE to 700,
+        AmmoCategory.SUB to 800,
+        AmmoCategory.SHELL to 240,
         AmmoCategory.MAGNUM to 100
     )
 ) {

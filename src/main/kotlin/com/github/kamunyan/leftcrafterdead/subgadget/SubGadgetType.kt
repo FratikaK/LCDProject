@@ -23,4 +23,8 @@ enum class SubGadgetType {
     };
 
     abstract fun getInstance(): SubGadget
+
+    companion object{
+        val subGadgetLists = listOf(HEAL_POTION,TRIP_MINE,SENTRY_GUN,PAIN_KILLER)
+    }
 }

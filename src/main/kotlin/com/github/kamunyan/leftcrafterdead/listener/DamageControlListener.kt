@@ -17,11 +17,13 @@ import org.bukkit.entity.HumanEntity
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.event.entity.ProjectileHitEvent
+import org.bukkit.event.vehicle.VehicleDamageEvent
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.scheduler.BukkitRunnable
@@ -90,7 +92,7 @@ class DamageControlListener : Listener {
         val enemy = manager.enemyHashMap[e.victim.uniqueId]!!
         val data = manager.getLCDPlayer(e.player).statusData
 
-        if (e.damager.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)){
+        if (e.damager.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)) {
             e.damage *= data.sentryGunPowerMultiplier
             return
         }
@@ -189,6 +191,10 @@ class DamageControlListener : Listener {
 
     @EventHandler
     fun onDeath(e: EntityDeathEvent) {
+        if (e.entity.hasMetadata(MetadataUtil.SUPPLY_CART)) {
+            e.isCancelled = true
+            return
+        }
         val uuid = e.entity.uniqueId
         if (manager.enemyHashMap.containsKey(uuid)) {
             val enemy = manager.enemyHashMap[uuid]!!
@@ -213,7 +219,14 @@ class DamageControlListener : Listener {
 
     @EventHandler
     fun onEntityDamage(e: EntityDamageEvent) {
-        if (e.entity.type == EntityType.SNOWMAN) e.isCancelled = true
+        if (e.entity.type == EntityType.SNOWMAN) {
+            e.isCancelled = true
+            return
+        }
+        if (e.entity.hasMetadata(MetadataUtil.SUPPLY_CART)) {
+            e.isCancelled = true
+            return
+        }
         if (e.entity.type == EntityType.PLAYER) {
             val player = e.entity as Player
             val lcdPlayer = manager.getLCDPlayer(player)
@@ -283,7 +296,7 @@ class DamageControlListener : Listener {
         println("PlayerDamage ${e.damage}")
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     fun onPvP(e: EntityDamageByEntityEvent) {
         if (e.entity.type == e.damager.type) {
             e.isCancelled = true
@@ -296,10 +309,18 @@ class DamageControlListener : Listener {
         if (e.entity.hasMetadata(MetadataUtil.EXPLODE_ARROW)) {
             e.entity.location.clone().getNearbyPlayers(5.0).forEach {
                 val lcdPlayer = manager.getLCDPlayer(it)
-                if (lcdPlayer.isSurvivor){
+                if (lcdPlayer.isSurvivor) {
 
                 }
             }
+        }
+    }
+
+    @EventHandler
+    fun onVehicleDamage(e: VehicleDamageEvent){
+        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)){
+            e.isCancelled
+            return
         }
     }
 }

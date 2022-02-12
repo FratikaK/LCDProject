@@ -1,6 +1,7 @@
 package com.github.kamunyan.leftcrafterdead.util
 
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.subgadget.SubGadgetType
 import net.kyori.adventure.text.Component
 import org.bukkit.ChatColor
 import org.bukkit.Location
@@ -39,6 +40,9 @@ class SupplyMinions {
         cart.setDisplayBlockData(supplyType.displayMaterial.createBlockData())
         MetadataUtil.setSupplyMetadata(cart, MetadataUtil.SUPPLY_CART)
         cart.maxSpeed = 0.0
+        MetadataUtil.setSupplyMetadata(cart,MetadataUtil.SUPPLY_CART)
+        cart.customName = supplyType.supplyName
+        cart.isCustomNameVisible = true
         supplies[uuid] = this
     }
 
@@ -54,6 +58,7 @@ class SupplyMinions {
     enum class SupplyType {
         AMMO {
             override val displayMaterial = Material.FURNACE
+            override val supplyName: String = "${ChatColor.AQUA}弾薬補給"
             override fun rightInteract(player: Player) {
                 val lcdPlayer = manager.getLCDPlayer(player)
                 lcdPlayer.statusData.ammoLimits.forEach { (category, limit) ->
@@ -66,12 +71,29 @@ class SupplyMinions {
         },
         SUB_GADGET {
             override val displayMaterial = Material.CHEST
+            override val supplyName: String = "${ChatColor.YELLOW}サブガジェット補給"
             override fun rightInteract(player: Player) {
-
+                val lcdPlayer = manager.getLCDPlayer(player)
+                val list = SubGadgetType.subGadgetLists
+                var flag = false
+                lcdPlayer.subGadget.forEach { (t, u) ->
+                    if (u == null && !flag){
+                        val gadget = list[Random().nextInt(list.size)]
+                        lcdPlayer.subGadget[t] = gadget
+                        player.inventory.setItem(t,gadget.getInstance().generateItemStack(lcdPlayer.statusData))
+                        player.playSound(player.location, Sound.ENTITY_BAT_TAKEOFF, 1f, 0f)
+                        player.sendMessage("${ChatColor.AQUA}${gadget.getInstance().subGadgetName}を手に入れました")
+                        flag = true
+                    }
+                }
+                if (!flag){
+                    player.sendMessage("${ChatColor.RED}サブガジェットのスロットに空きがありませんでした")
+                }
             }
         },
         GRENADE {
-            override val displayMaterial = Material.TNT
+            override val displayMaterial = Material.NETHER_QUARTZ_ORE
+            override val supplyName: String = "${ChatColor.RED}グレネード補給"
             override fun rightInteract(player: Player) {
                 val lcdPlayer = manager.getLCDPlayer(player)
                 lcdPlayer.perk.getGrenade().sendGrenade(player,2)
@@ -82,6 +104,7 @@ class SupplyMinions {
         ;
 
         abstract val displayMaterial: Material
+        abstract val supplyName:String
         abstract fun rightInteract(player: Player)
     }
 }

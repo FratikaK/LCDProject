@@ -4,7 +4,7 @@ import org.bukkit.Material
 
 enum class AmmoCategory {
     RIFLE {
-        override val material: Material = Material.STICK
+        override val material: Material = Material.PRISMARINE_SHARD
         override val ammoCustomName: String = "ライフルの弾"
         override val itemSlot = 9
     },

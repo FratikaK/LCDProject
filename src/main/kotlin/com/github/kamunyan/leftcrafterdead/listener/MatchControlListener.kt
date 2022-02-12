@@ -65,7 +65,7 @@ class MatchControlListener : Listener {
         lcdPlayer.isSurvivor = false
 
         val deathMessage = "${ChatColor.YELLOW}DEATH${ChatColor.RED}  =====>>>>" +
-                "  ${ChatColor.YELLOW}${lcdPlayer.player.displayName}"
+                "  ${ChatColor.YELLOW}${lcdPlayer.player.name}"
         Bukkit.getOnlinePlayers().forEach { player ->
             player.playSound(player.location, Sound.ENTITY_WOLF_HOWL, 100f, 1f)
         }
