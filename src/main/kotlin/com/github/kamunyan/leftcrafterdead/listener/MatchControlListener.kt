@@ -15,7 +15,14 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.scheduler.BukkitRunnable
+import xyz.xenondevs.particle.ParticleBuilder
+import xyz.xenondevs.particle.ParticleEffect
+import xyz.xenondevs.particle.data.color.RegularColor
+import java.awt.Color
 import java.util.*
+import kotlin.math.cos
+import kotlin.math.sin
 
 class MatchControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
@@ -115,7 +122,32 @@ class MatchControlListener : Listener {
             }
 
             val random = Random().nextInt(manager.bossList.size)
-            manager.bossList[random].spawnEnemy(locations[0])
+            object: BukkitRunnable(){
+                var timeLeft = 6
+                override fun run() {
+                    if (timeLeft <= 0){
+                        manager.bossList[random].spawnEnemy(locations[0])
+                        cancel()
+                        return
+                    }
+                    for (i in 0..360) {
+                        val sin = sin(Math.toRadians(i.toDouble())) * 5
+                        val cos = cos(Math.toRadians(i.toDouble())) * 5
+                        ParticleBuilder(ParticleEffect.REDSTONE)
+                            .setLocation(
+                                locations[0].clone().set(
+                                    locations[0].x + sin,
+                                    locations[0].y + 1.0,
+                                    locations[0].z + cos
+                                )
+                            )
+                            .setAmount(1)
+                            .setParticleData(RegularColor(Color.RED))
+                            .display()
+                    }
+                    timeLeft--
+                }
+            }.runTaskTimerAsynchronously(plugin,0,20)
         } else {
             manager.finishCampaign()
         }
