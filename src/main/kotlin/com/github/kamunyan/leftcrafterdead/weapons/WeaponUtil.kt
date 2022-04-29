@@ -1,5 +1,6 @@
 package com.github.kamunyan.leftcrafterdead.weapons
 
+import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -46,33 +47,29 @@ object WeaponUtil {
     }
 
     fun getGunCategory(weaponTitle: String): GunCategory {
-        if (GunCategory.ASSAULT_RIFLE.getWeaponList().contains(weaponTitle)) {
-            return GunCategory.ASSAULT_RIFLE
-        } else if (GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(weaponTitle)) {
-            return GunCategory.SUB_MACHINE_GUN
-        } else if (GunCategory.SHOTGUN.getWeaponList().contains(weaponTitle)) {
-            return GunCategory.SHOTGUN
-        } else if (GunCategory.HANDGUN.getWeaponList().contains(weaponTitle)) {
-            return GunCategory.HANDGUN
-        } else if (GunCategory.GRENADE.getWeaponList().contains(weaponTitle)) {
-            return GunCategory.GRENADE
+        PrimaryType.values().forEach {
+            if (it.weaponTitle == weaponTitle) {
+                return it.category
+            }
+        }
+        SecondaryType.values().forEach {
+            if (it.weaponTitle == weaponTitle) {
+                return it.category
+            }
         }
         return GunCategory.UNKNOWN
     }
 
-    fun remainTotalAmmo(ammoCategory: AmmoCategory,player: Player):Int{
-        val material = ammoCategory.material
-        if (player.inventory.contains(material)){
-            var count = 0
-            player.inventory.all(material).forEach{(_,item) ->
-                count += item.amount
-            }
-            return count
+    fun getLCDWeapon(lcdPlayer: LCDPlayer,weaponTitle: String):LCDWeapon?{
+        if (lcdPlayer.primary.weaponTitle == weaponTitle){
+            return lcdPlayer.primary
+        }else if(lcdPlayer.secondaryWeapon.weaponTitle == weaponTitle){
+            return lcdPlayer.secondaryWeapon
         }
-        return 0
+        return null
     }
 
-    fun remainTotalAmmo(gunCategory: GunCategory, player: Player): Int {
-        return remainTotalAmmo(gunCategory.ammoType,player)
+    fun isLCDGrenade(lcdPlayer: LCDPlayer, weaponTitle: String): Boolean {
+        return lcdPlayer.grenade.weaponTitle == weaponTitle
     }
 }

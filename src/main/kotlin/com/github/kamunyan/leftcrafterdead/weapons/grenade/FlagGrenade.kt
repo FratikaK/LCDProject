@@ -4,7 +4,9 @@ import org.bukkit.Location
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 
-class FlagGrenade :Grenade("Flag Grenade") {
+object FlagGrenade :Grenade("Flag Grenade") {
+    override val grenadeType: GrenadeType
+        get() = GrenadeType.FLAG_GRENADE
     override fun explosionEffects(location: Location) {
     }
 

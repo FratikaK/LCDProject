@@ -42,27 +42,11 @@ class PerkListener : Listener {
     @EventHandler
     fun onSubGadgetInteract(e: PlayerInteractEvent) {
         if (!ItemMetaUtil.hasItemMetaCustomModelData(e.item)) return
-        val removeItem = fun(item: ItemStack) {
-            if (e.item!!.amount == 1) {
-                e.player.inventory.remove(e.item!!)
-            } else {
-                e.item!!.amount--
-            }
-        }
         if (e.action == Action.RIGHT_CLICK_BLOCK || e.action == Action.RIGHT_CLICK_AIR) {
-            when (e.item!!.itemMeta.customModelData) {
-                TripMine.customData -> {
-                    TripMine.rightInteract(e.player)
-                    removeItem(e.item!!)
-                }
-                SentryGun.customData -> {
-                    SentryGun.rightInteract(e.player)
-                    removeItem(e.item!!)
-                }
-                PainKiller.customData -> {
-                    PainKiller.rightInteract(e.player)
-                    removeItem(e.item!!)
-                }
+            val lcdPlayer = manager.getLCDPlayer(e.player)
+            val index = e.player.inventory.indexOf(e.player.inventory.itemInMainHand)
+            if (lcdPlayer.subGadget.containsKey(index)){
+                lcdPlayer.subGadget[index]?.rightInteract(e.player)
             }
         }
     }

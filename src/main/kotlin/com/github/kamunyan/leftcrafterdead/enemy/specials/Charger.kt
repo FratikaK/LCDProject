@@ -35,7 +35,7 @@ object Charger : LCDSpecialEnemy() {
     }
 
     override fun getPower(): Double {
-        val defaultPower = 8.0
+        val defaultPower = 5.0
         val addPower = when (manager.campaignDifficulty) {
             CampaignDifficulty.ADVANCED -> 2.0
             CampaignDifficulty.EXPERT -> 4.0

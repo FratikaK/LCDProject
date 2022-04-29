@@ -4,10 +4,10 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.weapons.Primary
+import com.github.kamunyan.leftcrafterdead.weapons.PrimaryType
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Concussion
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
-import com.github.kamunyan.leftcrafterdead.weapons.primary.AssaultRifle
-import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Sound
@@ -23,11 +23,11 @@ class Fixer : Perk(PerkType.FIXER) {
     }
 
     override fun getGrenade(): Grenade {
-        return Concussion()
+        return Concussion
     }
 
-    override fun firstPrimaryWeapon(): PrimaryWeapon {
-        return AssaultRifle("Mini21")
+    override fun firstPrimaryWeapon(): Primary {
+        return Primary(PrimaryType.M16)
     }
 
     override fun perkGadgetItem(): ItemStack {
@@ -36,14 +36,15 @@ class Fixer : Perk(PerkType.FIXER) {
             "${ChatColor.GOLD}Armor Boost",
             110,
             listOf(
-                "半径10mにいるプレイヤーの",
-                "アーマー回復速度を100%上昇させる"
+                "半径10mにいるプレイヤーに",
+                "一時的な体力を10付与する"
             )
         )
     }
 
     override fun gadgetRightInteract(lcdPlayer: LCDPlayer) {
         super.gadgetRightInteract(lcdPlayer)
+        val amount = 7 + (3 * lcdPlayer.statusData.mainGadgetAddPerformance)
         lcdPlayer.player.location.getNearbyPlayers(10.0 * lcdPlayer.statusData.mainGadgetAddPerformance)
             .forEach { player ->
                 player.playSound(player.location, Sound.ITEM_FIRECHARGE_USE, 2f, 1f)
@@ -52,23 +53,9 @@ class Fixer : Perk(PerkType.FIXER) {
                     .setOffset(3f, 3f, 3f)
                     .setAmount(200)
                     .display()
-                val targetLCDPlayer = MatchManager.getLCDPlayer(player)
-                val limitArmor = targetLCDPlayer.statusData.armorLimit
-                var timeLeft = (10 * lcdPlayer.statusData.mainGadgetAddPerformance).toInt()
-                object : BukkitRunnable() {
-                    override fun run() {
-                        if (!targetLCDPlayer.isSurvivor || !MatchManager.isMatch || timeLeft <= 0) {
-                            cancel()
-                            return
-                        }
-                        if (player.absorptionAmount < limitArmor) {
-                            player.absorptionAmount++
-                        }
-                        timeLeft--
-                    }
-                }.runTaskTimerAsynchronously(LeftCrafterDead.instance, 0, 10)
+                player.absorptionAmount += amount
             }
     }
 
-    override val gadgetCoolDown: Int = 5
+    override val gadgetCoolDown: Int = 50
 }

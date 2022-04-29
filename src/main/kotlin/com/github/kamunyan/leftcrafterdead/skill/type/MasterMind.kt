@@ -13,14 +13,14 @@ class MasterMind: SkillTree() {
             when(index){
                 49 -> data.reloadSpeedAcceleration -= 0.05
                 38 -> data.rateAcceleration += 1
-                40 -> data.fireRateReloadSpeedAcceleration -= 0.1
+                40 -> data.fireRateReloadSpeedAcceleration -= 0.15
                 42 -> data.addBulletSpread -= 0.5
                 29 -> data.healPotionMultiplier += 0.5
                 31 -> data.fireRateReloadSpeedAcceleration -= 0.15
-                33 -> data.fireRateAddBulletSpread -= 1.0
-                20 -> data.healPotionAmount += 2
+                33 -> data.fireRateAddBulletSpread -= 1.5
+                20 -> data.specialSkillTypes.add(SpecialSkillType.COMBAT_DOCTOR)
                 22 -> data.specialSkillTypes.add(SpecialSkillType.COMBAT_MEDIC)
-                24 -> data.painKillerAmount = 8
+                24 -> data.painKillerMultiplier += 1.0
                 11 -> data.healPotionMultiplier += 1.0
                 13 -> data.dodgeMultiplier += 25
                 15 -> data.fireRateAddBulletSpread -= 2.5

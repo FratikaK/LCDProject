@@ -11,12 +11,13 @@ import com.github.kamunyan.leftcrafterdead.skill.SkillType
 import com.github.kamunyan.leftcrafterdead.skill.StatusData
 import com.github.kamunyan.leftcrafterdead.skill.type.*
 import com.github.kamunyan.leftcrafterdead.subgadget.*
+import com.github.kamunyan.leftcrafterdead.util.Buff
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
-import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
-import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
-import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
-import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
-import com.github.kamunyan.leftcrafterdead.weapons.secondary.SecondaryWeapon
+import com.github.kamunyan.leftcrafterdead.util.inventory.DisplayType
+import com.github.kamunyan.leftcrafterdead.weapons.Primary
+import com.github.kamunyan.leftcrafterdead.weapons.Secondary
+import com.github.kamunyan.leftcrafterdead.weapons.SecondaryType
+import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
 import org.bukkit.*
 import org.bukkit.attribute.Attribute
 import org.bukkit.entity.Player
@@ -32,25 +33,29 @@ class LCDPlayer(val uuid: String) {
 
     var isSurvivor = false
 
-    var isRecovery = false
-
     var gameMode: GameMode = GameMode.ADVENTURE
 
     var perk: Perk
 
-    lateinit var primary: PrimaryWeapon
+    lateinit var primary: Primary
 
-    var firstPrimaryWeapon: PrimaryWeapon? = null
+    var firstPrimaryWeapon: Primary? = null
 
-    var secondaryWeapon: SecondaryWeapon = HandGun("P226", WeaponType.Secondary)
+    var secondaryWeapon: Secondary = Secondary(SecondaryType.BERETTA_M9)
 
-    var firstSecondaryWeapon: SecondaryWeapon? = null
+    var firstSecondaryWeapon: Secondary? = null
+
+    lateinit var grenade: Grenade
+
+    var firstGrenade: Grenade? = null
 
     val firstSubGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
 
-    val subGadget = hashMapOf<Int, SubGadgetType?>(5 to null, 6 to null, 7 to null)
+    val subGadget = hashMapOf<Int, SubGadget?>(5 to null, 6 to null, 7 to null)
 
-    var campaignData: CampaignPlayerData = CampaignPlayerData(0, 300, 0)
+    val buff = ArrayList<Buff>()
+
+    var campaignData: CampaignPlayerData = CampaignPlayerData(0, 10000, 0)
 
     val playerData: PlayerData = PlayerData(uuid, 0, 0, 0, 0)
 
@@ -61,6 +66,8 @@ class LCDPlayer(val uuid: String) {
         SkillType.GHOST to Ghost(),
         SkillType.FUGITIVE to Fugitive()
     )
+
+    var displayView: DisplayType? = null
 
     var skillPoint: Int = 0
 
@@ -112,7 +119,6 @@ class LCDPlayer(val uuid: String) {
         clearInventory()
         perk.setFirstWeapon(this)
         giveFirstSubGadget()
-        sendFirstAmmo()
     }
 
     fun setLobbyItem() {
@@ -125,10 +131,10 @@ class LCDPlayer(val uuid: String) {
 
     fun giveFirstSubGadget() {
         firstSubGadget.forEach { (t, u) ->
-            subGadget[t] = u
             val item: ItemStack
             if (u != null) {
-                item = u.getInstance().generateItemStack(statusData)
+                subGadget[t] = SubGadget.createSubGadgetInstance(t, u)
+                item = subGadget[t]!!.generateItemStack(statusData)
             } else {
                 item = SubGadget.nullItem()
             }
@@ -175,29 +181,6 @@ class LCDPlayer(val uuid: String) {
         player.playSound(player.location, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 0f)
     }
 
-    fun sendFirstAmmo() {
-        statusData.ammoLimits.forEach { (category, limit) ->
-            val ammoItemStack = ItemMetaUtil.createAmmunition(category, limit)
-            player.inventory.setItem(category.itemSlot, ammoItemStack)
-        }
-    }
-
-    fun addAmmo(ammoCategory: AmmoCategory, amount: Int) {
-        if (ammoCategory == AmmoCategory.UNKNOWN) return
-
-        var remainAmmo = player.inventory.getItem(ammoCategory.itemSlot)
-        if (remainAmmo == null) {
-            remainAmmo = ItemMetaUtil.createAmmunition(ammoCategory, amount)
-            player.inventory.setItem(ammoCategory.itemSlot, remainAmmo)
-        } else {
-            remainAmmo.amount += amount
-        }
-
-        if (remainAmmo.amount > statusData.ammoLimits[ammoCategory]!!){
-            remainAmmo.amount = statusData.ammoLimits[ammoCategory]!!
-        }
-    }
-
     private fun loadPlayerData() {
         SQLDriver.loadPlayerData(playerData)
         SkillTreeData.loadSkillTree(this)
@@ -211,6 +194,7 @@ class LCDPlayer(val uuid: String) {
     fun initialize() {
         isMatchPlayer = false
         isSurvivor = false
+        buff.clear()
         playerData.totalKill += campaignData.kill
         PlayerData.addExp(campaignData.exp, playerData)
         updatePlayerData()

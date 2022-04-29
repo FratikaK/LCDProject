@@ -12,10 +12,11 @@ import com.github.kamunyan.leftcrafterdead.event.MatchReStartEvent
 import com.github.kamunyan.leftcrafterdead.event.MatchStartEvent
 import com.github.kamunyan.leftcrafterdead.event.RushStartEvent
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
+import com.github.kamunyan.leftcrafterdead.task.EndPointRunnable
+import com.github.kamunyan.leftcrafterdead.trader.Trader
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import com.github.kamunyan.leftcrafterdead.util.SupplyMinions
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
-import com.github.kamunyan.leftcrafterdead.weapons.secondary.HandGun
 import net.kyori.adventure.text.Component
 import org.bukkit.*
 import org.bukkit.boss.BarColor
@@ -63,6 +64,8 @@ object MatchManager {
     var isCheckPoint = false
 
     private var isFinishing = false
+
+    lateinit var endPointRunnable: EndPointRunnable
 
     @Synchronized
     fun getLCDPlayer(@NotNull target: Player): LCDPlayer {
@@ -152,6 +155,9 @@ object MatchManager {
         startRush()
 
         spawnMinions()
+
+        endPointRunnable = EndPointRunnable()
+        endPointRunnable.runTask()
     }
 
     @Synchronized
@@ -177,6 +183,10 @@ object MatchManager {
                 lcdPlayer.campaignData.exp += getExp
                 lcdPlayer.player.sendMessage(Component.text("${ChatColor.GOLD}生存者数ボーナス ===> ${addExp}Exp"))
                 lcdPlayer.player.sendMessage(Component.text("獲得経験値 ===> ${getExp}Exp"))
+
+                lcdPlayer.subGadget.forEach { (_, u) ->
+                    u?.startCoolDown(lcdPlayer, 3)
+                }
             }
         }
 
@@ -240,7 +250,7 @@ object MatchManager {
                     timeLeft = 1.0
                 }
 
-                timeLeft -= 0.02
+                timeLeft -= 0.015
                 if (timeLeft < 0) return
                 bossBar.progress = timeLeft
             }
@@ -330,7 +340,6 @@ object MatchManager {
             lcdPlayer.setPlayerStatus()
             lcdPlayer.perk.setFirstWeapon(lcdPlayer)
             lcdPlayer.giveFirstSubGadget()
-            lcdPlayer.secondaryWeapon = HandGun("P226", WeaponType.Secondary)
             lcdPlayer.player.teleportAsync(campaign.restLocation)
         } else {
             //途中参加
@@ -389,18 +398,18 @@ object MatchManager {
     }
 
     fun determineDifficulty() {
-        val difficultyTable = listOf(15,30)
+        val difficultyTable = listOf(15, 30)
         var levels = 0
         matchPlayer.forEach {
-            if (it.isSurvivor){
+            if (it.isSurvivor) {
                 levels += it.playerData.level
             }
         }
         val average = levels / numberOfSurvivors()
         var difficulty = CampaignDifficulty.NORMAL
-        if (average >= difficultyTable[0] && average < difficultyTable[1]){
+        if (average >= difficultyTable[0] && average < difficultyTable[1]) {
             difficulty = CampaignDifficulty.ADVANCED
-        }else if (average >= difficultyTable[1]){
+        } else if (average >= difficultyTable[1]) {
             difficulty = CampaignDifficulty.EXPERT
         }
         campaignDifficulty = difficulty
@@ -460,19 +469,19 @@ object MatchManager {
         plugin.logger.info("[deleteEnemyMob]${ChatColor.AQUA}${count}体のmobを削除しました")
     }
 
-    private fun spawnMinions(){
+    private fun spawnMinions() {
         SupplyMinions.spawnCampaignSupplies()
+        Trader.spawnTrader()
     }
 
-    private fun deleteMinions(){
+    private fun deleteMinions() {
         val world = Bukkit.getWorld(campaign.mapName) ?: return
         world.entities.forEach {
-            if(it is Minecart){
-                if (it.hasMetadata(MetadataUtil.SUPPLY_CART)){
-                    it.remove()
-                }
+            if (it is Minecart) {
+                it.remove()
             }
         }
+        Trader.deleteTrader()
     }
 
     private fun getRandomCampaign(): Campaign {

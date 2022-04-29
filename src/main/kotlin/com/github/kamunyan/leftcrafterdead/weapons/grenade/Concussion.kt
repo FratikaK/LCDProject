@@ -7,7 +7,9 @@ import org.bukkit.entity.Player
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 
-class Concussion : Grenade("Concussion") {
+object Concussion : Grenade("Concussion") {
+    override val grenadeType: GrenadeType
+        get() = GrenadeType.CONCUSSION
     override fun explosionEffects(location: Location) {
     }
 
@@ -15,6 +17,6 @@ class Concussion : Grenade("Concussion") {
         if (entity.type == EntityType.PLAYER) {
             return
         }
-        entity.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 100, 5, false, false))
+        entity.addPotionEffect(PotionEffect(PotionEffectType.SLOW, 200, 5, false, false))
     }
 }

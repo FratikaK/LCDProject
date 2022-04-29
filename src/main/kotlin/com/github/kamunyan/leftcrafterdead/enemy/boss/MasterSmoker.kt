@@ -43,10 +43,10 @@ class MasterSmoker : LCDBoss() {
                     return
                 }
                 livingEntity.world.playSound(livingEntity.location, Sound.ITEM_FIRECHARGE_USE, 3f, 1f)
-                for (amount in 0..10) {
+                for (amount in 0..5) {
                     val arrow = livingEntity.launchProjectile(Arrow::class.java)
                     MetadataUtil.setProjectileMetadata(arrow, MetadataUtil.ENEMY_ARROW)
-                    arrow.damage = getPower()
+                    arrow.damage = 0.0
                     val yaw = Math.toRadians((-livingEntity.location.yaw - 90.0f).toDouble())
                     val pitch = Math.toRadians((-livingEntity.location.pitch).toDouble())
                     val spread = doubleArrayOf(1.0, 1.0, 1.0)
@@ -57,7 +57,7 @@ class MasterSmoker : LCDBoss() {
                     val y = sin(pitch) + spread[1]
                     val z = -sin(yaw) * cos(pitch) + spread[2]
                     val dirVel = Vector(x, y, z)
-                    arrow.velocity = dirVel.multiply(5)
+                    arrow.velocity = dirVel.multiply(1.5)
                 }
             }
         }.runTaskTimer(LeftCrafterDead.instance, 0, 30)

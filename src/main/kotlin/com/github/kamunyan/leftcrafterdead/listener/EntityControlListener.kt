@@ -202,14 +202,14 @@ class EntityControlListener : Listener {
 
     @EventHandler
     fun onVehicleEnter(e: VehicleEnterEvent){
-        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)){
+        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART) || e.vehicle.hasMetadata(MetadataUtil.TRADER_CART)){
             e.isCancelled = true
         }
     }
 
     @EventHandler
     fun onVehicleDestroy(e: VehicleDestroyEvent){
-        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)){
+        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART) || e.vehicle.hasMetadata(MetadataUtil.TRADER_CART)){
             e.isCancelled = true
         }
     }
@@ -286,11 +286,6 @@ class EntityControlListener : Listener {
     @EventHandler
     fun onItemConsume(e: PlayerItemConsumeEvent) {
         e.replacement = null
-        if (ItemMetaUtil.hasItemMetaCustomModelData(e.item)) {
-            when (e.item.itemMeta.customModelData) {
-                HealPotion.customData -> HealPotion.rightInteract(e.player)
-            }
-        }
     }
 
     @EventHandler

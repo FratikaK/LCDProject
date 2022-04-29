@@ -26,7 +26,7 @@ class Technician : SkillTree() {
                         data.tripMineRangeMultiplier += 0.5
                         data.specialSkillTypes.add(SpecialSkillType.FIRE_TRAP)
                     }
-                    15 -> data.tripMineAmount += 6
+                    15 -> data.explosionDamageMultiplier += 0.5
                     2 -> data.sentryGunAmount += 4
                     4 -> data.mainGadgetAddPerformance += 0.5
                     6 -> data.specialSkillTypes.add(SpecialSkillType.BODY_EXPERTISE)

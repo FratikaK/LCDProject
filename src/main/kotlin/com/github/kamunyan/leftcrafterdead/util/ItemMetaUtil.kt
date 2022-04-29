@@ -1,6 +1,5 @@
 package com.github.kamunyan.leftcrafterdead.util
 
-import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -45,11 +44,5 @@ object ItemMetaUtil {
             }
         }
         return flag
-    }
-
-    fun createAmmunition(ammoType: AmmoCategory, amount: Int): ItemStack {
-        val item = generateMetaItem(ammoType.material, "${ChatColor.AQUA}${ammoType.ammoCustomName}")
-        item.amount = amount
-        return item
     }
 }

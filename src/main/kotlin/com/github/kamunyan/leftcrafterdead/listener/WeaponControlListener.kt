@@ -3,8 +3,6 @@ package com.github.kamunyan.leftcrafterdead.listener
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
-import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
-import com.github.kamunyan.leftcrafterdead.weapons.AmmoCategory
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponType
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
@@ -30,13 +28,16 @@ class WeaponControlListener : Listener {
         //reloadDurationはリロード完了までの時間
         val lcdPlayer = manager.getLCDPlayer(e.player)
         val data = lcdPlayer.statusData
+        val category = WeaponUtil.getGunCategory(e.weaponTitle)
+        val lcdWeapon = WeaponUtil.getLCDWeapon(lcdPlayer, e.weaponTitle)
+        if (lcdWeapon != null) {
+            e.reloadSpeed -= (0.1 * lcdWeapon.weaponLevel)
+        }
         e.reloadSpeed += lcdPlayer.statusData.reloadSpeedAcceleration
-        if (GunCategory.ASSAULT_RIFLE.getWeaponList()
-                .contains(e.weaponTitle) || GunCategory.SUB_MACHINE_GUN.getWeaponList().contains(e.weaponTitle)
-        ) {
+        if (category == GunCategory.ASSAULT_RIFLE || category == GunCategory.SUB_MACHINE_GUN) {
             e.reloadSpeed += data.fireRateReloadSpeedAcceleration
         }
-        if (WeaponUtil.getGunCategory(e.weaponTitle) == GunCategory.SHOTGUN) {
+        if (category == GunCategory.SHOTGUN) {
             e.reloadSpeed += lcdPlayer.statusData.shotgunReloadSpeedAcceleration
         }
         if (data.specialSkillTypes.contains(SpecialSkillType.RUNNING_FROM_DEATH)) {
@@ -44,6 +45,7 @@ class WeaponControlListener : Listener {
                 e.reloadSpeed += -0.15
             }
         }
+        println("ReloadSpeed ${e.reloadSpeed}")
         val weapon: ItemStack?
         val weaponType = WeaponUtil.getWeaponType(CSUtility().generateWeapon(e.weaponTitle).type, e.player)
         val weaponSlot = weaponType.getWeaponSlot()
@@ -106,11 +108,9 @@ class WeaponControlListener : Listener {
         if (category == GunCategory.ASSAULT_RIFLE || category == GunCategory.SUB_MACHINE_GUN) {
             addSpread += lcdPlayer.statusData.fireRateAddBulletSpread
         }
-        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
-            addSpread += lcdPlayer.statusData.handgunAddBulletSpread
-        }
-        if (lcdPlayer.statusData.specialSkillTypes.contains(SpecialSkillType.AKIMBO)) {
-            addSpread += -1.5
+
+        if (category == GunCategory.SIDE_ARM) {
+            addSpread += lcdPlayer.statusData.secondaryAddBulletSpread
         }
 
         if (e.bulletSpread + addSpread < 0) {
@@ -121,41 +121,24 @@ class WeaponControlListener : Listener {
     }
 
     @EventHandler
-    fun onWeaponShoot(e: WeaponShootEvent) {
-        val item = e.player.inventory.itemInMainHand
-        if (item.hasItemMeta() && item.itemMeta.hasDisplayName()) {
-            val remainAmmo = remainAmmoCheck(item.itemMeta.displayName().toString())
-            if (remainAmmo.toIntOrNull() != null) {
-                val ammoType = WeaponUtil.getGunCategory(e.weaponTitle).ammoType
-                if (ammoType == AmmoCategory.UNKNOWN) {
-                    return
-                }
-                val lcdPlayer = manager.getLCDPlayer(e.player)
-                val ammoLimit = lcdPlayer.statusData.ammoLimits[ammoType]!!
-                val remainTotalAmmo = WeaponUtil.remainTotalAmmo(ammoType, e.player)
-                val color = if (remainTotalAmmo / ammoLimit <= 0.2) {
-                    ChatColor.YELLOW
-                } else {
-                    ChatColor.WHITE
-                }
-                val stringActionBar =
-                    "${ChatColor.YELLOW}${e.weaponTitle}  ${ChatColor.WHITE}$remainAmmo / ${color}${remainTotalAmmo}"
-                e.player.sendActionBar(Component.text(stringActionBar))
-            }
-        }
-    }
-
-    @EventHandler
     fun onReloadComplete(e: WeaponReloadCompleteEvent) {
     }
 
     @EventHandler
     fun onWeaponCapacity(e: WeaponCapacityEvent) {
         val lcdPlayer = manager.getLCDPlayer(e.player)
+        val lcdWeapon = WeaponUtil.getLCDWeapon(lcdPlayer, e.weaponTitle)
+        if (lcdWeapon != null) {
+            val add = 0.2 * lcdWeapon.weaponLevel
+            e.capacity = (e.capacity * (1.0 + add)).toInt()
+        }
         e.capacity = (e.capacity * lcdPlayer.statusData.magazineAmountMultiplier).toInt()
         val category = WeaponUtil.getGunCategory(e.weaponTitle)
-        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
-            e.capacity += lcdPlayer.statusData.addHandgunMagazine
+        if (category == GunCategory.SIDE_ARM) {
+            e.capacity = (e.capacity * lcdPlayer.statusData.secondaryMagazineMultiplier).toInt()
+        }
+        if (category == GunCategory.SHOTGUN) {
+            e.capacity += lcdPlayer.statusData.addShotgunMagazine
         }
     }
 
@@ -175,14 +158,5 @@ class WeaponControlListener : Listener {
     @EventHandler
     fun onItemDrop(e: PlayerDropItemEvent) {
         e.isCancelled = true
-    }
-
-    private fun remainAmmoCheck(name: String): String {
-        return if (!name.contains("«")) {
-            '×'.toString()
-        } else {
-            val nameDigger = name.split("«").toTypedArray()
-            nameDigger[1].split("»").toTypedArray()[0]
-        }
     }
 }

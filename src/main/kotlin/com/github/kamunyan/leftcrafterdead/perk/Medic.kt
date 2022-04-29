@@ -4,10 +4,10 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.player.LCDPlayer
 import com.github.kamunyan.leftcrafterdead.util.ItemMetaUtil
+import com.github.kamunyan.leftcrafterdead.weapons.Primary
+import com.github.kamunyan.leftcrafterdead.weapons.PrimaryType
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.Grenade
 import com.github.kamunyan.leftcrafterdead.weapons.grenade.HealGrenade
-import com.github.kamunyan.leftcrafterdead.weapons.primary.PrimaryWeapon
-import com.github.kamunyan.leftcrafterdead.weapons.primary.SubMachineGun
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -27,11 +27,11 @@ class Medic() : Perk(PerkType.MEDIC) {
     }
 
     override fun getGrenade(): Grenade {
-        return HealGrenade()
+        return HealGrenade
     }
 
-    override fun firstPrimaryWeapon(): PrimaryWeapon {
-        return SubMachineGun("MAC10")
+    override fun firstPrimaryWeapon(): Primary {
+        return Primary(PrimaryType.UZI)
     }
 
     override fun perkGadgetItem(): ItemStack {
@@ -89,5 +89,5 @@ class Medic() : Perk(PerkType.MEDIC) {
         }
     }
 
-    override val gadgetCoolDown: Int = 5
+    override val gadgetCoolDown: Int = 45
 }

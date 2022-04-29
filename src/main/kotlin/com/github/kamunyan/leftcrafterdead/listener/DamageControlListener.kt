@@ -2,8 +2,11 @@ package com.github.kamunyan.leftcrafterdead.listener
 
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
+import com.github.kamunyan.leftcrafterdead.enemy.specials.Smoker
 import com.github.kamunyan.leftcrafterdead.skill.SpecialSkillType
 import com.github.kamunyan.leftcrafterdead.subgadget.TripMine
+import com.github.kamunyan.leftcrafterdead.task.BuffRunnable
+import com.github.kamunyan.leftcrafterdead.util.Buff
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import com.github.kamunyan.leftcrafterdead.weapons.GunCategory
 import com.github.kamunyan.leftcrafterdead.weapons.WeaponUtil
@@ -30,6 +33,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import xyz.xenondevs.particle.ParticleBuilder
 import xyz.xenondevs.particle.ParticleEffect
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 class DamageControlListener : Listener {
     private val plugin = LeftCrafterDead.instance
@@ -39,6 +43,9 @@ class DamageControlListener : Listener {
     fun onCrackShotExplosion(e: WeaponExplodeEvent) {
         val location = e.location.clone()
         val lcdPlayer = manager.getLCDPlayer(e.player)
+
+        if (!WeaponUtil.isLCDGrenade(lcdPlayer, e.weaponTitle)) return
+
         var radius = plugin.crackShot.handle.getInt("${e.weaponTitle}.Explosions.Explosion_Radius")
         if (e.weaponTitle == "TRIP MINE") {
             radius = ((radius * lcdPlayer.statusData.tripMineRangeMultiplier).toInt())
@@ -47,14 +54,14 @@ class DamageControlListener : Listener {
         val distanceDecay = weaponDamage / radius
         val entities = location.getNearbyLivingEntities(radius.toDouble())
 
-        if (GunCategory.GRENADE.getWeaponList().contains(e.weaponTitle)) {
-            lcdPlayer.perk.getGrenade().explosionEffects(location)
-        }
+        //グレネードエフェクト
+        lcdPlayer.grenade.explosionEffects(location)
+
         //ダメージを与える処理
         entities.forEach { livingEntity ->
-            if (GunCategory.GRENADE.getWeaponList().contains(e.weaponTitle)) {
-                lcdPlayer.perk.getGrenade().specialEffects(e.player, livingEntity)
-            }
+
+            lcdPlayer.grenade.specialEffects(e.player, livingEntity)
+
             if (manager.enemyHashMap.containsKey(livingEntity.uniqueId)) {
                 val enemy = manager.enemyHashMap[livingEntity.uniqueId]!!
                 if (livingEntity is HumanEntity || livingEntity.isDead) {
@@ -78,11 +85,17 @@ class DamageControlListener : Listener {
 
     @EventHandler
     fun onWeaponDamage(e: WeaponDamageEntityEvent) {
-        if (GunCategory.GRENADE.getWeaponList().contains(e.weaponTitle)) {
+        if (e.victim.type == EntityType.PLAYER) {
+            e.isCancelled = true
+            return
+        }
+        val lcdPlayer = manager.getLCDPlayer(e.player)
+        if (WeaponUtil.isLCDGrenade(lcdPlayer, e.weaponTitle)) {
             e.damage = 0.0
             return
         }
-        if (e.victim.type == EntityType.PLAYER || e.victim.type == EntityType.SNOWMAN || e.victim.type == EntityType.VILLAGER) {
+        val lcdWeapon = WeaponUtil.getLCDWeapon(lcdPlayer, e.weaponTitle) ?: return
+        if (e.victim.type == EntityType.SNOWMAN || e.victim.type == EntityType.VILLAGER) {
             e.isCancelled = true
             return
         }
@@ -90,26 +103,25 @@ class DamageControlListener : Listener {
             return
         }
         val enemy = manager.enemyHashMap[e.victim.uniqueId]!!
-        val data = manager.getLCDPlayer(e.player).statusData
+        val data = lcdPlayer.statusData
 
         if (e.damager.hasMetadata(MetadataUtil.SENTRY_GUN_BALL)) {
             e.damage *= data.sentryGunPowerMultiplier
             return
         }
 
-        if (!e.isHeadshot && data.specialSkillTypes.contains(SpecialSkillType.BODY_EXPERTISE)) {
-            e.damage += plugin.crackShot.handle.getInt("${e.weaponTitle}.Headshot.Bonus_Damage")
-        }
-        e.damage *= data.weaponDamageMultiplier
+        e.damage = e.damage * data.weaponDamageMultiplier
         val category = WeaponUtil.getGunCategory(e.weaponTitle)
         if (category == GunCategory.SHOTGUN) {
             e.damage *= data.shotgunDamageMultiplier
-        }
-        if (category == GunCategory.HANDGUN || category == GunCategory.AKIMBO) {
-            e.damage *= data.handgunDamageMultiplier
-            if (data.specialSkillTypes.contains(SpecialSkillType.AKIMBO)) {
-                e.damage *= 1.2
+            if (data.specialSkillTypes.contains(SpecialSkillType.DIE_HARD)){
+                if (Random.nextInt(100) <= 10){
+                    e.player.absorptionAmount++
+                }
             }
+        }
+        if (category == GunCategory.SIDE_ARM) {
+            e.damage *= data.secondaryDamageMultiplier
         }
         if (data.specialSkillTypes.contains(SpecialSkillType.UNDERDOG)) {
             val entityList = e.player.location.getNearbyLivingEntities(4.0)
@@ -120,28 +132,34 @@ class DamageControlListener : Listener {
                 }
             }
         }
-        if (data.specialSkillTypes.contains(SpecialSkillType.BERSERKER) && category == GunCategory.HANDGUN) {
+        if (data.specialSkillTypes.contains(SpecialSkillType.BERSERKER) && category == GunCategory.SIDE_ARM) {
             val health = data.healthScaleAmount
             if (health <= 10) {
                 var increase = (10 - health).toInt()
                 if (increase > 8) {
                     increase = 8
                 }
-                println("increase $increase")
                 val addDamage = 1.1 + (increase / 10)
                 e.damage *= addDamage
-                println("バーさかー　$addDamage")
             }
+        }
+
+        if (lcdPlayer.buff.contains(Buff.COMBAT_DOCTOR)){
+            e.damage *= 1.2
+        }
+
+        //ヘッドショット
+        if (e.isHeadshot || (!e.isHeadshot && data.specialSkillTypes.contains(SpecialSkillType.BODY_EXPERTISE))) {
+            e.damage *= 1.5
         }
 
         //クリティカル
         var addCritical = 0
-        if (data.specialSkillTypes.contains(SpecialSkillType.LOW_BLOW) && data.armorLimit <= 20) {
-            addCritical += (20 - data.armorLimit.toInt()) * 2
-            if (addCritical > 28) {
-                addCritical = 28
-            }
-            println("追加クリティカル率 $addCritical")
+        if (data.specialSkillTypes.contains(SpecialSkillType.LOW_BLOW) && category == GunCategory.SUB_MACHINE_GUN) {
+            addCritical += 30
+        }
+        if (lcdPlayer.buff.contains(Buff.UNSEEN_STRIKE)){
+            addCritical += 30
         }
         println("最終的なクリティカル率 ${data.criticalMultiplier + addCritical}")
         if (data.criticalMultiplier + addCritical != 0) {
@@ -154,26 +172,22 @@ class DamageControlListener : Listener {
                     .setOffset(1.0f, 2.0f, 1.0f)
                     .setAmount(100)
                     .display()
-                println("クリティカル！")
             }
         }
 
         if (!e.isHeadshot) {
             if (e.damage <= enemy.nonHeadShotDamageResistance) {
-                e.damage = 0.0
-                return
+                e.damage = 1.0
             }
         }
-        if (data.specialSkillTypes.contains(SpecialSkillType.BULLSEYE)) {
+        if (e.isHeadshot && data.specialSkillTypes.contains(SpecialSkillType.BULLSEYE)) {
             if (Math.random() <= 0.1) {
-                e.player.absorptionAmount += 1
-                if (e.player.absorptionAmount > data.armorLimit) {
-                    e.player.absorptionAmount = data.armorLimit
-                }
+                e.player.absorptionAmount += 2
             }
         }
         e.damage = e.damage - enemy.nonHeadShotDamageResistance
-        if (category == GunCategory.ASSAULT_RIFLE || category == GunCategory.SUB_MACHINE_GUN) {
+        e.damage *= 1.0 + (lcdWeapon.weaponLevel * 0.2)
+        if (category == GunCategory.SNIPER) {
             if (data.specialSkillTypes.contains(SpecialSkillType.GRAZE)) {
                 val entities = e.victim.location.getNearbyLivingEntities(5.0)
                 entities.remove(e.victim)
@@ -182,9 +196,13 @@ class DamageControlListener : Listener {
                     if (entity.type == EntityType.PLAYER) continue
                     if (count >= 3) break
                     entity.damage(e.damage, e.player)
+                    entity.noDamageTicks = 0
                     count++
                 }
             }
+        }
+        if (e.damage < 1.0) {
+            e.damage = 1.0
         }
         println("ダメージ量 ${e.damage}")
     }
@@ -227,8 +245,72 @@ class DamageControlListener : Listener {
             e.isCancelled = true
             return
         }
+//        if (e.entity.type == EntityType.PLAYER) {
+//            val player = e.entity as Player
+//            val lcdPlayer = manager.getLCDPlayer(player)
+//            val data = lcdPlayer.statusData
+//            var addDodge = 0
+//            e.damage *= data.damageResistMultiplier
+//            var addResist = 1.0
+//            if (data.specialSkillTypes.contains(SpecialSkillType.COMMITMENT_TO_SURVIVAL)) {
+//                if (player.healthScale <= 10) {
+//                    addResist -= 0.15
+//                }
+//            }
+//            if (data.specialSkillTypes.contains(SpecialSkillType.UP_YOU_GO)) {
+//                if (data.healthScaleAmount <= 7.0 && Random.nextInt(100) <= 20) {
+//                    player.absorptionAmount = data.armorLimit
+//                    println("UP YOU GO発動")
+//                }
+//            }
+//            if (data.specialSkillTypes.contains(SpecialSkillType.SWAN_SONG)) {
+//                if (player.healthScale <= 4) {
+//                    addResist -= 0.2
+//                }
+//            }
+//            e.damage *= addResist
+//            if (data.specialSkillTypes.contains(SpecialSkillType.SNEAKY_BASTARD) && data.armorLimit <= 20) {
+//                addDodge += (20 - data.armorLimit.toInt()) * 2
+//                if (addDodge > 20) {
+//                    addDodge = 20
+//                }
+//            }
+//            if (data.dodgeMultiplier + addDodge >= Random.nextInt(100)) {
+//                e.isCancelled = true
+//                (e.entity as Player).playSound(e.entity.location, Sound.ITEM_FIRECHARGE_USE, 1.0f, 1.0f)
+//                println("回避しました")
+//                println("addDodge $addDodge")
+//                println("回避率 ${data.dodgeMultiplier + addDodge}")
+//            }
+//            if (lcdPlayer.buff.contains(Buff.COMBAT_MEDIC)){
+//                e.damage *= 0.7
+//            }
+//
+//            if (e.damage < 1.0){
+//                e.damage = 1.0
+//            }
+//            if (data.specialSkillTypes.contains(SpecialSkillType.UNSEEN_STRIKE)){
+//                if (!lcdPlayer.buff.contains(Buff.UNSEEN_STRIKE)){
+//                    BuffRunnable(lcdPlayer,10,Buff.UNSEEN_STRIKE).addBuff()
+//                }
+//            }
+//        }
+    }
+
+    @EventHandler
+    fun onPlayerDamage(e: EntityDamageByEntityEvent) {
+        var player = e.entity
+        if (player.type != EntityType.PLAYER) {
+            return
+        }
+        if (!manager.enemyHashMap.containsKey(e.damager.uniqueId)) {
+            return
+        }
+        val enemy = manager.enemyHashMap[e.damager.uniqueId]!!
+        enemy.attackSpecialEffects(e.damager as LivingEntity, player as LivingEntity)
+        e.damage = enemy.getPower()
         if (e.entity.type == EntityType.PLAYER) {
-            val player = e.entity as Player
+            player = e.entity as Player
             val lcdPlayer = manager.getLCDPlayer(player)
             val data = lcdPlayer.statusData
             var addDodge = 0
@@ -251,12 +333,6 @@ class DamageControlListener : Listener {
                 }
             }
             e.damage *= addResist
-            if (data.specialSkillTypes.contains(SpecialSkillType.SNEAKY_BASTARD) && data.armorLimit <= 20) {
-                addDodge += (20 - data.armorLimit.toInt()) * 2
-                if (addDodge > 20) {
-                    addDodge = 20
-                }
-            }
             if (data.dodgeMultiplier + addDodge >= Random.nextInt(100)) {
                 e.isCancelled = true
                 (e.entity as Player).playSound(e.entity.location, Sound.ITEM_FIRECHARGE_USE, 1.0f, 1.0f)
@@ -264,35 +340,19 @@ class DamageControlListener : Listener {
                 println("addDodge $addDodge")
                 println("回避率 ${data.dodgeMultiplier + addDodge}")
             }
-            if (!e.isCancelled && !lcdPlayer.isRecovery) {
-                lcdPlayer.isRecovery = true
-                object : BukkitRunnable() {
-                    override fun run() {
-                        if (e.entity.isDead || (e.entity as Player).absorptionAmount >= data.armorLimit) {
-                            (e.entity as Player).absorptionAmount = data.armorLimit
-                            lcdPlayer.isRecovery = false
-                            cancel()
-                            return
-                        }
-                        (e.entity as Player).absorptionAmount++
-                    }
-                }.runTaskTimerAsynchronously(plugin, 0, 20)
+            if (lcdPlayer.buff.contains(Buff.COMBAT_MEDIC)){
+                e.damage *= 0.7
+            }
+
+            if (e.damage < 1.0){
+                e.damage = 1.0
+            }
+            if (data.specialSkillTypes.contains(SpecialSkillType.UNSEEN_STRIKE)){
+                if (!lcdPlayer.buff.contains(Buff.UNSEEN_STRIKE)){
+                    BuffRunnable(lcdPlayer,10,Buff.UNSEEN_STRIKE).addBuff()
+                }
             }
         }
-    }
-
-    @EventHandler
-    fun onPlayerDamage(e: EntityDamageByEntityEvent) {
-        val player = e.entity
-        if (player.type != EntityType.PLAYER) {
-            return
-        }
-        if (!manager.enemyHashMap.containsKey(e.damager.uniqueId)) {
-            return
-        }
-        val enemy = manager.enemyHashMap[e.damager.uniqueId]!!
-        enemy.attackSpecialEffects(e.damager as LivingEntity, player as LivingEntity)
-        e.damage = enemy.getPower()
         println("PlayerDamage ${e.damage}")
     }
 
@@ -307,19 +367,29 @@ class DamageControlListener : Listener {
     fun onArrowHit(e: ProjectileHitEvent) {
         // MasterSmoker
         if (e.entity.hasMetadata(MetadataUtil.EXPLODE_ARROW)) {
+            e.entity.world.playSound(e.entity.location, Sound.ENTITY_GENERIC_EXPLODE, 1f, 0.2f)
+            ParticleBuilder(ParticleEffect.EXPLOSION_HUGE)
+                .setLocation(e.entity.location)
+                .display()
             e.entity.location.clone().getNearbyPlayers(5.0).forEach {
                 val lcdPlayer = manager.getLCDPlayer(it)
                 if (lcdPlayer.isSurvivor) {
-
+                    it.damage(4.0)
                 }
+            }
+        }
+        if (e.hitEntity != null && e.entity.hasMetadata(MetadataUtil.ENEMY_ARROW)) {
+            if (e.hitEntity!!.type == EntityType.PLAYER && e.hitEntity!! is LivingEntity) {
+                val player = e.hitEntity as LivingEntity
+                player.damage(Smoker.getPower(),e.entity)
             }
         }
     }
 
     @EventHandler
-    fun onVehicleDamage(e: VehicleDamageEvent){
-        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)){
-            e.isCancelled
+    fun onVehicleDamage(e: VehicleDamageEvent) {
+        if (e.vehicle.hasMetadata(MetadataUtil.SUPPLY_CART)) {
+            e.isCancelled = true
             return
         }
     }

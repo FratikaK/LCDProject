@@ -1,36 +1,36 @@
 MASTERMIND:
   49: { name: Unlock the Tree,info: 全ての武器のリロード速度が5%上昇する,type: nether_star }
-  38: { name: Auto Fire,info: ファイアレート武器のレートLvを1段階上げる,type: polished_granite }
-  40: { name: Technical Reload,info: アサルトライフルとサブマシンガンの|リロード速度が10%上昇する,type: prismarine_shard }
-  42: { name: Stable Shot,info: 全ての武器の弾拡散率を0.5減少させる,type: cyan_dye }
+  38: { name: Auto Fire,info: フルオート武器のレートを60上げる,type: polished_granite }
+  40: { name: Technical Reload,info: アサルトライフルとサブマシンガンの|リロード速度が15%上昇する,type: prismarine_shard }
+  42: { name: Stable Shot,info: 全ての武器の精度を5%上昇させる,type: cyan_dye }
   29: { name: Quick Fix,info: 回復ポーションの回復量が50%増加する,type: glowstone_dust }
   31: { name: Aggressive Reload,info: アサルトライフルとサブマシンガンの|リロード速度が15%上昇する,type: prismarine_crystals }
-  33: { name: Rifleman,info: アサルトライフルとサブマシンガンの|弾拡散率を1.5減少させる,type: paper }
-  20: { name: Combat Doctor,info: 回復ポーションを持てる数が2個増える,type: sweet_berries }
+  33: { name: Rifleman,info: アサルトライフルとサブマシンガンの|精度を15%上昇させる,type: paper }
+  20: { name: Combat Doctor,info: 回復ポーション使用時に30秒間|全ての武器の威力が20%上昇する,type: sweet_berries }
   22: { name: Combat Medic,info: 回復ポーション使用時に30秒間|被ダメージを30%軽減する,type: beetroot }
-  24: { name: Painkillers,info: Painkillerを持てる数が8個になる,type: pumpkin_seeds }
+  24: { name: Painkillers,info: 鎮痛剤の性能を100%上昇させる,type: pumpkin_seeds }
   11: { name: Uppers,info: 回復ポーションの回復量が100%増加する,type: golden_apple }
   13: { name: Confident,info: 回避率が25%上昇する,type: feather }
-  15: { name: Marksman,info: アサルトライフル、サブマシンガンの|弾拡散率を2.5減少させる,type: netherite_scrap }
-  2: { name: Inspire,info: 回復ポーション使用時、|味方の体力も回復する,type: diamond_horse_armor }
-  4: { name: Graze,info: アサルトライフル、サブマシンガンの|攻撃が敵にヒットした場合、|敵の半径5mにいる敵3体まで|同じダメージを与えることが出来る,type: beacon }
-  6: { name: Machine Gunner,info: ファイアレート武器のレートLvを|4段階上げる,type: spectral_arrow }
+  15: { name: Marksman,info: アサルトライフル、サブマシンガンの|精度を25%上昇させる,type: netherite_scrap }
+  2: { name: Inspire,info: 回復ポーションか鎮痛剤を使用時、|同様の効果を味方にも付与する,type: diamond_horse_armor }
+  4: { name: Graze,info: スナイパーライフルの攻撃が敵にヒットした場合、|敵の半径5mにいる敵3体まで|同じダメージを与えることが出来る,type: beacon }
+  6: { name: Machine Gunner,info: フルオート武器のレートを240上げる,type: spectral_arrow }
 
 ENFORCER:
   49: { name: Unlock the Tree,info: 全ての武器の威力が5%上昇する,type: nether_star }
-  38: { name: Underdog,info: 自身の半径4mに敵が4人以上いれば|全ての武器のダメージが10%上昇する,type: diorite }
-  40: { name: Resilience,info: アーマーの上限を3ポイント増やす,type: iron_chestplate }
-  42: { name: Scavenger,info: 敵を倒すことで手に入る金額を|20%増やす,type: gold_ingot }
+  38: { name: Underdog,info: 自身の半径4mに敵が4人以上いれば|全ての武器の威力が15%上昇する,type: diorite }
+  40: { name: Resilience,info: 被ダメージを10%減少させる,type: iron_chestplate }
+  42: { name: Scavenger,info: 敵を倒すことで手に入るコインを|20%増やす,type: gold_ingot }
   29: { name: Shotgun CQB,info: ショットガンのリロード速度が15%上昇する,type: light_blue_wool }
-  31: { name: Die Hard,info: アーマーの上限を5ポイント増やす,type: anvil }
+  31: { name: Die Hard,info: ショットガンで敵を攻撃すると|10%の確率で|一時的な体力を1ポイント付与する,type: anvil }
   33: { name: Bulletstorm,info: 全ての武器のマガジン容量を15%増やす,type: composter }
   20: { name: Shotgun Impact,info: ショットガンの攻撃力が15%上昇する,type: magma_cream }
-  22: { name: Bullseye,info: ヘッドショットすると10%の確率で|アーマーが1ポイント回復する,type: ender_eye }
-  24: { name: Extra Lead,info: 携行弾薬が50%増加する,type: bone_meal }
+  22: { name: Bullseye,info: ヘッドショットすると10%の確率で|一時的な体力を2ポイント付与する,type: ender_eye }
+  24: { name: Extra Lead,info: ショットガンの装填数を8増やす,type: bone_meal }
   11: { name: Close By,info: 自身の半径の4m以内にいる敵に対する|ショットガンの威力が20%上昇する,type: diamond_sword }
-  13: { name: Shock And Awe,info: アーマーの上限を7ポイント増やす,type: comparator }
+  13: { name: Money Grubber,info: チェックポイント到達時に|メンバー全員の所持コインが|800増える,type: comparator }
   15: { name: Bulking Up,info: 全ての武器のマガジン容量を30%増やす,type: grass }
-  2: { name: Iron Man,info: アーマーの上限を15ポイント増やす,type: netherite_chestplate }
+  2: { name: Iron Man,info: 被ダメージを30%軽減させ、|移動速度を10%減少させる,type: netherite_chestplate }
   4: { name: OVERKILL,info: 全ての武器の威力が30%上昇する,type: blaze_powder }
   6: { name: Fully Loaded,info: 敵を倒すと5%の確率で|グレネードを1つ回収できるようになる,type: charcoal }
 
@@ -38,17 +38,17 @@ TECHNICIAN:
   49: { name: Unlock the Tree,info: メインガジェットの性能が5%上昇する,type: nether_star }
   38: { name: Third Law,info: セントリーガンの稼働時間を15秒増やす,type: shulker_shell }
   40: { name: HardWare Expert,info: メインガジェットのクールダウンを|15%短縮する,type: music_disc_cat }
-  42: { name: Steady Grip,info: 全ての武器の弾拡散率を0.5減少させる,type: wheat }
+  42: { name: Steady Grip,info: 全ての武器の精度が5%上昇する,type: wheat }
   29: { name: Sentry Targeting Package,info: セントリーガンの威力が15%上昇する,type: redstone_ore }
   31: { name: Combat Engineering,info: Trip Mineの爆発範囲が30%増加する,type: furnace_minecart }
-  33: { name: Fire Control,info: 全ての武器の弾拡散率を1.0減少させる,type: iron_axe }
+  33: { name: Fire Control,info: 全ての武器の精度を10%上昇させる,type: iron_axe }
   20: { name: Engineering,info: メインガジェットの性能が20%上昇する,type: flint_and_steel }
   22: { name: More Firepower,info: 爆発ダメージが30%上昇する,type: redstone }
-  24: { name: Surefire,info: フルオート武器のレートLvを2段階上げる,type: string }
+  24: { name: Surefire,info: フルオート武器のレート120上昇させる,type: string }
   11: { name: Eco Sentry,info: セントリーガンの稼働時間を30秒増やす,type: paper }
   13: { name: Fire Trap,info: Trip Mineの爆発ダメージを受けた敵に|燃焼デバフを付与する|さらにTrip Mineの爆発範囲を50%増加する,type: lava_bucket }
-  15: { name: Trip Mine Expert,info: Trip Mineを所持出来る数を6個増やす,type: tnt_minecart }
-  2: { name: Tower Defense,info: セントリーガンを所持できる数を4個増やす,type: golden_horse_armor }
+  15: { name: Explosion Expert,info: 爆発ダメージが50%上昇する,type: tnt_minecart }
+  2: { name: Tower Defense,info: セントリーガンを同時に|4個使用できるようになる,type: golden_horse_armor }
   4: { name: The Perfect Engineer,info: メインガジェットの性能が50%上昇する,type: clock }
   6: { name: Body Expertise,info: 全ての武器の攻撃がヘッドショットのダメージを与える,type: armor_stand }
 
@@ -58,32 +58,32 @@ GHOST:
   40: { name: Duck And Cover,info: スタミナ減少速度を25%減少させる,type: cooked_porkchop }
   42: { name: Second Wind,info: クリティカル率が8%上昇する,type: gold_nugget }
   29: { name: Nimble,info: 移動速度が25%上昇する,type: lapis_lazuli }
-  31: { name: Inner Pocket,info: 所持出来るグレネードを2個増やす,type: shulker_box }
+  31: { name: Inner Pocket,info: 初期をグレネードを2個増やす,type: shulker_box }
   33: { name: Silent Killer,info: 全ての武器にサプレッサーを採用し|全ての武器の威力が20%減少する|また、クリティカル率が15%上昇する,type: lantern }
   20: { name: Sixth Sense,info: クリティカル威力が15%上昇する,type: redstone_torch }
   22: { name: Dire Need,info: スタミナ減少速度を30%減少させる,type: powered_rail }
   24: { name: The Professional,info: サプレッサー装着時の|クリティカル威力を30%上昇させる,type: carrot_on_a_stick }
   11: { name: Chameleon,info: 回避率が10%上昇する,type: creeper_head }
   13: { name: Wind Resistance,info: 移動速度が30%上昇する,type: phantom_membrane }
-  15: { name: Low Blow,info: 最大アーマー量が低いほどクリティカル率を上昇させる|20ポイントからクリティカル率が上昇し、|1ポイント毎に2%ずつ上昇し、最大で28%クリティカル率が上昇する,type: blaze_rod }
-  2: { name: Tactical Rig,info: 所持できるグレネードを5個増やす,type: yellow_shulker_box }
-  4: { name: Sneaky Bastard,info: 最大アーマー量が低いほど回避率を上昇させる|16ポイントから回避率が上昇し、|1ポイント毎に2%ずつ上昇し、最大で20%回避率が上昇する,type: peony }
-  6: { name: Unseen Strike,info: サプレッサー装着時の|クリティカル威力を50%上昇させる,type: quartz }
+  15: { name: Low Blow,info: サブマシンガンのクリティカル率を|30%上昇させる,type: blaze_rod }
+  2: { name: Tactical Rig,info: 初期グレネードを5個増やす,type: yellow_shulker_box }
+  4: { name: Sneaky Bastard,info: 回避率を20%上昇させる,type: peony }
+  6: { name: Unseen Strike,info: 被ダメージ時に10秒間|クリティカル率が30%上昇する,type: quartz }
 
 FUGITIVE:
-  49: { name: Unlock the Tree,info: ハンドガンの威力が10%上昇する,type: nether_star}
-  38: { name: Equilibrium,info: ハンドガンの弾拡散率を2.0下げる,type: orange_dye}
+  49: { name: Unlock the Tree,info: セカンダリ武器の威力が10%上昇する,type: nether_star}
+  38: { name: Equilibrium,info: セカンダリ武器の弾拡散率を2.0下げる,type: orange_dye}
   40: { name: Commitment to Survival,info: 最大体力が10ポイント以下の場合、被ダメージを15%軽減する,type: pumpkin_pie}
-  42: { name: Special Arts,info: 特殊武器の威力が15%上昇する,type: stone_sword}
-  29: { name: Gun Nut,info: ハンドガンのマガジンサイズが5発増加する,type: black_dye}
+  42: { name: Special Arts,info: 特殊武器の威力が30%上昇する,type: stone_sword}
+  29: { name: Gun Nut,info: セカンダリ武器の装填数が30%上昇する,type: black_dye}
   31: { name: Running From Death,info: 最大体力が10ポイント以下の場合、|全ての武器のリロード速度が15%増加する,type: oak_boat}
-  33: { name: Berserker,info: 最大体力が低いほどハンドガンとAkimboの威力が上昇する|10ポイントから威力が上昇し、|2ポイントずつで10%上がる|最大で80%上昇する,type: }
-  20: { name: One Handed Talent,info: ハンドガンの威力が20%上昇する,type: bamboo}
-  22: { name: Up You Go,info: 被ダメージ時、最大体力が7ポイント以下の場合|20%の確率でアーマーを回復する,type: heart_of_the_sea}
-  24: { name: Weakening,info: 最大体力が2ポイント減少する,type: wither_skeleton_skull}
-  11: { name: Akimbo,info: Akimboの弾拡散率を1.5減少させ|Akimboの威力が20%上昇する,type: chainmail_boots}
+  33: { name: Berserker,info: 最大体力が低いほどセカンダリ武器の威力が上昇する|10ポイントから威力が上昇し、|2ポイントずつで10%上がる|最大で80%上昇する,type: }
+  20: { name: One Handed Talent,info: セカンダリ武器の威力が20%上昇する,type: bamboo}
+  22: { name: Up You Go,info: 被ダメージ時、最大体力が7ポイント以下の場合|20%の確率で一時的な体力を|6ポイント付与する,type: heart_of_the_sea}
+  24: { name: Weakening,info: 最大体力が4ポイント減少する,type: wither_skeleton_skull}
+  11: { name: Akimbo,info: セカンダリ武器の弾拡散率を2.0減少させ|威力が20%上昇する,type: chainmail_boots}
   13: { name: Swan Song,info: 自分の最大体力が4ポイント以下の場合、被ダメージを20%軽減する,type: music_disc_pigstep}
-  15: { name: Bloodthirst,info: 最大体力が3ポイント減少する,type: redstone}
-  2: { name: Trigger Happy,info: ハンドガンのマガジンサイズが30発増加する,type: sunflower}
-  4: { name: Frenzy,info: 最大体力が4ポイント減少する|さらに受けるダメージが30%減少する,type: brewing_stand}
-  6: { name: Messiah,info: チームの誰かが死亡した場合、|自分のアーマーを全て回復する|また、自身が死亡した場合、チーム全員の体力を全て回復する,type: }
+  15: { name: Bloodthirst,info: 最大体力が6ポイント減少する,type: redstone}
+  2: { name: Trigger Happy,info: セカンダリの装填数が50%増加する,type: sunflower}
+  4: { name: Frenzy,info: 最大体力が8ポイント減少する|さらに被ダメージが30%減少する,type: brewing_stand}
+  6: { name: Messiah,info: チームの誰かが死亡した場合、|一時的な体力を20ポイント付与する|また、自身が死亡した場合、チーム全員の体力を全て回復する,type: }

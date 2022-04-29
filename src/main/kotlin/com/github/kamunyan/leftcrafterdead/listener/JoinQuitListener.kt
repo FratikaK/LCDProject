@@ -7,7 +7,10 @@ import org.bukkit.ChatColor
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import org.bukkit.event.player.PlayerRespawnEvent
+import org.spigotmc.event.player.PlayerSpawnLocationEvent
 
 class JoinQuitListener : Listener {
     private val plugin = LeftCrafterDead.instance
@@ -18,11 +21,11 @@ class JoinQuitListener : Listener {
         e.joinMessage = "${ChatColor.AQUA}${e.player.displayName}がサーバーに参加しました"
 
         val uuid = e.player.uniqueId.toString()
-        if (!manager.onlineLCDPlayer.containsKey(uuid)) {
-            manager.onlineLCDPlayer[uuid] = LCDPlayer(uuid)
-            plugin.logger.info("${ChatColor.AQUA}${e.player.displayName}'s LCDPlayer created.")
+        if (manager.onlineLCDPlayer.containsKey(uuid)) {
+            manager.onlineLCDPlayer.remove(uuid)
         }
-
+        manager.onlineLCDPlayer[uuid] = LCDPlayer(uuid)
+        plugin.logger.info("${ChatColor.AQUA}${e.player.displayName}'s LCDPlayer created.")
         e.player.teleport(manager.lobbySpawnLocation)
         manager.getLCDPlayer(e.player).setLobbyItem()
         e.player.gameMode = manager.getLCDPlayer(e.player).gameMode

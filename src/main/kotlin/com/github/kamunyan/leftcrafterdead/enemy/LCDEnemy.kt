@@ -44,6 +44,7 @@ abstract class LCDEnemy {
         livingEntity.noDamageTicks = 0
         livingEntity.getAttribute(Attribute.GENERIC_MAX_HEALTH)!!.baseValue = getHealth()
         livingEntity.health = getHealth()
+        livingEntity.getAttribute(Attribute.GENERIC_KNOCKBACK_RESISTANCE)!!.baseValue = 2.0
     }
 
     open fun attackSpecialEffects(attacker: LivingEntity, target: LivingEntity) {}

@@ -4,6 +4,7 @@ import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.enemy.NormalEnemy
 import com.github.kamunyan.leftcrafterdead.event.*
+import com.github.kamunyan.leftcrafterdead.task.EndPointRunnable
 import com.github.kamunyan.leftcrafterdead.util.InventoryDisplayer
 import com.github.kamunyan.leftcrafterdead.util.MetadataUtil
 import net.kyori.adventure.text.Component
@@ -96,6 +97,11 @@ class MatchControlListener : Listener {
             }
         }
         manager.startRush()
+        if (!manager.endPointRunnable.isCancelled){
+            manager.endPointRunnable.cancel()
+        }
+        manager.endPointRunnable = EndPointRunnable()
+        manager.endPointRunnable.runTask()
         if (manager.isBossParse) {
             Bukkit.getPluginManager().callEvent(BossParseStartEvent())
             return

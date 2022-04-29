@@ -12,7 +12,9 @@ import xyz.xenondevs.particle.ParticleBuilder
 import xyz.xenondevs.particle.ParticleEffect
 import java.awt.Color
 
-class HealGrenade : Grenade("Heal Grenade") {
+object HealGrenade : Grenade("Heal Grenade") {
+    override val grenadeType: GrenadeType
+        get() = GrenadeType.HEAL_GRENADE
     override fun explosionEffects(location: Location) {
         val radius = crackShot.handle.getInt("${weaponTitle}.Explosions.Explosion_Radius").toFloat() / 2
         var countLeft = 3

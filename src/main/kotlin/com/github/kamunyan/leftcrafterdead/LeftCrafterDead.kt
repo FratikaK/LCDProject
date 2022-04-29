@@ -7,6 +7,7 @@ import com.github.kamunyan.leftcrafterdead.configs.LobbySpawnConfig
 import com.github.kamunyan.leftcrafterdead.configs.SkillTreeConfig
 import com.github.kamunyan.leftcrafterdead.data.SQLDriver
 import com.github.kamunyan.leftcrafterdead.listener.*
+import com.github.kamunyan.leftcrafterdead.task.AbsorptionRunnable
 import com.github.kamunyan.leftcrafterdead.task.LagFixRunnable
 import com.github.kamunyan.leftcrafterdead.task.ScoreBoardRunnable
 import com.shampaggon.crackshot.CSUtility
@@ -66,6 +67,7 @@ class LeftCrafterDead : JavaPlugin() {
         //Server tasks
         ScoreBoardRunnable.runTask()
         LagFixRunnable.runTask()
+        AbsorptionRunnable.runTask()
 
         try {
             SQLDriver.database = Database.connect(SQLDriver.url, SQLDriver.driver, SQLDriver.user, SQLDriver.password)

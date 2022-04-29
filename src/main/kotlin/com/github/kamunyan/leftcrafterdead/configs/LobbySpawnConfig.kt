@@ -23,6 +23,7 @@ object LobbySpawnConfig : Config("spawns", "lobby.yml") {
             section.getDouble("pitch").toFloat()
         )
         MatchManager.lobbySpawnLocation = location
+        location.world.spawnLocation = location
         plugin.logger.info("${ChatColor.AQUA}[$targetFile] Successfully loaded config!")
     }
 }

@@ -37,7 +37,6 @@ object Boomer : LCDSpecialEnemy() {
             players.forEach { player ->
                 player.addPotionEffects(
                     listOf(
-                        PotionEffect(PotionEffectType.SLOW, 200, 2, false, false),
                         PotionEffect(PotionEffectType.BLINDNESS, 200, 5, false, false)
                     )
                 )

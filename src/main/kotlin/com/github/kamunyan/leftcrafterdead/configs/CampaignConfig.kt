@@ -3,10 +3,7 @@ package com.github.kamunyan.leftcrafterdead.configs
 import com.github.kamunyan.leftcrafterdead.LeftCrafterDead
 import com.github.kamunyan.leftcrafterdead.MatchManager
 import com.github.kamunyan.leftcrafterdead.campaign.Campaign
-import org.bukkit.Bukkit
-import org.bukkit.ChatColor
-import org.bukkit.Location
-import org.bukkit.WorldCreator
+import org.bukkit.*
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.EntityType
 import java.io.File
@@ -33,8 +30,10 @@ object CampaignConfig {
             var mapName: String?
             var gameProgressLimit = 0
             val startLocations = ArrayList<Location>()
+            val endLocations = ArrayList<Location>()
             var restLocation: Location = manager.lobbySpawnLocation
             val supplyLocations = ArrayList<Location>()
+            var traderLocation: Location? = null
             val normalEnemyLocations = HashMap<Int, List<Location>>()
             var normalMobType: EntityType = EntityType.ZOMBIE
             val yml = YamlConfiguration.loadConfiguration(file)
@@ -51,6 +50,12 @@ object CampaignConfig {
                 gameProgressLimit = startLocations.size - 1
             }
 
+            if (yml.contains("end")) {
+                yml.getStringList("end").forEach {
+                    endLocations.add(locationByString(it, campaignTitle))
+                }
+            }
+
             if (yml.contains("rest")) {
                 restLocation = yml.getString("rest")?.let { locationByString(it, campaignTitle) }!!
             } else {
@@ -58,15 +63,22 @@ object CampaignConfig {
             }
 
             if (yml.contains("supply")) {
-                if (yml.contains("supply")) {
-                    yml.getStringList("supply").forEach {
-                        try {
-                            val location = locationByString(it, campaignTitle)
-                            supplyLocations.add(location)
-                        } catch (e: IllegalArgumentException) {
-                            e.printStackTrace()
-                        }
+                yml.getStringList("supply").forEach {
+                    try {
+                        val location = locationByString(it, campaignTitle)
+                        supplyLocations.add(location)
+                    } catch (e: IllegalArgumentException) {
+                        e.printStackTrace()
                     }
+                }
+            }
+
+            if (yml.contains("trader")) {
+                try {
+                    val location = locationByString(yml.getString("trader")!!, campaignTitle)
+                    traderLocation = location
+                } catch (e: IllegalArgumentException) {
+                    e.printStackTrace()
                 }
             }
 
@@ -94,8 +106,10 @@ object CampaignConfig {
                 mapName,
                 gameProgressLimit,
                 startLocations,
+                endLocations,
                 restLocation,
                 supplyLocations,
+                traderLocation,
                 normalEnemyLocations,
                 normalMobType
             )
@@ -123,6 +137,18 @@ object CampaignConfig {
                     it.chunk.load()
                 }
             }
+            val world = Bukkit.getWorld(mapName)!!
+            world.time = 20000L
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
+            world.setGameRule(GameRule.DO_FIRE_TICK, false)
+            world.setGameRule(GameRule.MOB_GRIEFING, false)
+            world.setGameRule(GameRule.KEEP_INVENTORY, false)
+            world.setGameRule(GameRule.DO_MOB_LOOT, false)
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+            world.setGameRule(GameRule.FALL_DAMAGE, false)
+            world.setGameRule(GameRule.SHOW_DEATH_MESSAGES, false)
+            world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false)
+            world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
         }
         if (manager.campaignList.isEmpty()) {
             plugin.logger.info("[CampaignConfig]${ChatColor.RED}None of the loaded Campaigns are available.")
